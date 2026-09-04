@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 14: Hashing - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            blue: '#4285f4',
+                            red: '#ea4335',
+                            yellow: '#fbbc05',
+                            green: '#34a853',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+        .hash-node {
+            transition: all 0.3s ease;
+        }
+        .chain-node {
+            animation: fadeInDown 0.5s ease-out forwards;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 dark:text-gray-200 antialiased min-h-screen flex flex-col">
+    <!-- Navigation / Sidebar -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <!-- Header -->
+            <header class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-8 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center text-2xl font-bold">
+                        14
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Hashing</h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">ฟังก์ชันแฮชและการจัดการการชน (Collisions Resolution)</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <!-- Theory Section -->
+                <div class="space-y-8">
+                    <!-- Concepts -->
+                    <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-8 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <i class="fas fa-book text-gemini-blue"></i>
+                            ทฤษฎี (Theory)
+                        </h2>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Hash Functions</h3>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    ฟังก์ชันแฮชเป็นกระบวนการแปลงข้อมูล (เช่น สตริง) ให้เป็นค่าตัวเลข (Index) เพื่อใช้เป็นตำแหน่งในการจัดเก็บข้อมูลในอาร์เรย์ (Hash Table)
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2 text-gemini-red">Collisions</h3>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    การชนเกิดขึ้นเมื่อข้อมูลสองตัวหรือมากกว่าถูกแปลงโดยฟังก์ชันแฮชแล้วได้ค่า Index เดียวกัน เราจึงจำเป็นต้องมีวิธีจัดการปัญหา
+                                </p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                    <h4 class="font-medium mb-2 text-gemini-green">Chaining</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">เมื่อเกิดการชน จะนำข้อมูลใหม่ไปต่อท้ายข้อมูลเดิมในตำแหน่งเดียวกันโดยใช้ Linked List</p>
+                                </div>
+                                <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                    <h4 class="font-medium mb-2 text-gemini-yellow">Linear Probing</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">เมื่อเกิดการชน จะค้นหาช่องว่างถัดไปในอาร์เรย์ทีละช่อง (Index + 1) จนกว่าจะพบช่องว่าง</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Quiz -->
+                    <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-8 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <i class="fas fa-question-circle text-gemini-red"></i>
+                            ทดสอบความเข้าใจ (Quiz)
+                        </h2>
+                        <div class="space-y-6" id="quiz-container">
+                            <!-- Quiz questions will be inserted here -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Simulator Section -->
+                <div class="space-y-8">
+                    <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-8 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <i class="fas fa-play-circle text-gemini-green"></i>
+                            ตัวจำลอง (Simulator)
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Controls -->
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4">
+                                <div class="flex flex-wrap gap-4 items-end">
+                                    <div class="flex-1 min-w-[200px]">
+                                        <label class="block text-sm font-medium mb-2">ข้อความ (String)</label>
+                                        <input type="text" id="hash-input" class="w-full px-4 py-2 rounded-lg bg-white dark:bg-[#1e1f20] dark:bg-[#131314] border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Apple">
+                                    </div>
+                                    <button onclick="insertData()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors h-10">
+                                        Insert
+                                    </button>
+                                    <button onclick="resetTable()" class="px-6 py-2 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg font-medium transition-colors h-10">
+                                        Reset
+                                    </button>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">วิธีจัดการการชน (Collision Resolution)</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="collision-mode" value="chaining" checked class="text-indigo-600 focus:ring-indigo-500">
+                                            <span>Chaining</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="collision-mode" value="linear" class="text-indigo-600 focus:ring-indigo-500">
+                                            <span>Linear Probing</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calculation Display -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 min-h-[80px]" id="calc-display">
+                                <p class="text-sm text-slate-500 dark:text-slate-400">รอการประมวลผล...</p>
+                            </div>
+
+                            <!-- Hash Table Visualization -->
+                            <div class="overflow-x-auto pb-4">
+                                <div class="inline-flex gap-2 min-w-full justify-start items-start" id="hash-table">
+                                    <!-- Table will be generated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        </div>
+</main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        const tableSize = 10;
+        let hashTable = Array(tableSize).fill(null);
+        let currentMode = 'chaining';
+
+        document.querySelectorAll('input[name="collision-mode"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (currentMode !== e.target.value) {
+                    currentMode = e.target.value;
+                    resetTable();
+                }
+            });
+        });
+
+        function renderTable() {
+            const container = document.getElementById('hash-table');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < tableSize; i++) {
+                const col = document.createElement('div');
+                col.className = 'flex flex-col gap-2 w-20 flex-shrink-0';
+                
+                // Index label
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'text-center text-xs font-bold text-slate-500 dark:text-slate-400 h-4';
+                indexLabel.textContent = `[${i}]`;
+                col.appendChild(indexLabel);
+
+                // Main Array Cell
+                const cell = document.createElement('div');
+                cell.id = `cell-${i}`;
+                cell.className = 'h-16 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center font-medium shadow-sm transition-all duration-300 relative';
+                
+                if (currentMode === 'linear') {
+                    if (hashTable[i]) {
+                        cell.textContent = hashTable[i];
+                        cell.classList.add('border-indigo-400', 'dark:border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/30');
+                    }
+                } else {
+                    if (hashTable[i] && hashTable[i].length > 0) {
+                        cell.textContent = hashTable[i][0];
+                        cell.classList.add('border-indigo-400', 'dark:border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/30');
+                        
+                        col.appendChild(cell);
+                        
+                        // Render chained nodes
+                        for (let j = 1; j < hashTable[i].length; j++) {
+                            // Arrow
+                            const arrow = document.createElement('div');
+                            arrow.className = 'flex justify-center text-slate-400 my-0 chain-node text-xs';
+                            arrow.innerHTML = '<i class="fas fa-arrow-down"></i>';
+                            col.appendChild(arrow);
+                            
+                            // Chained cell
+                            const chainCell = document.createElement('div');
+                            chainCell.className = 'h-16 bg-white dark:bg-slate-800 border-2 border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-center font-medium shadow-sm chain-node';
+                            chainCell.textContent = hashTable[i][j];
+                            col.appendChild(chainCell);
+                        }
+                        container.appendChild(col);
+                        continue;
+                    }
+                }
+                
+                col.appendChild(cell);
+                container.appendChild(col);
+            }
+        }
+
+        async function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function highlightCell(index, type = 'check') {
+            const cell = document.getElementById(`cell-${index}`);
+            if(!cell) return;
+            const originalClasses = cell.className;
+            
+            if (type === 'check') {
+                cell.classList.add('bg-yellow-100', 'dark:bg-yellow-900/40', 'border-yellow-400', 'scale-110', 'z-10');
+            } else if (type === 'found') {
+                cell.classList.add('bg-green-100', 'dark:bg-green-900/40', 'border-green-400', 'scale-110', 'z-10');
+            } else if (type === 'collision') {
+                cell.classList.add('bg-red-100', 'dark:bg-red-900/40', 'border-red-400', 'scale-110', 'z-10');
+            }
+            
+            await sleep(600);
+            cell.className = originalClasses;
+            await sleep(200);
+        }
+
+        function calculateHash(str) {
+            let sum = 0;
+            let calcText = [];
+            for (let i = 0; i < str.length; i++) {
+                let code = str.charCodeAt(i);
+                sum += code;
+                calcText.push(`${str[i]}(${code})`);
+            }
+            return { sum, calcText: calcText.join(' + ') };
+        }
+
+        async function insertData() {
+            const inputEl = document.getElementById('hash-input');
+            const str = inputEl.value.trim();
+            if (!str) return;
+            
+            // disable buttons during animation
+            document.querySelectorAll('button[onclick^="insert"], button[onclick^="reset"], input[name="collision-mode"]').forEach(b => b.disabled = true);
+
+            const calcDisplay = document.getElementById('calc-display');
+            const { sum, calcText } = calculateHash(str);
+            const hash = sum % tableSize;
+
+            calcDisplay.innerHTML = `
+                <div class="font-medium mb-1">กำลังคำนวณ Hash สำหรับ "${str}"</div>
+                <div class="text-sm font-mono bg-white dark:bg-[#1e1f20]/50 dark:bg-black/20 p-2 rounded">
+                    Sum ASCII: ${calcText} = ${sum}<br>
+                    Hash: ${sum} % ${tableSize} = <span class="font-bold text-indigo-600 dark:text-indigo-400">${hash}</span>
+                </div>
+            `;
+
+            if (currentMode === 'chaining') {
+                await highlightCell(hash, 'check');
+                if (!hashTable[hash]) {
+                    hashTable[hash] = [];
+                } else if (hashTable[hash].length > 0) {
+                    await highlightCell(hash, 'collision');
+                    calcDisplay.innerHTML += `<div class="text-red-500 mt-2 text-sm"><i class="fas fa-exclamation-triangle"></i> เกิดการชนที่ Index ${hash} -> เพิ่มไปยัง Linked List (Chaining)</div>`;
+                    await sleep(500);
+                }
+                hashTable[hash].push(str);
+                renderTable();
+            } else {
+                // Linear Probing
+                let index = hash;
+                let found = false;
+                let probed = 0;
+
+                while (probed < tableSize) {
+                    await highlightCell(index, 'check');
+                    if (!hashTable[index]) {
+                        await highlightCell(index, 'found');
+                        hashTable[index] = str;
+                        found = true;
+                        break;
+                    } else {
+                        await highlightCell(index, 'collision');
+                        calcDisplay.innerHTML += `<div class="text-red-500 mt-2 text-sm"><i class="fas fa-exclamation-triangle"></i> ชนที่ Index ${index} -> ค้นหาช่องถัดไป (Linear Probing)</div>`;
+                        index = (index + 1) % tableSize;
+                        probed++;
+                        await sleep(400);
+                    }
+                }
+
+                if (!found) {
+                    calcDisplay.innerHTML += `<div class="text-red-500 mt-2 text-sm font-bold">ตารางเต็มแล้ว ไม่สามารถแทรก "${str}" ได้</div>`;
+                }
+                renderTable();
+            }
+
+            inputEl.value = '';
+            document.querySelectorAll('button[onclick^="insert"], button[onclick^="reset"], input[name="collision-mode"]').forEach(b => b.disabled = false);
+        }
+
+        function resetTable() {
+            hashTable = Array(tableSize).fill(null);
+            document.getElementById('calc-display').innerHTML = '<p class="text-sm text-slate-500 dark:text-slate-400">รอการประมวลผล...</p>';
+            renderTable();
+        }
+
+        // Initialize table
+        resetTable();
+
+        // Setup Quiz
+        const quizQuestions = [
+            {
+                q: "ฟังก์ชันแฮช h(x) = x % 10 หาก x = 45 ค่าแฮชที่ได้คือเท่าใด?",
+                opts: ["4", "5", "45", "0"],
+                ans: 1
+            },
+            {
+                q: "Linear Probing แก้ปัญหา Collision อย่างไร?",
+                opts: ["สร้าง Linked List ต่อท้ายช่องเดิม", "แฮชข้อมูลด้วยฟังก์ชันใหม่", "หาช่องว่างถัดไปในอาเรย์ทีละช่อง", "แทนที่ข้อมูลเดิมด้วยข้อมูลใหม่"],
+                ans: 2
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = quizQuestions.map((q, i) => `
+                <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+                    <p class="font-medium mb-4">${i + 1}. ${q.q}</p>
+                    <div class="space-y-3">
+                        ${q.opts.map((opt, j) => `
+                            <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                <input type="radio" name="q${i}" value="${j}" class="text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-slate-700 dark:text-slate-300">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${i}" class="mt-4 hidden p-3 rounded-lg text-sm font-medium"></div>
+                </div>
+            `).join('') + `
+                <button onclick="checkQuiz()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors">
+                    ตรวจคำตอบ
+                </button>
+            `;
+        }
+
+        window.checkQuiz = function() {
+            quizQuestions.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const feedback = document.getElementById(`feedback-${i}`);
+                feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'dark:bg-green-900/30', 'dark:text-green-400', 'dark:bg-red-900/30', 'dark:text-red-400');
+                
+                if (!selected) {
+                    feedback.textContent = 'กรุณาเลือกคำตอบ';
+                    feedback.classList.add('hidden');
+                    return;
+                }
+
+                if (parseInt(selected.value) === q.ans) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle mr-2"></i>ถูกต้อง!';
+                    feedback.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times-circle mr-2"></i>ยังไม่ถูกต้อง ลองใหม่อีกครั้ง';
+                    feedback.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+                }
+            });
+        };
+
+        renderQuiz();
+    </script>
+</body>
+</html>

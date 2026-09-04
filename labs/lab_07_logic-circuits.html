@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 7: วงจรตรรกะ (Logic Gates) - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: {} } }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .bulb {
+            transition: all 0.3s ease;
+        }
+        .bulb-on {
+            fill: #fbbf24;
+            filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.8));
+        }
+        .bulb-off {
+            fill: #475569;
+        }
+        
+        .wire {
+            transition: stroke 0.3s ease;
+        }
+        .wire-on {
+            stroke: #3b82f6;
+        }
+        .wire-off {
+            stroke: #475569;
+        }
+
+        .dark .bulb-off {
+            fill: #334155;
+        }
+        .dark .wire-off {
+            stroke: #334155;
+        }
+        
+        .toggle-btn {
+            transition: all 0.2s ease;
+        }
+        .toggle-btn.on {
+            background-color: #10b981;
+            color: white;
+            border-color: #059669;
+        }
+        .toggle-btn.off {
+            background-color: #ef4444;
+            color: white;
+            border-color: #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased selection:bg-emerald-200 selection:text-emerald-900 flex">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <main class=" flex-1 overflow-y-auto transition-all duration-300 min-h-screen">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between">
+            <button onclick="toggleSidebar()" class="text-slate-600 dark:text-slate-400 dark:text-slate-300"><i class="fas fa-bars text-xl"></i></button>
+            <span class="font-bold">COM-SCI Labs</span>
+        </header>
+
+        <div class="p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6 pb-12">
+                
+                <!-- HEADER -->
+                <header class="mb-6">
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Lab 7: วงจรตรรกะ (Logic Gates)</h1>
+                    <p class="mt-2 text-slate-600 dark:text-slate-400">เรียนรู้และจำลองการทำงานของเกตตรรกะพื้นฐาน</p>
+                </header>
+
+                <!-- 2-COLUMN LAYOUT: Theory & Truth Tables -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                   <!-- Theory Section -->
+                   <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-xl font-bold mb-4 text-slate-900 dark:text-white"><i class="fas fa-book-open text-blue-500 mr-2"></i>ทฤษฎี (Theory)</h2>
+                        <div class="space-y-4 text-sm text-slate-700 dark:text-slate-300">
+                            <p>เกตตรรกะ (Logic Gates) เป็นส่วนประกอบพื้นฐานของวงจรดิจิทัล รับสัญญาณอินพุตที่เป็นลอจิก 0 หรือ 1 และประมวลผลตามเงื่อนไขตรรกศาสตร์เพื่อสร้างเอาต์พุต</p>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li><strong>AND Gate:</strong> เอาต์พุตเป็น 1 เมื่ออินพุตทั้งหมดเป็น 1</li>
+                                <li><strong>OR Gate:</strong> เอาต์พุตเป็น 1 เมื่อมีอินพุตอย่างน้อยหนึ่งตัวเป็น 1</li>
+                                <li><strong>NOT Gate:</strong> กลับค่าอินพุต (จาก 0 เป็น 1, จาก 1 เป็น 0)</li>
+                                <li><strong>NAND Gate:</strong> ตรงข้ามกับ AND</li>
+                                <li><strong>NOR Gate:</strong> ตรงข้ามกับ OR</li>
+                                <li><strong>XOR Gate:</strong> เอาต์พุตเป็น 1 เมื่ออินพุตต่างกัน</li>
+                            </ul>
+                        </div>
+                   </div>
+
+                   <!-- Truth Tables -->
+                   <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-xl font-bold mb-4 text-slate-900 dark:text-white"><i class="fas fa-table border border-blue-500 rounded p-1 text-blue-500 mr-2"></i>ตารางความจริง (Truth Tables)</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-center border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800">
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">A</th>
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">B</th>
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">AND</th>
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">OR</th>
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">XOR</th>
+                                        <th class="p-2 border border-slate-200 dark:border-slate-700">NAND</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">1</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                        <td class="p-2 border border-slate-200 dark:border-slate-700">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                   </div>
+                </div>
+
+                <!-- 2-COLUMN LAYOUT: Simulator & Quiz -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+                   <!-- Simulator Section -->
+                   <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm flex flex-col">
+                        <h2 class="text-xl font-bold mb-4 text-slate-900 dark:text-white"><i class="fas fa-microchip text-emerald-500 mr-2"></i>Interactive Switchboard</h2>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">เลือกประเภท Logic Gate:</label>
+                            <select id="gateSelect" class="w-full bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 outline-none" onchange="updateSimulation()">
+                                <option value="AND">AND Gate</option>
+                                <option value="OR">OR Gate</option>
+                                <option value="NOT">NOT Gate</option>
+                                <option value="NAND">NAND Gate</option>
+                                <option value="NOR">NOR Gate</option>
+                                <option value="XOR">XOR Gate</option>
+                            </select>
+                        </div>
+
+                        <div class="flex-1 flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                            <!-- Visual Circuit -->
+                            <div class="flex items-center gap-4 md:gap-8 w-full max-w-md">
+                                <!-- Inputs -->
+                                <div class="flex flex-col gap-8 w-24">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold mr-2 text-lg">A:</span>
+                                        <button id="btnA" class="toggle-btn off w-12 h-12 rounded-lg font-bold text-xl shadow-sm border-2" onclick="toggleInput('A')">0</button>
+                                    </div>
+                                    <div class="flex items-center justify-between" id="inputBContainer">
+                                        <span class="font-bold mr-2 text-lg">B:</span>
+                                        <button id="btnB" class="toggle-btn off w-12 h-12 rounded-lg font-bold text-xl shadow-sm border-2" onclick="toggleInput('B')">0</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Gate Visual -->
+                                <div class="flex-1 flex justify-center items-center relative h-32">
+                                    <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" class="absolute inset-0 pointer-events-none z-0">
+                                        <path id="wireA" d="M 0,25 L 30,25" stroke-width="4" class="wire wire-off" fill="none"/>
+                                        <path id="wireB" d="M 0,75 L 30,75" stroke-width="4" class="wire wire-off" fill="none"/>
+                                        <path id="wireOut" d="M 70,50 L 100,50" stroke-width="4" class="wire wire-off" fill="none"/>
+                                    </svg>
+                                    
+                                    <div class="bg-blue-100 dark:bg-blue-900/50 border-2 border-blue-500 text-blue-800 dark:text-blue-300 w-24 h-24 rounded-lg flex items-center justify-center z-10 shadow-md">
+                                        <span id="gateLabel" class="font-bold text-xl">AND</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Output Bulb -->
+                                <div class="w-16 flex flex-col items-center">
+                                    <svg viewBox="0 0 24 24" class="w-12 h-12">
+                                        <path id="bulbIcon" class="bulb bulb-off" d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm1 18h-2c-.55 0-1 .45-1 1s.45 1 1 1h2c.55 0 1-.45 1-1s-.45-1-1-1z"/>
+                                    </svg>
+                                    <span class="mt-2 font-bold text-lg">Out: <span id="outValue">0</span></span>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+                   <!-- Quiz Section -->
+                   <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm flex flex-col">
+                        <h2 class="text-xl font-bold mb-4 text-slate-900 dark:text-white"><i class="fas fa-question-circle text-purple-500 mr-2"></i>แบบทดสอบความรู้</h2>
+                        <div class="flex-1 flex flex-col justify-center items-center text-center space-y-6">
+                            
+                            <div class="text-lg md:text-xl font-medium" id="quizQuestion">
+                                <!-- Question generated by JS -->
+                            </div>
+                            
+                            <div class="flex gap-4 w-full max-w-xs">
+                                <button onclick="checkAnswer(0)" class="flex-1 py-3 px-6 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-700 rounded-xl font-bold text-xl border border-slate-300 dark:border-slate-600 transition-colors">
+                                    0
+                                </button>
+                                <button onclick="checkAnswer(1)" class="flex-1 py-3 px-6 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-700 rounded-xl font-bold text-xl border border-slate-300 dark:border-slate-600 transition-colors">
+                                    1
+                                </button>
+                            </div>
+
+                            <div id="quizFeedback" class="h-8 font-bold text-lg opacity-0 transition-opacity"></div>
+                            
+                            <button onclick="generateQuestion()" class="mt-auto px-4 py-2 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors text-sm font-medium">
+                                <i class="fas fa-sync-alt mr-2"></i>คำถามถัดไป
+                            </button>
+                        </div>
+                   </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // Simulator Logic
+        let valA = 0;
+        let valB = 0;
+
+        function toggleInput(inputName) {
+            if (inputName === 'A') {
+                valA = valA === 0 ? 1 : 0;
+                const btn = document.getElementById('btnA');
+                btn.textContent = valA;
+                btn.className = `toggle-btn ${valA ? 'on' : 'off'} w-12 h-12 rounded-lg font-bold text-xl shadow-sm border-2`;
+            } else {
+                valB = valB === 0 ? 1 : 0;
+                const btn = document.getElementById('btnB');
+                btn.textContent = valB;
+                btn.className = `toggle-btn ${valB ? 'on' : 'off'} w-12 h-12 rounded-lg font-bold text-xl shadow-sm border-2`;
+            }
+            updateSimulation();
+        }
+
+        function calculateGate(gate, a, b) {
+            switch(gate) {
+                case 'AND': return a & b;
+                case 'OR': return a | b;
+                case 'NOT': return a === 1 ? 0 : 1;
+                case 'NAND': return !(a & b) ? 1 : 0;
+                case 'NOR': return !(a | b) ? 1 : 0;
+                case 'XOR': return a ^ b;
+                default: return 0;
+            }
+        }
+
+        function updateSimulation() {
+            const gate = document.getElementById('gateSelect').value;
+            document.getElementById('gateLabel').textContent = gate;
+            
+            const bContainer = document.getElementById('inputBContainer');
+            const wireB = document.getElementById('wireB');
+            
+            if (gate === 'NOT') {
+                bContainer.style.opacity = '0.3';
+                bContainer.style.pointerEvents = 'none';
+                wireB.style.opacity = '0';
+            } else {
+                bContainer.style.opacity = '1';
+                bContainer.style.pointerEvents = 'auto';
+                wireB.style.opacity = '1';
+            }
+
+            const out = calculateGate(gate, valA, valB);
+            
+            // Update Wires
+            document.getElementById('wireA').setAttribute('class', `wire ${valA ? 'wire-on' : 'wire-off'}`);
+            if (gate !== 'NOT') {
+                document.getElementById('wireB').setAttribute('class', `wire ${valB ? 'wire-on' : 'wire-off'}`);
+            }
+            document.getElementById('wireOut').setAttribute('class', `wire ${out ? 'wire-on' : 'wire-off'}`);
+
+            // Update Bulb
+            const bulb = document.getElementById('bulbIcon');
+            bulb.setAttribute('class', `bulb ${out ? 'bulb-on' : 'bulb-off'}`);
+            document.getElementById('outValue').textContent = out;
+        }
+
+        // Quiz Logic
+        let currentQuizGate = '';
+        let quizValA = 0;
+        let quizValB = 0;
+        let correctAnswer = 0;
+        const gates = ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR'];
+
+        function generateQuestion() {
+            currentQuizGate = gates[Math.floor(Math.random() * gates.length)];
+            quizValA = Math.random() > 0.5 ? 1 : 0;
+            quizValB = Math.random() > 0.5 ? 1 : 0;
+            
+            const qElem = document.getElementById('quizQuestion');
+            if (currentQuizGate === 'NOT') {
+                qElem.innerHTML = `ผลลัพธ์ของ <strong>NOT</strong> เกต เมื่อ <strong>A = ${quizValA}</strong>?`;
+                correctAnswer = calculateGate('NOT', quizValA, 0);
+            } else {
+                qElem.innerHTML = `ผลลัพธ์ของ <strong>${currentQuizGate}</strong> เกต เมื่อ <strong>A = ${quizValA}</strong> and <strong>B = ${quizValB}</strong>?`;
+                correctAnswer = calculateGate(currentQuizGate, quizValA, quizValB);
+            }
+
+            const fb = document.getElementById('quizFeedback');
+            fb.style.opacity = '0';
+        }
+
+        function checkAnswer(ans) {
+            const fb = document.getElementById('quizFeedback');
+            fb.style.opacity = '1';
+            if (ans === correctAnswer) {
+                fb.textContent = '✅ ถูกต้อง!';
+                fb.className = 'h-8 font-bold text-lg text-emerald-500 transition-opacity';
+                setTimeout(generateQuestion, 1500);
+            } else {
+                fb.textContent = '❌ ผิดครับ ลองใหม่นะ!';
+                fb.className = 'h-8 font-bold text-lg text-red-500 transition-opacity';
+            }
+        }
+
+        // Initialize
+        updateSimulation();
+        generateQuestion();
+    </script>
+</body>
+</html>

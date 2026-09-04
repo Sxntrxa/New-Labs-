@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18 OSI 7 Layers - COM-SCI Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { sans: ['Inter', 'Sarabun', 'sans-serif'] } } }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Sarabun', sans-serif; }
+        .glass-panel { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+        /* Transitions */
+        .fade-enter { opacity: 0; transform: translateY(10px); }
+        .fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 300ms, transform 300ms; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+    <main class=" min-h-screen flex flex-col transition-all duration-300">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+            <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span class="font-bold">COM-SCI Labs</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+        </header>
+        <div class="flex-grow p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                <!-- Header -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-500">Lab 18: OSI 7 Layers Interactive Simulator</h1>
+                    <p class="mt-2 text-slate-600 dark:text-slate-400">เรียนรู้แบบจำลอง OSI (Open Systems Interconnection) และกระบวนการ Encapsulation/Decapsulation</p>
+                </div>
+
+                <!-- Theory Section -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-bold mb-4">แบบจำลอง OSI 7 Layers</h2>
+                        <ul class="space-y-3">
+                            <li class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-900/30">
+                                <span class="font-bold text-red-600 dark:text-red-400">7. Application:</span> บริการที่ติดต่อกับผู้ใช้ เช่น HTTP, FTP, SMTP
+                            </li>
+                            <li class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-900/30">
+                                <span class="font-bold text-orange-600 dark:text-orange-400">6. Presentation:</span> การแปลงรูปแบบข้อมูล (Format), การเข้ารหัส (Encryption)
+                            </li>
+                            <li class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-900/30">
+                                <span class="font-bold text-yellow-600 dark:text-yellow-400">5. Session:</span> ควบคุมการเชื่อมต่อ (Session) ระหว่างแอปพลิเคชัน
+                            </li>
+                            <li class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-900/30">
+                                <span class="font-bold text-green-600 dark:text-green-400">4. Transport:</span> ควบคุมการส่งข้อมูลแบบ End-to-End (TCP/UDP), Port Number
+                            </li>
+                            <li class="p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-900/30">
+                                <span class="font-bold text-teal-600 dark:text-teal-400">3. Network:</span> กำหนดเส้นทาง (Routing) และ IP Address
+                            </li>
+                            <li class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                                <span class="font-bold text-blue-600 dark:text-blue-400">2. Data Link:</span> ควบคุมการเข้าถึงสื่อส่งข้อมูล, MAC Address, Switch
+                            </li>
+                            <li class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-100 dark:border-purple-900/30">
+                                <span class="font-bold text-purple-600 dark:text-purple-400">1. Physical:</span> สัญญาณไฟฟ้า (Bits), สายเคเบิล, Hub
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-bold mb-4">TCP/IP Model & Comparison</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50">
+                                        <th class="p-3 border-b border-slate-200 dark:border-slate-700 font-semibold">OSI Model</th>
+                                        <th class="p-3 border-b border-slate-200 dark:border-slate-700 font-semibold">TCP/IP Model (Updated)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">7. Application</td>
+                                        <td rowspan="3" class="p-3 border-b border-slate-200 dark:border-slate-700 bg-red-50 dark:bg-red-900/10 text-center font-semibold">Application</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">6. Presentation</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">5. Session</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">4. Transport</td>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700 bg-green-50 dark:bg-green-900/10 text-center font-semibold">Transport</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">3. Network</td>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700 bg-teal-50 dark:bg-teal-900/10 text-center font-semibold">Internet (Network)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">2. Data Link</td>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700 bg-blue-50 dark:bg-blue-900/10 text-center font-semibold">Data Link</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700">1. Physical</td>
+                                        <td class="p-3 border-b border-slate-200 dark:border-slate-700 bg-purple-50 dark:bg-purple-900/10 text-center font-semibold">Physical</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Diagram -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-xl font-bold mb-4">OSI Layers Interactive</h2>
+                    <div class="flex flex-col md:flex-row gap-8 justify-center items-center">
+                        <div class="w-full md:w-1/3 flex flex-col space-y-2" id="sender-layers">
+                            <!-- Rendered via JS -->
+                        </div>
+                        <div class="hidden md:flex flex-col items-center text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                        </div>
+                        <div class="w-full md:w-1/3 flex flex-col space-y-2" id="receiver-layers">
+                            <!-- Rendered via JS -->
+                        </div>
+                    </div>
+                    <div id="layer-detail" class="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hidden text-center">
+                        <!-- Details rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Simulator -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-xl font-bold mb-4">Data Encapsulation Simulator</h2>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <input type="text" id="sim-input" value="Hello World" class="flex-grow px-4 py-2 rounded-lg bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 dark:text-white" placeholder="Enter message...">
+                        <button id="sim-btn" onclick="startSimulation()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">ส่งข้อมูล (Send Data)</button>
+                    </div>
+                    <div id="sim-display" class="min-h-[200px] p-6 rounded-xl bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center space-y-4">
+                        <p class="text-slate-500 dark:text-slate-400">Click Send to start simulation</p>
+                    </div>
+                </div>
+
+                <!-- Protocol Matching Game -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Protocol Matching Game</h2>
+                        <div class="font-semibold px-4 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 rounded-full">Score: <span id="game-score">0</span>/<span id="game-total">0</span></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-semibold mb-3">Select a Protocol:</h3>
+                            <div id="protocols-list" class="flex flex-wrap gap-2">
+                                <!-- Protocols via JS -->
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold mb-3">Select Target Layer:</h3>
+                            <div class="flex flex-col space-y-2">
+                                <button onclick="selectLayer(7)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">7. Application</button>
+                                <button onclick="selectLayer(6)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">6. Presentation</button>
+                                <button onclick="selectLayer(5)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">5. Session</button>
+                                <button onclick="selectLayer(4)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">4. Transport</button>
+                                <button onclick="selectLayer(3)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">3. Network</button>
+                                <button onclick="selectLayer(2)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">2. Data Link</button>
+                                <button onclick="selectLayer(1)" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors text-left text-sm sm:text-base">1. Physical</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="game-feedback" class="mt-4 p-3 rounded-lg text-center font-medium hidden"></div>
+                </div>
+            
+            <!-- Quiz Section -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm mt-6 mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-question-circle text-emerald-500"></i> แบบทดสอบ (Quiz)
+                    </h2>
+                    <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-sm font-medium" id="scoreDisplay">คะแนน: 0</span>
+                </div>
+                
+                <div id="quizContainer" class="max-w-2xl mx-auto space-y-4">
+                    <!-- Quiz content generated by JS -->
+                </div>
+            </div>
+
+</div>
+        </div>
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+    const layers = [
+        { num: 7, name: "Application", th: "การประยุกต์ใช้งาน", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800", protocols: "HTTP, FTP, SMTP, DNS", desc: "ให้บริการแก่ผู้ใช้งานและแอปพลิเคชันโดยตรง" },
+        { num: 6, name: "Presentation", th: "การนำเสนอข้อมูล", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800", protocols: "SSL/TLS, JPEG, ASCII", desc: "แปลงรูปแบบข้อมูล บีบอัด และเข้ารหัสข้อมูลให้พร้อมใช้งาน" },
+        { num: 5, name: "Session", th: "ควบคุมเซสชัน", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800", protocols: "NetBIOS, PPTP", desc: "จัดการการเชื่อมต่อ (Session) สร้าง รักษาสถานะ และยกเลิกการเชื่อมต่อ" },
+        { num: 4, name: "Transport", th: "การขนส่ง", color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800", protocols: "TCP, UDP", desc: "ควบคุมการส่งข้อมูลแบบ End-to-End จัดการความผิดพลาด นำส่งข้อมูลตาม Port Number" },
+        { num: 3, name: "Network", th: "เครือข่าย", color: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400 border-teal-200 dark:border-teal-800", protocols: "IP, ICMP, IPSec", desc: "กำหนดเส้นทาง (Routing) ระบุตำแหน่งด้วย Logical Address (IP Address)" },
+        { num: 2, name: "Data Link", th: "เชื่อมโยงข้อมูล", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800", protocols: "Ethernet, MAC, PPP", desc: "ควบคุมการเข้าถึงสื่อ ระบุตำแหน่งด้วย Physical Address (MAC Address)" },
+        { num: 1, name: "Physical", th: "กายภาพ", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800", protocols: "USB, Bluetooth, 802.11", desc: "รับส่งข้อมูลระดับบิต (0,1) ผ่านสื่อนำสัญญาณ เช่น สายทองแดง ใยแก้วนำแสง คลื่นวิทยุ" }
+    ];
+
+    function renderLayers() {
+        const sender = document.getElementById('sender-layers');
+        const receiver = document.getElementById('receiver-layers');
+        sender.innerHTML = '<h3 class="text-center font-bold mb-2">Sender</h3>';
+        receiver.innerHTML = '<h3 class="text-center font-bold mb-2">Receiver</h3>';
+
+        layers.forEach(l => {
+            const createCard = () => `
+                <div onclick="showLayerDetail(${l.num})" class="cursor-pointer border ${l.color} rounded-lg p-3 text-center transform transition-transform hover:scale-[1.02] active:scale-95 shadow-sm">
+                    <div class="font-bold text-sm sm:text-lg">L${l.num}: ${l.name}</div>
+                    <div class="text-xs opacity-80">${l.protocols}</div>
+                </div>
+            `;
+            sender.innerHTML += createCard();
+        });
+        
+        // Receiver decapsulates bottom up conceptually, but visually it usually is stacked the same way 7 to 1
+        // Actually, often it's stacked 7 to 1 as well to map identically. We will just use the same order.
+        layers.forEach(l => {
+            const createCard = () => `
+                <div onclick="showLayerDetail(${l.num})" class="cursor-pointer border ${l.color} rounded-lg p-3 text-center transform transition-transform hover:scale-[1.02] active:scale-95 shadow-sm">
+                    <div class="font-bold text-sm sm:text-lg">L${l.num}: ${l.name}</div>
+                    <div class="text-xs opacity-80">${l.protocols}</div>
+                </div>
+            `;
+            receiver.innerHTML += createCard();
+        });
+    }
+
+    function showLayerDetail(num) {
+        const layer = layers.find(l => l.num === num);
+        const detail = document.getElementById('layer-detail');
+        detail.classList.remove('hidden');
+        detail.innerHTML = `
+            <h3 class="text-lg font-bold">Layer ${layer.num}: ${layer.name} (${layer.th})</h3>
+            <p class="mt-2 text-slate-600 dark:text-slate-400">${layer.desc}</p>
+            <p class="mt-1 font-semibold text-sm">Protocols: ${layer.protocols}</p>
+        `;
+    }
+
+    let isSimulating = false;
+    async function startSimulation() {
+        if(isSimulating) return;
+        isSimulating = true;
+        const msg = document.getElementById('sim-input').value || 'Hello World';
+        const display = document.getElementById('sim-display');
+        const btn = document.getElementById('sim-btn');
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        let dataObj = { type: 'Data', content: msg };
+
+        display.innerHTML = '<h3 class="font-bold text-lg w-full text-center mb-4">Sender: Encapsulation (Top-Down)</h3>';
+        for(let i=0; i<layers.length; i++) {
+            const l = layers[i];
+            await wait(800);
+            
+            if(l.num === 6) dataObj.content = "enc(" + dataObj.content + ")";
+            else if(l.num === 5) dataObj = { head: "Session", content: dataObj };
+            else if(l.num === 4) dataObj = { head: "TCP", content: dataObj };
+            else if(l.num === 3) dataObj = { head: "IP", content: dataObj };
+            else if(l.num === 2) dataObj = { head: "MAC", content: dataObj, tail: "FCS" };
+            else if(l.num === 1) dataObj = { type: 'Bits', content: "01010110..." };
+
+            display.innerHTML += renderDataObj(l.num, dataObj);
+        }
+
+        await wait(1200);
+        
+        display.innerHTML = '<h3 class="font-bold text-lg w-full text-center mt-6 mb-4">Receiver: Decapsulation (Bottom-Up)</h3>';
+        
+        let steps = [];
+        let cur = { type: 'Data', content: msg };
+        steps[7] = JSON.parse(JSON.stringify(cur));
+        cur.content = "enc(" + cur.content + ")";
+        steps[6] = JSON.parse(JSON.stringify(cur));
+        cur = { head: "Session", content: cur };
+        steps[5] = JSON.parse(JSON.stringify(cur));
+        cur = { head: "TCP", content: cur };
+        steps[4] = JSON.parse(JSON.stringify(cur));
+        cur = { head: "IP", content: cur };
+        steps[3] = JSON.parse(JSON.stringify(cur));
+        cur = { head: "MAC", content: cur, tail: "FCS" };
+        steps[2] = JSON.parse(JSON.stringify(cur));
+        cur = { type: 'Bits', content: "01010110..." };
+        steps[1] = JSON.parse(JSON.stringify(cur));
+
+        for(let num=1; num<=7; num++) {
+            const l = layers.find(x=>x.num===num);
+            await wait(800);
+            display.innerHTML += renderDataObj(l.num, steps[num]);
+        }
+
+        isSimulating = false;
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    function renderDataObj(layerNum, obj) {
+        let html = `<div class="w-full flex flex-col sm:flex-row items-center justify-center fade-enter-active my-2 overflow-x-auto">
+            <div class="mb-2 sm:mb-0 sm:mr-4 font-bold text-sm w-16 text-center sm:text-right shrink-0">L${layerNum}</div>
+            <div class="flex max-w-full">`;
+        
+        const buildBlock = (o) => {
+            if(o.type === 'Bits') return `<div class="px-2 sm:px-4 py-1 border rounded bg-slate-800 text-green-400 font-mono text-xs sm:text-sm shadow-sm whitespace-nowrap">${o.content}</div>`;
+            
+            let res = '';
+            if(o.head) res += `<div class="px-1 sm:px-2 py-1 border-y border-l rounded-l bg-slate-200 dark:bg-slate-700 text-[10px] sm:text-xs font-bold flex items-center justify-center shrink-0">${o.head}</div>`;
+            
+            if(o.content && typeof o.content === 'object') {
+                res += buildBlock(o.content);
+            } else {
+                res += `<div class="px-2 sm:px-4 py-1 border bg-white dark:bg-[#1e1f20] dark:bg-[#131314] text-[10px] sm:text-sm shadow-sm flex items-center justify-center whitespace-nowrap ${!o.head && !o.tail ? 'rounded' : ''} ${o.head && !o.tail ? 'border-l-0 rounded-r' : ''} ${!o.head && o.tail ? 'border-r-0 rounded-l' : ''} ${o.head && o.tail ? 'border-x-0' : ''}">${o.content}</div>`;
+            }
+            
+            if(o.tail) res += `<div class="px-1 sm:px-2 py-1 border-y border-r rounded-r bg-slate-200 dark:bg-slate-700 text-[10px] sm:text-xs font-bold flex items-center justify-center shrink-0">${o.tail}</div>`;
+            return res;
+        }
+
+        html += buildBlock(obj);
+        html += `</div></div>`;
+        return html;
+    }
+
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+
+    const gameProtocols = [
+        { name: "HTTP", layer: 7 }, { name: "FTP", layer: 7 }, { name: "SMTP", layer: 7 },
+        { name: "JPEG", layer: 6 }, { name: "SSL/TLS", layer: 6 },
+        { name: "NetBIOS", layer: 5 },
+        { name: "TCP", layer: 4 }, { name: "UDP", layer: 4 },
+        { name: "IP", layer: 3 }, { name: "ICMP", layer: 3 },
+        { name: "Ethernet", layer: 2 }, { name: "MAC", layer: 2 },
+        { name: "802.11 (WiFi)", layer: 1 }, { name: "Fiber Optic", layer: 1 }
+    ].sort(() => Math.random() - 0.5);
+
+    let selectedProtocol = null;
+    let score = 0;
+    
+    function renderGame() {
+        document.getElementById('game-total').innerText = gameProtocols.length;
+        document.getElementById('game-score').innerText = score;
+        const list = document.getElementById('protocols-list');
+        list.innerHTML = '';
+        gameProtocols.forEach((p, idx) => {
+            if(p.matched) return;
+            const btn = document.createElement('button');
+            btn.className = `px-3 py-1 text-sm sm:text-base rounded-full border transition-colors ${selectedProtocol === idx ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+            btn.innerText = p.name;
+            btn.onclick = () => { selectedProtocol = idx; renderGame(); };
+            list.appendChild(btn);
+        });
+        if(gameProtocols.every(p=>p.matched)) {
+            list.innerHTML = '<div class="text-green-600 dark:text-green-400 font-bold">🎉 All matched! Great job!</div>';
+        }
+    }
+
+    function selectLayer(layerNum) {
+        const feedback = document.getElementById('game-feedback');
+        if(selectedProtocol === null) {
+            feedback.innerText = "Please select a protocol first!";
+            feedback.className = "mt-4 p-3 rounded-lg text-center font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 block";
+            return;
+        }
+        const p = gameProtocols[selectedProtocol];
+        if(p.layer === layerNum) {
+            score++;
+            p.matched = true;
+            selectedProtocol = null;
+            feedback.innerText = "Correct! " + p.name + " is at Layer " + layerNum;
+            feedback.className = "mt-4 p-3 rounded-lg text-center font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 block";
+        } else {
+            feedback.innerText = "Incorrect. " + p.name + " is NOT at Layer " + layerNum;
+            feedback.className = "mt-4 p-3 rounded-lg text-center font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 block";
+        }
+        renderGame();
+        setTimeout(() => feedback.classList.add('hidden'), 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderLayers();
+        renderGame();
+    });
+    </script>
+<script>
+        // --- Quiz Logic ---
+        let quizScore = 0;
+        let quizQuestions = [{"q": "เลเยอร์ใดใน OSI Model ทำหน้าที่ค้นหาเส้นทาง (Routing) ควบคุมทราฟฟิกข้อมูล และเป็นที่อยู่ของ IP?", "options": ["Data Link Layer", "Network Layer", "Transport Layer"], "answer": 1}, {"q": "สายแลน (LAN Cable) จัดอยู่ในเลเยอร์ใดของ OSI Model?", "options": ["Physical Layer", "Data Link Layer", "Network Layer"], "answer": 0}, {"q": "โปรโตคอล HTTP และ FTP ทำงานอยู่ในเลเยอร์ใด?", "options": ["Application Layer", "Presentation Layer", "Session Layer"], "answer": 0}];
+
+        function generateQuiz() {
+            if (!quizQuestions || quizQuestions.length === 0) return;
+            const q = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            const container = document.getElementById('quizContainer');
+            if(!container) return;
+            
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-lg font-medium">${q.q}</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="checkAnswer(${i}, ${q.answer}, this)" class="text-left px-4 py-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:border-slate-800 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quizFeedback" class="mt-4 p-3 rounded-lg hidden font-medium text-center"></div>
+                    <div class="flex justify-end mt-4">
+                        <button onclick="generateQuiz()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm">ข้อต่อไป</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected, correct, btn) {
+            const feedback = document.getElementById('quizFeedback');
+            const buttons = btn.parentElement.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedback.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-emerald-100', 'text-emerald-700');
+            
+            if (selected === correct) {
+                btn.classList.add('bg-emerald-100', 'dark:bg-emerald-900/30', 'border-emerald-500');
+                feedback.classList.add('bg-emerald-100', 'text-emerald-700', 'dark:bg-emerald-900/30', 'dark:text-emerald-400');
+                feedback.innerHTML = '<i class="fas fa-check-circle mr-2"></i> ถูกต้อง!';
+                quizScore++;
+                document.getElementById('scoreDisplay').textContent = `คะแนน: ${quizScore}`;
+            } else {
+                btn.classList.add('bg-red-100', 'dark:bg-red-900/30', 'border-red-500');
+                buttons[correct].classList.add('bg-emerald-100', 'dark:bg-emerald-900/30', 'border-emerald-500');
+                feedback.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+                feedback.innerHTML = '<i class="fas fa-times-circle mr-2"></i> ผิดครับ';
+            }
+        }
+        
+        setTimeout(generateQuiz, 500);
+</script>
+    </body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01 เลขมายา & โรมัน - COM-SCI Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'Sarabun', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Sarabun', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+        .glass-panel { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+
+        /* Mayan Glyph Styles */
+        .mayan-tier { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 12px; border-radius: 12px; min-width: 80px; }
+        .mayan-dot { width: 14px; height: 14px; border-radius: 50%; background: #d97706; }
+        .mayan-bar { width: 48px; height: 10px; border-radius: 4px; background: #d97706; }
+        .mayan-shell { width: 28px; height: 28px; border-radius: 50%; border: 3px solid #d97706; position: relative; }
+        .mayan-shell::after { content: ''; position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: #d97706; transform: translate(-50%, -50%); }
+        .dark .mayan-dot { background: #fbbf24; }
+        .dark .mayan-bar { background: #fbbf24; }
+        .dark .mayan-shell { border-color: #fbbf24; }
+        .dark .mayan-shell::after { background: #fbbf24; }
+
+        .challenge-correct { animation: pulse-green 0.5s ease; }
+        .challenge-wrong { animation: shake 0.4s ease; }
+        @keyframes pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0.3); } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Sidebar injected via JS -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <!-- Main Content Area -->
+    <main class=" min-h-screen flex flex-col transition-all duration-300">
+
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+            <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+        </header>
+
+        <!-- Content -->
+        <div class="flex-grow p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto space-y-6">
+
+
+            <!-- ===== SECTION 1+2: ทฤษฎี + ตารางอ้างอิง (2 คอลัมน์) ===== -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <!-- LEFT: ทฤษฎี -->
+                    <div class="p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
+                        <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-3">📚 ทฤษฎี: ระบบตัวเลขโบราณ</h3>
+                        <div class="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            <p><strong class="text-blue-700 dark:text-blue-400">ระบบเลขมายา (Mayan)</strong> — ฐาน 20 สัญลักษณ์ 3 แบบ:</p>
+                            <div class="flex items-center gap-6 pl-4 flex-wrap">
+                                <div class="flex items-center gap-2"><div class="mayan-shell" style="width:20px;height:20px;border-width:2px;"></div><span>= 0</span></div>
+                                <div class="flex items-center gap-2"><div class="mayan-dot" style="width:12px;height:12px;"></div><span>= 1</span></div>
+                                <div class="flex items-center gap-2"><div class="mayan-bar" style="width:32px;height:8px;"></div><span>= 5</span></div>
+                            </div>
+                            <p>เขียนเป็นชั้นๆ จากล่างขึ้นบน แต่ละชั้น ×20<br>(ชั้น 1=×1, ชั้น 2=×20, ชั้น 3=×400, ชั้น 4=×8000)</p>
+                            <hr class="border-blue-200 dark:border-blue-700">
+                            <p><strong class="text-blue-700 dark:text-blue-400">ระบบเลขโรมัน (Roman)</strong> — ตัวอักษร 7 ตัว ตามกฎ:</p>
+                            <p class="pl-4">• ตัวเล็กอยู่หน้าตัวใหญ่ = <strong>ลบ</strong> (IV = 5-1 = 4)<br>• ตัวเล็กอยู่หลังตัวใหญ่ = <strong>บวก</strong> (VI = 5+1 = 6)</p>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: ตารางอ้างอิง -->
+                    <div class="space-y-4">
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">📊 ตารางอ้างอิงเลขโรมัน</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-center">
+                                <thead>
+                                    <tr class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800">
+                                        <th class="px-3 py-2 rounded-tl-xl font-bold text-slate-700 dark:text-slate-300">สัญลักษณ์</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">I</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">V</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">X</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">L</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">C</th>
+                                        <th class="px-3 py-2 font-bold text-slate-700 dark:text-slate-300">D</th>
+                                        <th class="px-3 py-2 rounded-tr-xl font-bold text-slate-700 dark:text-slate-300">M</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-t border-slate-200 dark:border-slate-700">
+                                        <td class="px-3 py-2 font-bold text-slate-600 dark:text-slate-400">ค่า</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">1</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">5</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">10</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">50</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">100</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">500</td>
+                                        <td class="px-3 py-2 font-mono font-bold text-teal-700 dark:text-teal-400">1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">IV</span> = <span class="text-slate-700 dark:text-slate-300">4 (5-1)</span>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">IX</span> = <span class="text-slate-700 dark:text-slate-300">9 (10-1)</span>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">XL</span> = <span class="text-slate-700 dark:text-slate-300">40 (50-10)</span>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">XC</span> = <span class="text-slate-700 dark:text-slate-300">90 (100-10)</span>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">CD</span> = <span class="text-slate-700 dark:text-slate-300">400 (500-100)</span>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800 text-center">
+                                <span class="font-bold text-amber-700 dark:text-amber-400">CM</span> = <span class="text-slate-700 dark:text-slate-300">900 (1000-100)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===== SECTION 3: เครื่องมือแปลงเลข (อัปเกรด) ===== -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg">🏛️</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 dark:text-white text-lg">ห้องทดลองเลขมายา & เลขโรมัน</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5">แปลงได้ทั้งสองทิศทาง พร้อมแสดงสัญลักษณ์กราฟิก</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Mayan Panel -->
+                    <div class="space-y-4 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <h4 class="text-sm font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">🔶 ระบบเลขมายา (Mayan Base-20)</h4>
+
+                        <!-- Decimal → Mayan -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 block">ฐานสิบ → มายา</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="mayanInput" value="5125" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm font-mono text-amber-700 dark:text-amber-300 w-full text-center" placeholder="ป้อนเลขฐานสิบ">
+                                <button onclick="calcMayanNumber()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-sm shrink-0 transition-colors">แปลง</button>
+                            </div>
+                        </div>
+
+                        <!-- Mayan Glyph Visual Output -->
+                        <div id="mayanGlyphOutput" class="flex justify-center gap-3 flex-wrap py-3"></div>
+
+                        <!-- Text Output -->
+                        <div id="mayanOutput" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm space-y-1 min-h-[60px]"></div>
+                    </div>
+
+                    <!-- Roman Panel -->
+                    <div class="space-y-4 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <h4 class="text-sm font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider">🔷 ระบบเลขโรมัน (Roman Numerals)</h4>
+
+                        <!-- Roman → Decimal -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 block">โรมัน → ฐานสิบ</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="romanInput" value="MMCMLXIX" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm font-mono text-teal-700 dark:text-teal-300 w-full text-center uppercase" placeholder="เช่น MMXXIV">
+                                <button onclick="calcRomanNumber()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg text-sm shrink-0 transition-colors">แปลง</button>
+                            </div>
+                        </div>
+                        <div id="romanOutput" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm space-y-1 min-h-[60px]"></div>
+
+                        <!-- Decimal → Roman (REVERSE) -->
+                        <div class="pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 block">ฐานสิบ → โรมัน</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="romanReverseInput" value="2024" min="1" max="3999" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm font-mono text-teal-700 dark:text-teal-300 w-full text-center" placeholder="1-3999">
+                                <button onclick="convertDecimalToRoman()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-sm shrink-0 transition-colors">แปลง</button>
+                            </div>
+                        </div>
+                        <div id="romanReverseOutput" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm space-y-1 min-h-[60px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 4: โจทย์ท้าทาย ===== -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">🧩 โจทย์ท้าทาย — ลองตอบดู!</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-5">ระบบจะสุ่มโจทย์เลขโรมันหรือเลขมายาให้ แล้วคุณต้องตอบค่าฐานสิบให้ถูกต้อง</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                    <button onclick="generateChallenge('roman')" class="px-4 py-3 bg-teal-50 dark:bg-teal-900/20 hover:bg-teal-100 dark:hover:bg-teal-900/40 border border-teal-200 dark:border-teal-700 rounded-2xl text-teal-700 dark:text-teal-300 font-bold text-sm transition-colors">🎲 สุ่มโจทย์เลขโรมัน</button>
+                    <button onclick="generateChallenge('mayan')" class="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-200 dark:border-amber-700 rounded-2xl text-amber-700 dark:text-amber-400 font-bold text-sm transition-colors">🎲 สุ่มโจทย์เลขมายา</button>
+                </div>
+
+                <div id="challenge-area" class="hidden">
+                    <div id="challenge-question" class="text-center p-6 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 mb-4">
+                        <!-- Question will be injected here -->
+                    </div>
+                    <div class="flex gap-3 items-center justify-center">
+                        <input type="number" id="challenge-answer" class="bg-white dark:bg-[#1e1f20] dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl px-4 py-3 text-lg font-mono font-bold text-center w-40 focus:border-emerald-500 focus:outline-none transition-colors" placeholder="คำตอบ">
+                        <button onclick="checkChallengeAnswer()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-colors">ตรวจคำตอบ ✓</button>
+                    </div>
+                    <div id="challenge-result" class="mt-4 text-center text-sm font-bold hidden"></div>
+                    <div id="challenge-stats" class="mt-3 text-center text-sm text-slate-500 dark:text-slate-400"></div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 5: ตัวอย่าง ===== -->
+            <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-3xl p-6 sm:p-8 border border-emerald-100 dark:border-emerald-800">
+                <h3 class="text-lg font-bold text-emerald-800 dark:text-emerald-300 mb-2">💡 ตัวอย่างการทดลอง</h3>
+                <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                    <li><strong>เลขมายา:</strong> พิมพ์ <code class="bg-emerald-100 dark:bg-emerald-800 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-200 font-mono">5125</code> จะเห็นการแบ่งชั้น ×8000, ×400, ×20, ×1 พร้อมสัญลักษณ์จุดและขีดแบบกราฟิก</li>
+                    <li><strong>เลขโรมัน:</strong> พิมพ์ <code class="bg-emerald-100 dark:bg-emerald-800 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-200 font-mono">MCMXCIX</code> จะเห็นการแจกแจง CM(900) + XC(90) + IX(9) = 999</li>
+                    <li><strong>แปลงย้อนกลับ:</strong> พิมพ์ <code class="bg-emerald-100 dark:bg-emerald-800 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-200 font-mono">2024</code> ในช่อง "ฐานสิบ → โรมัน" จะได้ MMXXIV พร้อมขั้นตอน</li>
+                    <li><strong>โจทย์ท้าทาย:</strong> กดปุ่ม 🎲 แล้วลองตอบค่าฐานสิบให้ถูก!</li>
+                </ul>
+            </div>
+
+        </div>
+        </div>
+
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+    // ===== LAB 1 ENHANCED FUNCTIONS =====
+
+    // --- Mayan Glyph Visualization ---
+    function renderMayanGlyphs(num) {
+        let rem = num;
+        const tiers = [];
+        const weights = [8000, 400, 20, 1];
+        const labels = ['×8000', '×400', '×20', '×1'];
+        for (let i = 0; i < 4; i++) {
+            tiers.push(Math.floor(rem / weights[i]));
+            rem %= weights[i];
+        }
+
+        const container = document.getElementById('mayanGlyphOutput');
+        if (!container) return;
+
+        let html = '';
+        tiers.forEach((val, idx) => {
+            const bars = Math.floor(val / 5);
+            const dots = val % 5;
+            let glyphHtml = '';
+
+            if (val === 0) {
+                glyphHtml = '<div class="mayan-shell"></div>';
+            } else {
+                // Dots on top
+                if (dots > 0) {
+                    glyphHtml += '<div class="flex gap-1 justify-center">';
+                    for (let d = 0; d < dots; d++) glyphHtml += '<div class="mayan-dot"></div>';
+                    glyphHtml += '</div>';
+                }
+                // Bars below
+                for (let b = 0; b < bars; b++) {
+                    glyphHtml += '<div class="mayan-bar"></div>';
+                }
+            }
+
+            html += `
+                <div class="mayan-tier bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+                    ${glyphHtml}
+                    <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mt-1">${val}</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400">${labels[idx]}</div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = '<div class="text-sm font-bold text-slate-600 dark:text-slate-400 w-full text-center mb-1">อ่านจากบนลงล่าง ↓</div><div class="flex justify-center gap-3 flex-wrap">' + html + '</div>';
+    }
+
+    // Override calcMayanNumber to also render glyphs
+    const _origCalcMayan = (typeof calcMayanNumber === 'function') ? calcMayanNumber : null;
+    calcMayanNumber = function() {
+        if (_origCalcMayan) _origCalcMayan();
+        const num = parseInt(document.getElementById('mayanInput').value) || 0;
+        renderMayanGlyphs(num);
+    };
+
+    // --- Decimal → Roman Converter (Reverse) ---
+    function convertDecimalToRoman() {
+        const num = parseInt(document.getElementById('romanReverseInput').value) || 0;
+        if (num < 1 || num > 3999) {
+            document.getElementById('romanReverseOutput').innerHTML = '<p class="text-rose-600 dark:text-rose-400 font-bold">⚠️ กรุณาป้อนค่า 1 - 3999</p>';
+            return;
+        }
+
+        const romanPairs = [
+            [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+            [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
+            [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+        ];
+
+        let remaining = num;
+        let result = '';
+        let steps = [];
+
+        for (const [value, symbol] of romanPairs) {
+            while (remaining >= value) {
+                result += symbol;
+                remaining -= value;
+                steps.push(`${symbol}(${value})`);
+            }
+        }
+
+        document.getElementById('romanReverseOutput').innerHTML = `
+            <div class="space-y-2 font-mono">
+                <p class="text-indigo-700 dark:text-indigo-400 font-bold">ขั้นตอนการแปลง ${num}₁₀ → เลขโรมัน:</p>
+                <p class="text-slate-700 dark:text-slate-300">• ลำดับ: ${steps.join(' + ')}</p>
+                <p class="pt-1 text-emerald-700 dark:text-emerald-400 font-bold text-lg">🎯 ผลลัพธ์ = <span class="text-xl font-black">${result}</span></p>
+            </div>
+        `;
+    }
+
+    // --- Challenge System ---
+    let challengeAnswer = 0;
+    let challengeCorrect = 0;
+    let challengeTotal = 0;
+
+    function generateChallenge(type) {
+        const area = document.getElementById('challenge-area');
+        const qBox = document.getElementById('challenge-question');
+        const resultBox = document.getElementById('challenge-result');
+        const answerInput = document.getElementById('challenge-answer');
+        area.classList.remove('hidden');
+        resultBox.classList.add('hidden');
+        answerInput.value = '';
+        
+
+        if (type === 'roman') {
+            const romanPairs = [
+                [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+                [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
+                [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+            ];
+            const target = Math.floor(Math.random() * 3999) + 1;
+            let remaining = target;
+            let romanStr = '';
+            for (const [value, symbol] of romanPairs) {
+                while (remaining >= value) { romanStr += symbol; remaining -= value; }
+            }
+            challengeAnswer = target;
+            qBox.innerHTML = `
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">เลขโรมันต่อไปนี้มีค่าเท่าไร?</p>
+                <p class="text-4xl font-black text-teal-700 dark:text-teal-300 font-mono tracking-wider">${romanStr}</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">พิมพ์คำตอบเป็นเลขฐานสิบ</p>
+            `;
+        } else {
+            const target = Math.floor(Math.random() * 7999) + 1;
+            challengeAnswer = target;
+            let rem = target;
+            const w = [8000, 400, 20, 1];
+            const tiers = [];
+            for (let i = 0; i < 4; i++) { tiers.push(Math.floor(rem / w[i])); rem %= w[i]; }
+
+            let glyphHtml = '';
+            const labels = ['×8000', '×400', '×20', '×1'];
+            tiers.forEach((val, idx) => {
+                const bars = Math.floor(val / 5);
+                const dots = val % 5;
+                let g = '';
+                if (val === 0) { g = '<div class="mayan-shell"></div>'; }
+                else {
+                    if (dots > 0) { g += '<div class="flex gap-1 justify-center">'; for (let d = 0; d < dots; d++) g += '<div class="mayan-dot"></div>'; g += '</div>'; }
+                    for (let b = 0; b < bars; b++) g += '<div class="mayan-bar"></div>';
+                }
+                glyphHtml += `<div class="mayan-tier bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">${g}<div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${labels[idx]}</div></div>`;
+            });
+
+            qBox.innerHTML = `
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">เลขมายาต่อไปนี้มีค่าฐานสิบเท่าไร?</p>
+                <div class="flex justify-center gap-3 flex-wrap">${glyphHtml}</div>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">พิมพ์คำตอบเป็นเลขฐานสิบ</p>
+            `;
+        }
+    }
+
+    function checkChallengeAnswer() {
+        const userAnswer = parseInt(document.getElementById('challenge-answer').value);
+        const resultBox = document.getElementById('challenge-result');
+        const answerInput = document.getElementById('challenge-answer');
+        resultBox.classList.remove('hidden');
+        challengeTotal++;
+
+        if (userAnswer === challengeAnswer) {
+            challengeCorrect++;
+            resultBox.className = 'mt-4 text-center text-sm font-bold text-emerald-700 dark:text-emerald-400';
+            resultBox.innerHTML = `✅ ถูกต้อง! คำตอบคือ ${challengeAnswer}`;
+            answerInput.classList.add('challenge-correct');
+            setTimeout(() => answerInput.classList.remove('challenge-correct'), 600);
+        } else {
+            resultBox.className = 'mt-4 text-center text-sm font-bold text-rose-700 dark:text-rose-400';
+            resultBox.innerHTML = `❌ ไม่ถูก! คำตอบที่ถูกต้องคือ <span class="text-lg">${challengeAnswer}</span>`;
+            answerInput.classList.add('challenge-wrong');
+            setTimeout(() => answerInput.classList.remove('challenge-wrong'), 500);
+        }
+
+        document.getElementById('challenge-stats').innerHTML = `สถิติ: ถูก ${challengeCorrect} / ${challengeTotal} ข้อ (${Math.round(challengeCorrect/challengeTotal*100)}%)`;
+    }
+
+    // Allow Enter key to submit
+    document.getElementById('challenge-answer')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') checkChallengeAnswer();
+    });
+
+    // Run initial calculations
+    document.addEventListener('DOMContentLoaded', () => {
+        try { calcMayanNumber(); } catch(e){}
+        try { calcRomanNumber(); } catch(e){}
+        try { convertDecimalToRoman(); } catch(e){}
+    });
+    </script>
+</body>
+</html>

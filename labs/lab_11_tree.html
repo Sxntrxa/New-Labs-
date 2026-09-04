@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 11: Binary Search Tree - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#131314',
+                            card: '#1e1e20',
+                            border: '#333336',
+                            text: '#e3e3e3',
+                            muted: '#8e8e93'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 dark:text-dark-text transition-colors duration-200">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+
+        <div class="max-w-7xl mx-auto space-y-8">
+            <!-- Header -->
+            <header class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2">Lab 11: ต้นไม้ค้นหาแบบทวิภาค (Binary Search Tree)</h1>
+                    <p class="text-slate-600 dark:text-slate-400 dark:text-dark-muted text-lg">เรียนรู้โครงสร้างข้อมูลแบบต้นไม้และการค้นหาข้อมูล</p>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Theory Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-dark-card rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-dark-border shadow-sm">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-book text-blue-500"></i> ทฤษฎี (Theory)
+                    </h2>
+                    <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 dark:text-dark-text">
+                        <p class="mb-4"><strong>Binary Search Tree (BST)</strong> คือโครงสร้างข้อมูลแบบต้นไม้ (Tree) ที่มีกฎเกณฑ์พิเศษในการจัดเก็บข้อมูล:</p>
+                        <ul class="list-disc pl-5 mb-4 space-y-2">
+                            <li><strong>โหนดราก (Root):</strong> โหนดบนสุดของต้นไม้</li>
+                            <li><strong>ลูกซ้าย (Left Child):</strong> โหนดทุกตัวในกิ่งซ้ายต้องมีค่าน้อยกว่าโหนดพ่อแม่ (Left &lt; Root)</li>
+                            <li><strong>ลูกขวา (Right Child):</strong> โหนดทุกตัวในกิ่งขวาต้องมีค่ามากกว่าโหนดพ่อแม่ (Right &gt; Root)</li>
+                        </ul>
+                        <p class="mb-4">โครงสร้างนี้ช่วยให้การค้นหา (Search), การแทรก (Insert), และการลบ (Delete) ข้อมูลมีประสิทธิภาพมากขึ้น โดยเฉลี่ยใช้เวลา O(log n)</p>
+                        <div class="bg-slate-50 dark:bg-[#131314] dark:bg-[#1a1a1c] p-4 rounded-lg border border-slate-200 dark:border-slate-700 dark:border-dark-border">
+                            <h3 class="font-bold mb-2">ตัวอย่างกฎการแทรกข้อมูล</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>เริ่มจากโหนดรากเสมอ</li>
+                                <li>ถ้าค่าน้อยกว่า ให้ไปทางซ้าย</li>
+                                <li>ถ้าค่ามากกว่า ให้ไปทางขวา</li>
+                                <li>ทำซ้ำจนกว่าจะเจอตำแหน่งที่ว่าง (null) แล้วจึงแทรกโหนดใหม่</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulator Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-dark-card rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-dark-border shadow-sm">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-desktop text-purple-500"></i> ซิมูเลเตอร์ (Simulator)
+                    </h2>
+                    
+                    <div class="relative w-full h-[400px] bg-slate-50 dark:bg-[#131314] dark:bg-[#1a1a1c] border border-slate-200 dark:border-slate-700 dark:border-dark-border rounded-lg overflow-hidden flex justify-center items-start pt-8" id="canvasContainer">
+                        <svg id="bstCanvas" width="100%" height="100%" class="absolute top-0 left-0"></svg>
+                        <div id="nodesContainer" class="absolute top-0 left-0 w-full h-full pointer-events-none"></div>
+                    </div>
+
+                    <div class="flex gap-2 mt-4 justify-center flex-wrap">
+                        <button onclick="startTraversal('pre')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors shadow-sm text-sm font-medium">Pre-order (MLR)</button>
+                        <button onclick="startTraversal('in')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors shadow-sm text-sm font-medium">In-order (LMR)</button>
+                        <button onclick="startTraversal('post')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors shadow-sm text-sm font-medium">Post-order (LRM)</button>
+                    </div>
+                    <div id="traversalResult" class="mt-4 text-center min-h-[32px] text-base font-bold text-emerald-600 dark:text-emerald-400"></div>
+                    <div id="bstMessage" class="mt-4 text-center min-h-[24px] text-sm text-slate-600 dark:text-slate-400 dark:text-dark-muted font-medium"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-dark-card rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-dark-border shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-question-circle text-green-500"></i> แบบทดสอบ (Quiz)
+                    </h2>
+                    <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium" id="scoreDisplay">คะแนน: 0</span>
+                </div>
+                
+                <div id="quizContainer" class="max-w-2xl mx-auto">
+                    <!-- Quiz content will be generated here -->
+                </div>
+            </div>
+        </div>
+        </div>
+</main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        
+        function buildStaticTree() {
+            root = new Node(50);
+            root.left = new Node(30);
+            root.right = new Node(70);
+            root.left.left = new Node(20);
+            root.left.right = new Node(40);
+            root.right.left = new Node(60);
+            root.right.right = new Node(80);
+            
+            updateDimensions();
+            updateNodePositions(root, containerWidth / 2, startY, 0);
+            drawLines();
+            renderNodes();
+            showMessage('สร้างต้นไม้เริ่มต้นสำเร็จ');
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(buildStaticTree, 100);
+        });
+        window.addEventListener('resize', () => {
+            if (isAnimating) { pendingResize = true; return; }
+            if(root) {
+                updateDimensions();
+                updateNodePositions(root, containerWidth / 2, startY, 0);
+                drawLines();
+                renderNodes();
+            }
+        });
+
+        class Node {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.x = 0;
+                this.y = 0;
+            }
+        }
+
+        let root = null;
+        let containerWidth = 0;
+        const startY = 40;
+        const levelHeight = 70;
+        let isAnimating = false;
+        let pendingResize = false;
+
+        function updateDimensions() {
+            const container = document.getElementById('canvasContainer');
+            if(container) {
+                containerWidth = container.clientWidth;
+            }
+        }
+
+        function drawLines() {
+            const svg = document.getElementById('bstCanvas');
+            svg.innerHTML = '';
+            
+            function traverseAndDraw(node) {
+                if (node.left) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', node.x);
+                    line.setAttribute('y1', node.y);
+                    line.setAttribute('x2', node.left.x);
+                    line.setAttribute('y2', node.left.y);
+                    line.setAttribute('stroke', '#94a3b8');
+                    line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                    traverseAndDraw(node.left);
+                }
+                if (node.right) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', node.x);
+                    line.setAttribute('y1', node.y);
+                    line.setAttribute('x2', node.right.x);
+                    line.setAttribute('y2', node.right.y);
+                    line.setAttribute('stroke', '#94a3b8');
+                    line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                    traverseAndDraw(node.right);
+                }
+            }
+            if (root) traverseAndDraw(root);
+        }
+
+        function createNodeElement(value) {
+            const div = document.createElement('div');
+            div.id = 'node-' + value;
+            div.className = 'bst-node absolute w-10 h-10 -ml-5 -mt-5 bg-white dark:bg-dark-card border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-slate-800 dark:text-white shadow-md transition-all duration-300';
+            div.textContent = value;
+            return div;
+        }
+
+        function updateNodePositions(node, x, y, level) {
+            if (!node) return;
+            node.x = x;
+            node.y = y;
+            const offset = containerWidth / Math.pow(2, level + 2);
+            updateNodePositions(node.left, x - offset, y + levelHeight, level + 1);
+            updateNodePositions(node.right, x + offset, y + levelHeight, level + 1);
+        }
+
+        function renderNodes() {
+            const container = document.getElementById('nodesContainer');
+            container.innerHTML = '';
+            
+            function traverseAndRender(node) {
+                if (!node) return;
+                const el = createNodeElement(node.value);
+                el.style.left = node.x + 'px';
+                el.style.top = node.y + 'px';
+                container.appendChild(el);
+                
+                traverseAndRender(node.left);
+                traverseAndRender(node.right);
+            }
+            if (root) traverseAndRender(root);
+        }
+
+        function buildStaticTree() {
+            root = new Node(50);
+            root.left = new Node(30);
+            root.right = new Node(70);
+            root.left.left = new Node(20);
+            root.left.right = new Node(40);
+            root.right.left = new Node(60);
+            root.right.right = new Node(80);
+            
+            updateDimensions();
+            updateNodePositions(root, containerWidth / 2, startY, 0);
+            drawLines();
+            renderNodes();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(buildStaticTree, 100);
+        });
+        window.addEventListener('resize', () => {
+            if (isAnimating) { pendingResize = true; return; }
+            if(root) {
+                updateDimensions();
+                updateNodePositions(root, containerWidth / 2, startY, 0);
+                drawLines();
+                renderNodes();
+            }
+        });
+
+        // --- Traversal Logic ---
+        let traversalResultArray = [];
+        
+        async function startTraversal(type) {
+            if (isAnimating) return;
+            isAnimating = true;
+            traversalResultArray = [];
+            document.getElementById('traversalResult').innerHTML = "กำลังอ่านค่า... (Traversing...)";
+            
+            // Reset all colors
+            const allNodes = document.querySelectorAll('.bst-node');
+            allNodes.forEach(el => { 
+                el.className = 'bst-node absolute w-10 h-10 -ml-5 -mt-5 bg-white dark:bg-dark-card border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-slate-800 dark:text-white shadow-md transition-all duration-300';
+            });
+            
+            if (type === 'pre') await traversePreOrder(root);
+            if (type === 'in') await traverseInOrder(root);
+            if (type === 'post') await traversePostOrder(root);
+            
+            document.getElementById('traversalResult').innerHTML = "ผลลัพธ์: <span class='text-emerald-600 dark:text-emerald-400 font-bold'>" + traversalResultArray.join(" &rarr; ") + "</span>";
+            isAnimating = false;
+                        if (pendingResize) {
+                            pendingResize = false;
+                            updateDimensions();
+                            updateNodePositions(root, containerWidth / 2, startY, 0);
+                            drawLines();
+                            renderNodes();
+                        }
+        }
+
+        async function highlightNode(node) {
+            const el = document.getElementById(`node-${node.value}`);
+            if(el) {
+                // Highlight yellow
+                el.className = 'bst-node absolute w-10 h-10 -ml-5 -mt-5 bg-yellow-500 border-2 border-yellow-600 rounded-full flex items-center justify-center font-bold text-white shadow-lg transition-all duration-300 scale-125 z-10';
+                
+                await new Promise(r => setTimeout(r, 600));
+                
+                // Highlight green
+                el.className = 'bst-node absolute w-10 h-10 -ml-5 -mt-5 bg-green-500 border-2 border-green-600 rounded-full flex items-center justify-center font-bold text-white shadow-md transition-all duration-300 z-0';
+                
+                traversalResultArray.push(node.value);
+                document.getElementById('traversalResult').innerHTML = "กำลังอ่านค่า... " + traversalResultArray.join(" &rarr; ");
+            }
+        }
+
+        async function traversePreOrder(node) {
+            if (!node) return;
+            await highlightNode(node); // Middle
+            await traversePreOrder(node.left); // Left
+            await traversePreOrder(node.right); // Right
+        }
+
+        async function traverseInOrder(node) {
+            if (!node) return;
+            await traverseInOrder(node.left); // Left
+            await highlightNode(node); // Middle
+            await traverseInOrder(node.right); // Right
+        }
+
+        async function traversePostOrder(node) {
+            if (!node) return;
+            await traversePostOrder(node.left); // Left
+            await traversePostOrder(node.right); // Right
+            await highlightNode(node); // Middle
+        }
+
+        // --- Quiz Logic ---
+        let score = 0;
+        function generateQuiz() {
+            const questions = [
+                { q: "ในการท่องต้นไม้แบบ In-order (LMR) ของต้นไม้ที่ถูกต้อง ผลลัพธ์ที่ได้จะเป็นอย่างไร?", options: ["เรียงจากน้อยไปมาก", "เรียงจากมากไปน้อย", "ไม่มีลำดับที่แน่นอน"], answer: 0 },
+                { q: "ถ้าโหนดรากมีค่า 50 โหนดทางซ้ายจะต้องมีค่าอย่างไร?", options: ["มากกว่า 50", "น้อยกว่า 50", "เท่ากับ 50"], answer: 1 },
+                { q: "การท่องแบบใดที่อ่านโหนดราก (Root) เป็นลำดับสุดท้าย?", options: ["Pre-order", "In-order", "Post-order"], answer: 2 }
+            ];
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-lg font-medium">${q.q}</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="checkAnswer(${i}, ${q.answer}, this)" class="text-left px-4 py-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quizFeedback" class="mt-4 p-3 rounded-lg hidden font-medium text-center"></div>
+                    <div class="flex justify-end mt-4">
+                        <button onclick="generateQuiz()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm">ข้อต่อไป</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected, correct, btn) {
+            const feedback = document.getElementById('quizFeedback');
+            const buttons = btn.parentElement.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedback.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            
+            if (selected === correct) {
+                btn.classList.add('bg-green-100', 'dark:bg-green-900/30', 'border-green-500');
+                feedback.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+                feedback.innerHTML = '<i class="fas fa-check-circle mr-2"></i> ถูกต้อง!';
+                score++;
+                document.getElementById('scoreDisplay').textContent = `คะแนน: ${score}`;
+            } else {
+                btn.classList.add('bg-red-100', 'dark:bg-red-900/30', 'border-red-500');
+                buttons[correct].classList.add('bg-green-100', 'dark:bg-green-900/30', 'border-green-500');
+                feedback.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+                feedback.innerHTML = '<i class="fas fa-times-circle mr-2"></i> ผิดครับ';
+            }
+        }
+
+        generateQuiz();
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 2: ระบบเลขฐาน (Base Converter) - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f0f11',
+                            card: '#131314',
+                            border: '#333333'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .digit-box {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem;
+            height: 3rem;
+            margin: 0 0.2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            color: #1e293b;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .dark .digit-box {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .math-step {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] bg-slate-50 dark:bg-[#131314] dark:bg-dark-bg text-slate-800 dark:text-slate-200 dark:text-gray-200 transition-colors duration-200 min-h-screen flex">
+
+    <!-- Sidebar placeholder (handled by sidebar.js) -->
+    
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <div class=" flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300">
+        <!-- Header -->
+        <header class="bg-white dark:bg-[#1e1f20] dark:bg-dark-card border-b border-slate-200 dark:border-slate-700 dark:border-dark-border py-4 px-6 flex justify-between items-center z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn" onclick="toggleSidebar()" class=" text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:text-slate-400 dark:hover:text-slate-200">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-xl font-semibold text-slate-800 dark:text-slate-200 dark:text-white">Lab 2: ระบบเลขฐาน (Number Systems)</h1>
+            </div>
+            
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 pb-12">
+
+                <!-- ===== SECTION 1: ทฤษฎี + ตารางอ้างอิง ===== -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        
+                        <!-- LEFT: ทฤษฎีระบบเลขฐาน -->
+                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 flex flex-col justify-center">
+                            <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4 flex items-center"><i class="fas fa-book-open mr-3 text-2xl"></i>ทฤษฎีระบบเลขฐาน</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">ฐาน 10 (Decimal)</h4>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">ตัวเลขในชีวิตประจำวัน</p>
+                                    </div>
+                                    <div><span class="px-2 py-0.5 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded text-xs font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">0-9</span></div>
+                                </div>
+                                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">ฐาน 2 (Binary)</h4>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">คอมพิวเตอร์ (เปิด/ปิด)</p>
+                                    </div>
+                                    <div><span class="px-2 py-0.5 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded text-xs font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">0, 1</span></div>
+                                </div>
+                                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">ฐาน 8 (Octal)</h4>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">จัดกลุ่มฐานสองทีละ 3 บิต</p>
+                                    </div>
+                                    <div><span class="px-2 py-0.5 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded text-xs font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">0-7</span></div>
+                                </div>
+                                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">ฐาน 16 (Hexadecimal)</h4>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">จัดกลุ่มฐานสองทีละ 4 บิต</p>
+                                    </div>
+                                    <div><span class="px-2 py-0.5 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded text-xs font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">0-9, A-F</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT: ตารางอ้างอิง -->
+                        <div class="space-y-4">
+                            <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">📊 ตารางอ้างอิงเลขฐาน (0-15)</h3>
+                            <div class="overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800" style="max-height: 270px;">
+                                <table class="w-full text-center text-sm relative">
+                                    <thead class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 font-semibold sticky top-0 shadow-sm backdrop-blur-md">
+                                        <tr>
+                                            <th class="p-2 border-b border-slate-200 dark:border-slate-700">ฐาน 10</th>
+                                            <th class="p-2 border-b border-slate-200 dark:border-slate-700">ฐาน 2</th>
+                                            <th class="p-2 border-b border-slate-200 dark:border-slate-700">ฐาน 8</th>
+                                            <th class="p-2 border-b border-slate-200 dark:border-slate-700">ฐาน 16</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono">
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">0</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0000</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">0</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">0</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">1</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0001</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">1</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">1</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">2</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0010</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">2</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">2</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">3</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0011</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">3</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">3</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">4</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0100</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">4</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">4</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">5</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0101</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">5</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">5</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">6</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0110</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">6</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">6</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">7</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">0111</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">7</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">7</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">8</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1000</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">10</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">8</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">9</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1001</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">11</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">9</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">10</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1010</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">12</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">A</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">11</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1011</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">13</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">B</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">12</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1100</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">14</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">C</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">13</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1101</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">15</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">D</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-[#1e1f20] dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">14</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1110</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">16</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">E</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                            <td class="p-1.5 font-semibold text-slate-800 dark:text-slate-200">15</td>
+                                            <td class="p-1.5 text-blue-600 dark:text-blue-400">1111</td>
+                                            <td class="p-1.5 text-emerald-600 dark:text-emerald-400">17</td>
+                                            <td class="p-1.5 text-purple-600 dark:text-purple-400">F</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION 2: เครื่องมือจำลอง (2 คอลัมน์) ===== -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    
+                    <!-- LEFT: ตัวนับเลข + โหมดท้าทาย -->
+                    <div class="space-y-6 flex flex-col">
+                        <!-- Odometer -->
+                        <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                            <div class="flex items-center justify-between mb-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-lg">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-200 dark:text-white text-lg">หน้าปัดทดเลข</h3>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="updateCounter(-1)" class="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 dark:text-white rounded-lg transition-colors font-bold text-lg">-</button>
+                                    <button onclick="updateCounter(1)" class="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 dark:text-white rounded-lg transition-colors font-bold text-lg">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="col-span-3">
+                                    <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">ฐาน 2 (Bin)</div>
+                                    <div id="odo-bin" class="flex justify-start"></div>
+                                </div>
+                                <div class="col-span-2">
+                                    <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">ฐาน 10 (Dec)</div>
+                                    <div id="odo-dec" class="flex justify-start"></div>
+                                </div>
+                                <div class="col-span-1">
+                                    <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">ฐาน 16 (Hex)</div>
+                                    <div id="odo-hex" class="flex justify-start"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz -->
+                        <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 flex-1 flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-lg">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-200 dark:text-white text-lg">โหมดท้าทาย</h3>
+                                </div>
+                                <div class="text-sm font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">
+                                    คะแนน: <span id="quiz-score" class="text-rose-600 dark:text-rose-400 text-base">0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-4 text-center">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">จงแปลงค่าต่อไปนี้:</p>
+                                <p id="quiz-question" class="text-xl font-bold text-slate-800 dark:text-slate-200 font-mono tracking-wide">กดปุ่มเพื่อเริ่ม</p>
+                            </div>
+                            
+                            <div class="flex gap-2 relative">
+                                <input type="text" id="quiz-answer" class="w-full bg-white dark:bg-[#1e1f20] dark:bg-[#131314] border-2 border-slate-200 dark:border-slate-700 rounded-xl pl-4 pr-24 py-3 font-mono text-slate-800 dark:text-slate-200 dark:text-white focus:border-rose-500 dark:focus:border-rose-500 outline-none uppercase" placeholder="คำตอบ..." onkeypress="if(event.key==='Enter') checkAnswer()">
+                                <button onclick="checkAnswer()" class="absolute right-1.5 top-1.5 bottom-1.5 bg-rose-500 hover:bg-rose-600 text-white font-bold px-4 rounded-lg transition-colors text-sm">ตรวจ</button>
+                            </div>
+                            <div id="quiz-feedback" class="mt-2 text-center text-sm font-bold h-5 hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: เครื่องมือแปลงเลขฐาน -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 flex flex-col">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-lg bg-teal-500/15 border border-teal-500/30 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold text-lg">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-slate-200 dark:text-white text-lg">เครื่องมือแปลงเลขฐาน</h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">พิมพ์ตัวเลขลงในช่องใดก็ได้ ระบบจะแปลงค่าให้อัตโนมัติ</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div class="relative">
+                                <label class="absolute -top-2 left-3 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] px-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">ฐาน 10 (Dec)</label>
+                                <input type="number" id="dec-input" oninput="convertFrom('dec')" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-lg font-mono text-slate-800 dark:text-slate-200 dark:text-white focus:border-teal-500 dark:focus:border-teal-500 focus:ring-0 outline-none transition-colors" placeholder="0">
+                            </div>
+                            <div class="relative">
+                                <label class="absolute -top-2 left-3 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] px-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">ฐาน 2 (Bin)</label>
+                                <input type="text" id="bin-input" oninput="convertFrom('bin')" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-lg font-mono text-slate-800 dark:text-slate-200 dark:text-white focus:border-teal-500 dark:focus:border-teal-500 focus:ring-0 outline-none transition-colors" placeholder="0">
+                            </div>
+                            <div class="relative">
+                                <label class="absolute -top-2 left-3 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] px-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">ฐาน 8 (Oct)</label>
+                                <input type="number" id="oct-input" oninput="convertFrom('oct')" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-lg font-mono text-slate-800 dark:text-slate-200 dark:text-white focus:border-teal-500 dark:focus:border-teal-500 focus:ring-0 outline-none transition-colors" placeholder="0">
+                            </div>
+                            <div class="relative">
+                                <label class="absolute -top-2 left-3 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] px-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">ฐาน 16 (Hex)</label>
+                                <input type="text" id="hex-input" oninput="convertFrom('hex')" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-lg font-mono text-slate-800 dark:text-slate-200 dark:text-white focus:border-teal-500 dark:focus:border-teal-500 focus:ring-0 outline-none transition-colors uppercase" placeholder="0">
+                            </div>
+                        </div>
+
+                        <!-- Step-by-Step Box -->
+                        <div class="mt-6 flex-1 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 overflow-y-auto">
+                            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider"><i class="fas fa-list-ol mr-2"></i>วิธีทำ (Step-by-Step)</h4>
+                            <div id="steps-container" class="text-xs font-mono text-slate-600 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+                                พิมพ์ตัวเลขเพื่อดูวิธีคำนวณ...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+          </div>
+        </main>
+    </div>
+
+    <!-- Core JS -->
+    <script src="../assets/js/core.js"></script>
+    
+    <script>
+        // --- Odometer Logic ---
+        let counterValue = 0;
+
+        function updateCounterDisplay() {
+            const decStr = counterValue.toString().padStart(3, '0');
+            const hexStr = counterValue.toString(16).toUpperCase().padStart(2, '0');
+            const binStr = counterValue.toString(2).padStart(8, '0');
+
+            document.getElementById('odo-dec').innerHTML = decStr.split('').map(d => `<div class="digit-box">${d}</div>`).join('');
+            document.getElementById('odo-hex').innerHTML = hexStr.split('').map(d => `<div class="digit-box">${d}</div>`).join('');
+            document.getElementById('odo-bin').innerHTML = binStr.split('').map(d => `<div class="digit-box">${d}</div>`).join('');
+        }
+
+        function updateCounter(change) {
+            counterValue += change;
+            if (counterValue < 0) counterValue = 0;
+            if (counterValue > 255) counterValue = 255;
+            updateCounterDisplay();
+        }
+
+        // Initialize odometer
+        updateCounterDisplay();
+
+
+        // --- Converter Logic ---
+        const inputs = {
+            dec: document.getElementById('dec-input'),
+            bin: document.getElementById('bin-input'),
+            oct: document.getElementById('oct-input'),
+            hex: document.getElementById('hex-input'),
+        };
+
+        const regexes = {
+            dec: /^[0-9]*$/,
+            bin: /^[01]*$/,
+            oct: /^[0-7]*$/,
+            hex: /^[0-9a-fA-F]*$/
+        };
+
+        const baseNames = {
+            dec: "ฐาน 10 (Decimal)",
+            bin: "ฐาน 2 (Binary)",
+            oct: "ฐาน 8 (Octal)",
+            hex: "ฐาน 16 (Hexadecimal)"
+        };
+
+        const bases = { dec: 10, bin: 2, oct: 8, hex: 16 };
+
+        function convertFrom(sourceBase) {
+            let val = inputs[sourceBase].value.trim();
+            
+            // Validate input
+            if (!regexes[sourceBase].test(val)) {
+                let regex = sourceBase === 'bin' ? /[^01]/g : sourceBase === 'oct' ? /[^0-7]/g : sourceBase === 'dec' ? /[^0-9]/g : /[^0-9A-Fa-f]/g;
+                inputs[sourceBase].value = val.replace(regex, '');
+                return;
+            }
+
+            if (val === "") {
+                clearInputs();
+                document.getElementById('steps-container').classList.add('hidden');
+                return;
+            }
+
+            // Parse to decimal
+            let decValue = parseInt(val, bases[sourceBase]);
+            
+            if (isNaN(decValue)) return;
+
+            // Update other inputs
+            for (let base in inputs) {
+                if (base !== sourceBase) {
+                    inputs[base].value = decValue.toString(bases[base]).toUpperCase();
+                }
+            }
+
+            generateStepByStep(val, sourceBase, decValue);
+        }
+
+        function clearInputs() {
+            for (let base in inputs) {
+                inputs[base].value = "";
+            }
+        }
+
+        function generateStepByStep(originalStr, sourceBase, decValue) {
+            const container = document.getElementById('steps-container');
+            const content = document.getElementById('steps-container');
+            container.classList.remove('hidden');
+            
+            let html = "";
+            html += `<p class="mb-2 text-emerald-600 dark:text-emerald-400 font-semibold">การแปลงจาก ${baseNames[sourceBase]}: <span class="text-xl">${originalStr}</span></p>`;
+
+            if (sourceBase !== 'dec') {
+                // Show conversion to Decimal first
+                html += `<div class="math-step bg-white dark:bg-[#1e1f20] dark:bg-dark-card p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800 mb-4">`;
+                html += `<p class="font-bold mb-2">1. แปลงเป็นฐาน 10</p>`;
+                let baseNum = bases[sourceBase];
+                let chars = originalStr.split('').reverse();
+                let sumStr = [];
+                for(let i=chars.length-1; i>=0; i--) {
+                    let digitVal = parseInt(chars[i], baseNum);
+                    sumStr.push(`(${digitVal} &times; ${baseNum}<sup>${i}</sup>)`);
+                }
+                html += `<p>= ${sumStr.join(' + ')}</p>`;
+                
+                let valStr = [];
+                for(let i=chars.length-1; i>=0; i--) {
+                    let digitVal = parseInt(chars[i], baseNum);
+                    valStr.push(`${digitVal * Math.pow(baseNum, i)}`);
+                }
+                html += `<p>= ${valStr.join(' + ')}</p>`;
+                html += `<p class="text-emerald-600 dark:text-emerald-400 font-bold">= ${decValue} (ฐาน 10)</p>`;
+                html += `</div>`;
+            }
+
+            if (sourceBase === 'dec' || sourceBase !== 'bin') {
+                // Show conversion to Binary
+                html += `<div class="math-step bg-white dark:bg-[#1e1f20] dark:bg-dark-card p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800 mb-4">`;
+                html += `<p class="font-bold mb-2">${sourceBase==='dec'? '1': '2'}. แปลงจากฐาน 10 ไปเป็นฐาน 2 (หารสั้นด้วย 2)</p>`;
+                if (decValue === 0) {
+                    html += `<p>0 &divide; 2 = 0 เศษ 0 &rarr; 0</p>`;
+                } else {
+                    let temp = decValue;
+                    let steps = [];
+                    while(temp > 0) {
+                        let rem = temp % 2;
+                        let next = Math.floor(temp / 2);
+                        steps.push(`${temp} &divide; 2 = ${next} <span class="text-amber-600 dark:text-amber-400 font-bold ml-4">เศษ ${rem}</span>`);
+                        temp = next;
+                    }
+                    html += steps.join('<br>');
+                    html += `<p class="mt-2 text-emerald-600 dark:text-emerald-400 font-bold">อ่านเศษจากล่างขึ้นบน: ${decValue.toString(2)} (ฐาน 2)</p>`;
+                }
+                html += `</div>`;
+            }
+
+            if (sourceBase === 'dec' || sourceBase !== 'hex') {
+                 // Show conversion to Hex
+                 html += `<div class="math-step bg-white dark:bg-[#1e1f20] dark:bg-dark-card p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800">`;
+                html += `<p class="font-bold mb-2">${sourceBase==='dec'? '2': '3'}. แปลงจากฐาน 10 ไปเป็นฐาน 16 (หารสั้นด้วย 16)</p>`;
+                if (decValue === 0) {
+                    html += `<p>0 &divide; 16 = 0 เศษ 0 &rarr; 0</p>`;
+                } else {
+                    let temp = decValue;
+                    let steps = [];
+                    while(temp > 0) {
+                        let rem = temp % 16;
+                        let next = Math.floor(temp / 16);
+                        let hexChar = rem.toString(16).toUpperCase();
+                        let remDisplay = rem > 9 ? `${rem} (คือ ${hexChar})` : rem;
+                        steps.push(`${temp} &divide; 16 = ${next} <span class="text-amber-600 dark:text-amber-400 font-bold ml-4">เศษ ${remDisplay}</span>`);
+                        temp = next;
+                    }
+                    html += steps.join('<br>');
+                    html += `<p class="mt-2 text-emerald-600 dark:text-emerald-400 font-bold">อ่านเศษจากล่างขึ้นบน: ${decValue.toString(16).toUpperCase()} (ฐาน 16)</p>`;
+                }
+                html += `</div>`;
+            }
+
+            content.innerHTML = html;
+        }
+
+
+        // --- Quiz Logic ---
+        let quizScore = 0;
+        let currentQuizAnswer = "";
+        
+        const baseFormats = {
+            10: { name: "Decimal (ฐาน 10)", suffix: "₁₀" },
+            2:  { name: "Binary (ฐาน 2)", suffix: "₂" },
+            8:  { name: "Octal (ฐาน 8)", suffix: "₈" },
+            16: { name: "Hexadecimal (ฐาน 16)", suffix: "₁₆" }
+        };
+        const quizBases = [2, 8, 10, 16];
+
+        function generateQuestion() {
+            const inputEl = document.getElementById('quiz-answer');
+            const feedbackEl = document.getElementById('quiz-feedback');
+            
+            inputEl.value = "";
+            inputEl.classList.remove('border-red-500', 'border-green-500');
+            feedbackEl.classList.add('hidden');
+
+            // Pick random source and target base
+            let fromBase = quizBases[Math.floor(Math.random() * quizBases.length)];
+            let toBase;
+            do {
+                toBase = quizBases[Math.floor(Math.random() * quizBases.length)];
+            } while (toBase === fromBase);
+
+            // Generate random decimal value 1-255
+            let decVal = Math.floor(Math.random() * 255) + 1;
+            
+            let questionStr = decVal.toString(fromBase).toUpperCase();
+            currentQuizAnswer = decVal.toString(toBase).toUpperCase();
+
+            document.getElementById('quiz-question').innerHTML = 
+                `${questionStr} <span class="text-lg text-slate-500">${baseFormats[fromBase].name}</span> <br> <span class="text-xl">&rarr;</span> <br> ? <span class="text-lg text-slate-500">${baseFormats[toBase].name}</span>`;
+            
+            
+        }
+
+        function checkAnswer() {
+            const inputEl = document.getElementById('quiz-answer');
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const userAns = inputEl.value.trim().toUpperCase();
+
+            if (userAns === "") return;
+
+            feedbackEl.classList.remove('hidden', 'text-green-500', 'text-red-500');
+            inputEl.classList.remove('border-red-500', 'border-green-500');
+
+            if (userAns === currentQuizAnswer) {
+                // Correct
+                quizScore += 10;
+                document.getElementById('quiz-score').innerText = quizScore;
+                
+                feedbackEl.innerHTML = '<i class="fas fa-check-circle mr-2"></i> ถูกต้อง! เก่งมาก';
+                feedbackEl.classList.add('text-green-500');
+                inputEl.classList.add('border-green-500');
+                
+                setTimeout(() => {
+                    generateQuestion();
+                }, 1500);
+            } else {
+                // Incorrect
+                feedbackEl.innerHTML = '<i class="fas fa-times-circle mr-2"></i> ผิด ลองใหม่อีกครั้ง';
+                feedbackEl.classList.add('text-red-500');
+                inputEl.classList.add('border-red-500');
+            }
+        }
+
+        // Allow pressing Enter to check answer
+        document.getElementById('quiz-answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
+        // Init first question
+        generateQuestion();
+    </script>
+</body>
+</html>

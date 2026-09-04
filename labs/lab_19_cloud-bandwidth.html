@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 Cloud & Bandwidth - COM-SCI Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { sans: ['Inter', 'Sarabun', 'sans-serif'] } } }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Sarabun', sans-serif; }
+        .glass-panel { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+        
+        .concentric-circle { transition: all 0.3s ease; }
+        .concentric-circle:hover { stroke-width: 4; stroke: #3b82f6; cursor: pointer; fill-opacity: 0.8; }
+        .active-circle { stroke-width: 4; stroke: #2563eb; fill-opacity: 1; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+    <main class=" min-h-screen flex flex-col transition-all duration-300">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+            <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span class="font-bold">COM-SCI Labs</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+        </header>
+        <div class="flex-grow p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                <!-- Page Title -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h1 class="text-3xl font-bold mb-2">Lab 19: Cloud Computing & Bandwidth Calculator</h1>
+                    <p class="text-slate-600 dark:text-slate-400">เรียนรู้เกี่ยวกับ Cloud Computing, เครือข่าย, และการคำนวณแบนด์วิดท์</p>
+                </div>
+
+                <!-- 1. THEORY SECTION (2-column on xl) -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <!-- LEFT: Cloud Computing concepts -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                            แนวคิด Cloud Computing
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold text-blue-600 dark:text-blue-400">IaaS (Infrastructure as a Service)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">ให้บริการโครงสร้างพื้นฐาน เช่น Server, Storage, Network ตัวอย่าง: AWS EC2, Google Compute Engine</p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-emerald-600 dark:text-emerald-400">PaaS (Platform as a Service)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">ให้บริการแพลตฟอร์มสำหรับการพัฒนาแอปพลิเคชัน ตัวอย่าง: Heroku, Google App Engine</p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-purple-600 dark:text-purple-400">SaaS (Software as a Service)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">ให้บริการซอฟต์แวร์ผ่านอินเทอร์เน็ตพร้อมใช้งาน ตัวอย่าง: Google Workspace, Microsoft 365, Dropbox</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Network media types -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                            ประเภทสื่อกลางเครือข่าย (Network Media)
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg">
+                                <h3 class="font-medium text-slate-800 dark:text-slate-200">Coaxial Cable</h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">สายทองแดงแกนเดี่ยว ใช้ในระบบเคเบิลทีวีและเน็ตเวิร์กยุคเก่า</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg">
+                                <h3 class="font-medium text-slate-800 dark:text-slate-200">UTP (Unshielded Twisted Pair)</h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">สายคู่ตีเกลียว ไม่มีฉนวนหุ้ม (เช่น Cat5e, Cat6) ใช้แพร่หลายใน LAN</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg">
+                                <h3 class="font-medium text-slate-800 dark:text-slate-200">Fiber Optic</h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">สายใยแก้วนำแสง ส่งข้อมูลด้วยแสง ความเร็วสูง ระยะทางไกล</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg">
+                                <h3 class="font-medium text-slate-800 dark:text-slate-200">Wireless</h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">เครือข่ายไร้สาย ส่งข้อมูลผ่านคลื่นวิทยุ (Wi-Fi, Bluetooth, 4G/5G)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. BANDWIDTH COMPARISON TABLE -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">เปรียบเทียบแบนด์วิดท์ (Bandwidth Comparison)</h2>
+                    
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 rounded-tl-lg">ประเภท</th>
+                                    <th scope="col" class="px-4 py-3">เทคโนโลยี</th>
+                                    <th scope="col" class="px-4 py-3">ความเร็ว (Mbps)</th>
+                                    <th scope="col" class="px-4 py-3 rounded-tr-lg">ความเร็วสูงสุด</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b dark:border-slate-700">
+                                    <td class="px-4 py-3 font-medium" rowspan="4">Wired</td>
+                                    <td class="px-4 py-3">Coaxial</td>
+                                    <td class="px-4 py-3">10</td>
+                                    <td class="px-4 py-3">10 Mbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700 bg-slate-50 dark:bg-[#131314]/50 dark:bg-slate-800/20">
+                                    <td class="px-4 py-3">UTP Cat5e</td>
+                                    <td class="px-4 py-3">1,000</td>
+                                    <td class="px-4 py-3">1 Gbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700">
+                                    <td class="px-4 py-3">UTP Cat6</td>
+                                    <td class="px-4 py-3">10,000</td>
+                                    <td class="px-4 py-3">10 Gbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700 bg-slate-50 dark:bg-[#131314]/50 dark:bg-slate-800/20">
+                                    <td class="px-4 py-3">Fiber Optic</td>
+                                    <td class="px-4 py-3">100,000</td>
+                                    <td class="px-4 py-3">100 Gbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700">
+                                    <td class="px-4 py-3 font-medium" rowspan="7">Wireless</td>
+                                    <td class="px-4 py-3">Bluetooth</td>
+                                    <td class="px-4 py-3">24</td>
+                                    <td class="px-4 py-3">24 Mbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700 bg-slate-50 dark:bg-[#131314]/50 dark:bg-slate-800/20">
+                                    <td class="px-4 py-3">Wi-Fi 802.11n</td>
+                                    <td class="px-4 py-3">300</td>
+                                    <td class="px-4 py-3">300 Mbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700">
+                                    <td class="px-4 py-3">Wi-Fi 802.11ac</td>
+                                    <td class="px-4 py-3">1,000</td>
+                                    <td class="px-4 py-3">1 Gbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700 bg-slate-50 dark:bg-[#131314]/50 dark:bg-slate-800/20">
+                                    <td class="px-4 py-3">Wi-Fi 802.11ax (Wi-Fi 6)</td>
+                                    <td class="px-4 py-3">9,600</td>
+                                    <td class="px-4 py-3">9.6 Gbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700">
+                                    <td class="px-4 py-3">4G LTE</td>
+                                    <td class="px-4 py-3">100</td>
+                                    <td class="px-4 py-3">100 Mbps</td>
+                                </tr>
+                                <tr class="border-b dark:border-slate-700 bg-slate-50 dark:bg-[#131314]/50 dark:bg-slate-800/20">
+                                    <td class="px-4 py-3">5G</td>
+                                    <td class="px-4 py-3">20,000</td>
+                                    <td class="px-4 py-3">20 Gbps</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">Satellite (Advanced)</td>
+                                    <td class="px-4 py-3">2,560,000</td>
+                                    <td class="px-4 py-3">2.56 Tbps</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Visual Chart using Tailwind -->
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2">Visual Speed Comparison (Logarithmic Scale)</h3>
+                        <div class="space-y-2">
+                            <!-- Helper function to roughly generate widths -->
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Coaxial (10M)</span>
+                                <div class="w-[5%] h-4 bg-blue-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Cat5e (1G)</span>
+                                <div class="w-[20%] h-4 bg-blue-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Cat6 (10G)</span>
+                                <div class="w-[40%] h-4 bg-blue-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Fiber (100G)</span>
+                                <div class="w-[60%] h-4 bg-blue-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">5G (20G)</span>
+                                <div class="w-[45%] h-4 bg-emerald-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Wi-Fi 6 (9.6G)</span>
+                                <div class="w-[38%] h-4 bg-emerald-500 rounded-r"></div>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <span class="w-24 shrink-0 text-slate-500">Satellite (2.56T)</span>
+                                <div class="w-full h-4 bg-purple-500 rounded-r"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. FILE TRANSFER TIME CALCULATOR -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">เครื่องคำนวณเวลาการส่งไฟล์ (File Transfer Time Calculator)</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ขนาดไฟล์ (File Size)</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="fileSize" value="1" min="0" step="any" class="w-full bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-blue-500">
+                                    <select id="fileUnit" class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-blue-500">
+                                        <option value="MB">MB</option>
+                                        <option value="GB" selected>GB</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ประเภทการเชื่อมต่อ (Connection Type)</label>
+                                <select id="connType" class="w-full bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-blue-500">
+                                    <option value="10">Coaxial (10 Mbps)</option>
+                                    <option value="24">Bluetooth (24 Mbps)</option>
+                                    <option value="100">4G LTE (100 Mbps)</option>
+                                    <option value="300">Wi-Fi 802.11n (300 Mbps)</option>
+                                    <option value="1000" selected>UTP Cat5e / Wi-Fi ac (1 Gbps)</option>
+                                    <option value="9600">Wi-Fi 6 (9.6 Gbps)</option>
+                                    <option value="10000">UTP Cat6 (10 Gbps)</option>
+                                    <option value="20000">5G (20 Gbps)</option>
+                                    <option value="100000">Fiber Optic (100 Gbps)</option>
+                                </select>
+                            </div>
+                            
+                            <button onclick="calculateTransfer()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                                คำนวณ (Calculate)
+                            </button>
+                        </div>
+                        
+                        <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center text-center">
+                            <h3 class="text-sm text-slate-500 mb-2">เวลาที่ใช้โดยประมาณ</h3>
+                            <div id="resultTime" class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">8 วินาที</div>
+                            
+                            <div class="text-xs text-slate-500 mb-4 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 px-3 py-1 rounded-full">
+                                สูตร: เวลา (วินาที) = (ขนาดไฟล์ (MB) × 8) / แบนด์วิดท์ (Mbps)
+                            </div>
+                            
+                            <div class="w-full max-w-xs h-2 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 rounded-full overflow-hidden mt-2">
+                                <div id="progressBar" class="h-full bg-blue-500 w-0 rounded-full transition-all duration-1000 ease-out"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. CLOUD SERVICE COMPARISON -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 px-2">เปรียบเทียบบริการ Cloud (Cloud Service Comparison)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- IaaS -->
+                        <div class="cloud-card bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-5 rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 transition-colors cursor-pointer group" onclick="highlightCloud('iaas')">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">IaaS</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">Infrastructure as a Service</p>
+                            <p class="text-xs mb-3">ให้บริการทรัพยากรคอมพิวเตอร์พื้นฐาน เช่น เซิร์ฟเวอร์, สตอเรจ, และเครือข่าย</p>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs mb-2">
+                                <strong>Examples:</strong> AWS, Google Compute Engine, Microsoft Azure
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs">
+                                <strong>Use cases:</strong> โฮสต์เว็บไซต์, สำรองข้อมูล, จัดการเครือข่าย
+                            </div>
+                        </div>
+                        
+                        <!-- PaaS -->
+                        <div class="cloud-card bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-5 rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 transition-colors cursor-pointer group" onclick="highlightCloud('paas')">
+                            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">PaaS</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">Platform as a Service</p>
+                            <p class="text-xs mb-3">ให้บริการสภาพแวดล้อมสำหรับการพัฒนา ทดสอบ และจัดการแอปพลิเคชัน</p>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs mb-2">
+                                <strong>Examples:</strong> Heroku, Google App Engine, Vercel
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs">
+                                <strong>Use cases:</strong> พัฒนาแอปพลิเคชัน, สร้าง API
+                            </div>
+                        </div>
+
+                        <!-- SaaS -->
+                        <div class="cloud-card bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-5 rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 hover:border-purple-500 dark:hover:border-purple-500 transition-colors cursor-pointer group" onclick="highlightCloud('saas')">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">SaaS</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">Software as a Service</p>
+                            <p class="text-xs mb-3">ให้บริการแอปพลิเคชันที่พร้อมใช้งานผ่านเว็บเบราว์เซอร์ ผู้ใช้ไม่ต้องติดตั้ง</p>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs mb-2">
+                                <strong>Examples:</strong> Google Workspace, Office 365, Dropbox
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-2 rounded text-xs">
+                                <strong>Use cases:</strong> อีเมล, จัดการเอกสาร, ระบบ CRM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. NETWORK HARDWARE REFERENCE & 6. INTRANET vs EXTRANET vs INTERNET -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Hardware -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">อุปกรณ์เครือข่าย (Network Hardware)</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 rounded-lg">
+                                <div class="bg-slate-200 dark:bg-slate-700 p-2 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                                <div>
+                                    <h4 class="font-medium text-sm">NIC (Network Interface Card)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">การ์ดแลน ทำหน้าที่แปลงข้อมูลจากคอมพิวเตอร์ให้อยู่ในรูปที่ส่งผ่านสายสื่อสารได้</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 rounded-lg">
+                                <div class="bg-slate-200 dark:bg-slate-700 p-2 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg></div>
+                                <div>
+                                    <h4 class="font-medium text-sm">Hub (ฮับ)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">จุดศูนย์กลางเชื่อมต่อ รับข้อมูลแล้วส่งกระจายไปทุกพอร์ต (Broadcast) ประสิทธิภาพต่ำ</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 rounded-lg">
+                                <div class="bg-slate-200 dark:bg-slate-700 p-2 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect></svg></div>
+                                <div>
+                                    <h4 class="font-medium text-sm">Switch (สวิตช์)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">ฉลาดกว่า Hub ส่งข้อมูลเฉพาะพอร์ตปลายทาง ลดการชนกันของข้อมูล</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 rounded-lg">
+                                <div class="bg-slate-200 dark:bg-slate-700 p-2 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+                                <div>
+                                    <h4 class="font-medium text-sm">Router (เราเตอร์)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">เชื่อมต่อเครือข่ายต่างชนิดกัน (เช่น LAN กับ Internet) หาเส้นทางที่ดีที่สุด</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/30 rounded-lg">
+                                <div class="bg-slate-200 dark:bg-slate-700 p-2 rounded"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></div>
+                                <div>
+                                    <h4 class="font-medium text-sm">Bridge (บริดจ์)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">เชื่อมต่อเครือข่าย LAN 2 วงเข้าด้วยกัน กรองข้อมูลเพื่อลดทราฟฟิก</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Intranet vs Extranet -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 flex flex-col">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">เครือข่ายตามขอบเขต (Network Scope)</h2>
+                        <div class="flex-grow flex flex-col items-center justify-center gap-6">
+                            
+                            <!-- Diagram -->
+                            <div class="relative w-64 h-64 flex items-center justify-center">
+                                <svg width="256" height="256" viewBox="0 0 256 256" class="absolute z-0">
+                                    <!-- Internet -->
+                                    <circle cx="128" cy="128" r="120" fill="#e2e8f0" stroke="#cbd5e1" class="dark:fill-slate-800 dark:stroke-slate-700 concentric-circle" id="circle-internet" onclick="showScopeInfo('internet')"/>
+                                    <!-- Extranet -->
+                                    <circle cx="128" cy="128" r="80" fill="#bfdbfe" stroke="#93c5fd" class="dark:fill-blue-900/40 dark:stroke-blue-800 concentric-circle" id="circle-extranet" onclick="showScopeInfo('extranet')"/>
+                                    <!-- Intranet -->
+                                    <circle cx="128" cy="128" r="40" fill="#60a5fa" stroke="#3b82f6" class="dark:fill-blue-600/60 dark:stroke-blue-500 concentric-circle" id="circle-intranet" onclick="showScopeInfo('intranet')"/>
+                                </svg>
+                                
+                                <div class="absolute z-10 pointer-events-none text-center">
+                                    <div class="text-[10px] font-bold text-white mb-6">Intranet</div>
+                                </div>
+                                <div class="absolute z-10 pointer-events-none text-center -mt-16">
+                                    <div class="text-xs font-bold text-blue-800 dark:text-blue-300">Extranet</div>
+                                </div>
+                                <div class="absolute z-10 pointer-events-none text-center -mt-40">
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Internet</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Info Box -->
+                            <div id="scopeInfo" class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-4 rounded-xl w-full min-h-[100px] border border-slate-200 dark:border-slate-700">
+                                <p class="text-sm text-slate-500 text-center italic mt-4">คลิกที่วงกลมเพื่อดูคำอธิบายแต่ละประเภท</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            
+            <!-- Quiz Section -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm mt-6 mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-question-circle text-emerald-500"></i> แบบทดสอบ (Quiz)
+                    </h2>
+                    <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-sm font-medium" id="scoreDisplay">คะแนน: 0</span>
+                </div>
+                
+                <div id="quizContainer" class="max-w-2xl mx-auto space-y-4">
+                    <!-- Quiz content generated by JS -->
+                </div>
+            </div>
+
+</div>
+        </div>
+    </main>
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // Calculate Transfer Time
+        function calculateTransfer() {
+            const fileSize = parseFloat(document.getElementById('fileSize').value);
+            const unit = document.getElementById('fileUnit').value;
+            const bandwidthMbps = parseFloat(document.getElementById('connType').value);
+            
+            if (isNaN(fileSize) || fileSize <= 0) {
+                alert("กรุณาใส่ขนาดไฟล์ให้ถูกต้อง");
+                return;
+            }
+            
+            // Convert to MB
+            let sizeInMB = fileSize;
+            if (unit === 'GB') {
+                sizeInMB = fileSize * 1024;
+            }
+            
+            // Formula: Time (sec) = (Size (MB) * 8) / Bandwidth (Mbps)
+            const timeInSeconds = (sizeInMB * 8) / bandwidthMbps;
+            
+            let timeStr = "";
+            if (timeInSeconds < 60) {
+                timeStr = timeInSeconds.toFixed(2) + " วินาที";
+            } else if (timeInSeconds < 3600) {
+                const mins = Math.floor(timeInSeconds / 60);
+                const secs = (timeInSeconds % 60).toFixed(0);
+                timeStr = mins + " นาที " + secs + " วินาที";
+            } else {
+                const hours = Math.floor(timeInSeconds / 3600);
+                const mins = Math.floor((timeInSeconds % 3600) / 60);
+                timeStr = hours + " ชั่วโมง " + mins + " นาที";
+            }
+            
+            document.getElementById('resultTime').textContent = timeStr;
+            
+            // Animate Progress Bar
+            const bar = document.getElementById('progressBar');
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = `all ${Math.min(2000, timeInSeconds * 1000)}ms ease-out`;
+                bar.style.width = '100%';
+            }, 100);
+            
+            // Reset after animation
+            setTimeout(() => {
+                bar.style.width = '0%';
+            }, 2500);
+        }
+
+        // Run once on load
+        calculateTransfer();
+
+        // Highlight Cloud Card
+        function highlightCloud(type) {
+            const cards = document.querySelectorAll('.cloud-card');
+            cards.forEach(c => {
+                c.classList.remove('ring-2', 'ring-offset-2', 'dark:ring-offset-[#1e1e20]');
+                c.classList.remove('ring-blue-500', 'ring-emerald-500', 'ring-purple-500');
+            });
+            
+            event.currentTarget.classList.add('ring-2', 'ring-offset-2', 'dark:ring-offset-[#1e1e20]');
+            if(type === 'iaas') event.currentTarget.classList.add('ring-blue-500');
+            if(type === 'paas') event.currentTarget.classList.add('ring-emerald-500');
+            if(type === 'saas') event.currentTarget.classList.add('ring-purple-500');
+        }
+
+        // Scope Info
+        const scopeData = {
+            'internet': {
+                title: 'Internet (อินเทอร์เน็ต)',
+                desc: 'เครือข่ายสาธารณะระดับโลก ทุกคนสามารถเข้าถึงได้ เป็นเครือข่ายของเครือข่าย (Network of Networks)',
+                color: 'text-slate-700 dark:text-slate-300'
+            },
+            'extranet': {
+                title: 'Extranet (เอ็กซ์ทราเน็ต)',
+                desc: 'เครือข่ายกึ่งสาธารณะ อนุญาตให้บุคคลภายนอกบางกลุ่ม (เช่น ลูกค้า, ซัพพลายเออร์) เข้าถึงข้อมูลภายในองค์กรได้แบบมีเงื่อนไข',
+                color: 'text-blue-600 dark:text-blue-400'
+            },
+            'intranet': {
+                title: 'Intranet (อินทราเน็ต)',
+                desc: 'เครือข่ายส่วนบุคคลภายในองค์กร เฉพาะพนักงานหรือบุคคลในองค์กรเท่านั้นที่ใช้งานได้ มีความปลอดภัยสูง',
+                color: 'text-blue-700 dark:text-blue-500'
+            }
+        };
+
+        function showScopeInfo(type) {
+            // Reset active circles
+            document.querySelectorAll('.concentric-circle').forEach(c => c.classList.remove('active-circle'));
+            // Set active
+            document.getElementById('circle-' + type).classList.add('active-circle');
+            
+            const info = scopeData[type];
+            document.getElementById('scopeInfo').innerHTML = `
+                <h3 class="font-bold mb-1 ${info.color}">${info.title}</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400">${info.desc}</p>
+            `;
+        }
+    </script>
+<script>
+        // --- Quiz Logic ---
+        let quizScore = 0;
+        let quizQuestions = [{"q": "บริการ Cloud ที่ให้เช่าแค่เซิร์ฟเวอร์เปล่าๆ เรียกว่าอะไร?", "options": ["SaaS", "PaaS", "IaaS"], "answer": 2}, {"q": "Google Docs หรือ Office 365 เป็นบริการ Cloud รูปแบบใด?", "options": ["SaaS (Software as a Service)", "IaaS (Infrastructure as a Service)", "PaaS (Platform as a Service)"], "answer": 0}, {"q": "ถ้าความเร็วอินเทอร์เน็ตคือ 10 Mbps (Megabits) จะดาวน์โหลดไฟล์ขนาด 10 MB (Megabytes) ใช้เวลากี่วินาที?", "options": ["1 วินาที", "8 วินาที", "10 วินาที"], "answer": 1}];
+
+        function generateQuiz() {
+            if (!quizQuestions || quizQuestions.length === 0) return;
+            const q = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            const container = document.getElementById('quizContainer');
+            if(!container) return;
+            
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-lg font-medium">${q.q}</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="checkAnswer(${i}, ${q.answer}, this)" class="text-left px-4 py-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:border-slate-800 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quizFeedback" class="mt-4 p-3 rounded-lg hidden font-medium text-center"></div>
+                    <div class="flex justify-end mt-4">
+                        <button onclick="generateQuiz()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg transition-colors text-sm">ข้อต่อไป</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected, correct, btn) {
+            const feedback = document.getElementById('quizFeedback');
+            const buttons = btn.parentElement.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedback.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-emerald-100', 'text-emerald-700');
+            
+            if (selected === correct) {
+                btn.classList.add('bg-emerald-100', 'dark:bg-emerald-900/30', 'border-emerald-500');
+                feedback.classList.add('bg-emerald-100', 'text-emerald-700', 'dark:bg-emerald-900/30', 'dark:text-emerald-400');
+                feedback.innerHTML = '<i class="fas fa-check-circle mr-2"></i> ถูกต้อง!';
+                quizScore++;
+                document.getElementById('scoreDisplay').textContent = `คะแนน: ${quizScore}`;
+            } else {
+                btn.classList.add('bg-red-100', 'dark:bg-red-900/30', 'border-red-500');
+                buttons[correct].classList.add('bg-emerald-100', 'dark:bg-emerald-900/30', 'border-emerald-500');
+                feedback.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+                feedback.innerHTML = '<i class="fas fa-times-circle mr-2"></i> ผิดครับ';
+            }
+        }
+        
+        setTimeout(generateQuiz, 500);
+</script>
+    </body>
+</html>

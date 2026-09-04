@@ -1,0 +1,33 @@
+python -c "
+import json
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
+log_path = r'C:\Users\shotc\.gemini\antigravity-cli\brain\207f5e47-a16f-46c1-805d-d3c199ab2ea5\.system_generated\logs\transcript_full.jsonl'
+
+found_code = None
+with open(log_path, 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+    for line in reversed(lines):
+        try:
+            data = json.loads(line)
+            if 'tool_calls' in data:
+                for tc in data['tool_calls']:
+                    if tc['function']['name'] == 'default_api:write_to_file':
+                        args = json.loads(tc['function']['arguments'])
+                        if 'CodeContent' in args:
+                            content = args['CodeContent']
+                            if 'function finishRandomExam' in content and 'function renderExamPortal' in content:
+                                found_code = content
+                                break
+        except Exception:
+            pass
+        if found_code: break
+
+if found_code:
+    with open('COS1101_Gemini_Labs/labs/recovered_from_log.txt', 'w', encoding='utf-8') as f:
+        f.write(found_code)
+    print('Found and saved!')
+else:
+    print('Not found in write_to_file calls.')
+" 2>&1

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 9: หน่วยความจำ OS - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: {} } }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .mem-block { transition: all 0.3s ease; }
+        .scanning { background-color: #fef08a !important; dark:background-color: #a16207 !important; border-color: #eab308 !important; } /* yellow */
+        .allocated-process { background-color: #38bdf8 !important; color: #000; border-color: #0ea5e9 !important; }
+        .free-block { background-color: #d1fae5; border-color: #10b981; color: #065f46; }
+        .dark .free-block { background-color: #064e3b; border-color: #059669; color: #d1fae5; }
+        .os-block { background-color: #e2e8f0; border-color: #94a3b8; color: #334155; }
+        .dark .os-block { background-color: #1e293b; border-color: #475569; color: #cbd5e1; }
+        .used-block { background-color: #fca5a5; border-color: #ef4444; color: #7f1d1d; }
+        .dark .used-block { background-color: #7f1d1d; border-color: #b91c1c; color: #fecaca; }
+        .mem-container { display: flex; flex-direction: column; gap: 4px; border: 2px solid #cbd5e1; padding: 4px; border-radius: 8px; }
+        .dark .mem-container { border-color: #475569; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased selection:bg-emerald-200 selection:text-emerald-900 flex">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>if(typeof renderSidebar === 'function') renderSidebar(window.location.pathname);</script>
+
+    <main class=" flex-1 overflow-y-auto transition-all duration-300 min-h-screen">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between">
+            <button onclick="typeof toggleSidebar === 'function' ? toggleSidebar() : null" class="text-slate-600 dark:text-slate-400 dark:text-slate-300"><i class="fas fa-bars text-xl"></i></button>
+            <span class="font-bold">COM-SCI Labs</span>
+        </header>
+
+        <div class="p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6 pb-12">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl p-8 text-white shadow-lg">
+                    <h1 class="text-3xl font-bold mb-2">Lab 9: หน่วยความจำ OS (OS Memory Allocation)</h1>
+                    <p class="text-teal-50 text-lg">เรียนรู้อัลกอริทึมการจัดสรรหน่วยความจำ First-Fit, Best-Fit, Worst-Fit และปัญหา Fragmentation</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Theory Section -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+                        <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-book text-emerald-500"></i> ทฤษฎีการจัดสรรหน่วยความจำ</h2>
+                        
+                        <div class="space-y-4 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                            <p>เมื่อโปรแกรมถูกเรียกใช้งาน OS จะต้องหาพื้นที่ว่างใน RAM (Memory Allocation) อัลกอริทึมที่นิยมมี 3 แบบ:</p>
+                            
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <h3 class="font-bold text-slate-800 dark:text-slate-200 text-lg mb-2"><i class="fas fa-running text-blue-500 mr-2"></i>First-Fit</h3>
+                                <p class="text-sm">ค้นหาตั้งแต่ต้น RAM และเลือก <strong>บล็อกแรก</strong> ที่มีขนาดใหญ่พอ ทำงานเร็วที่สุด แต่มักจะทิ้งเศษเล็กๆ ไว้ต้นๆ ของหน่วยความจำ</p>
+                            </div>
+
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <h3 class="font-bold text-slate-800 dark:text-slate-200 text-lg mb-2"><i class="fas fa-bullseye text-green-500 mr-2"></i>Best-Fit</h3>
+                                <p class="text-sm">ค้นหาบล็อกที่ว่างทั้งหมด และเลือกบล็อกที่ <strong>ขนาดพอดีที่สุด (เล็กที่สุดที่ใหญ่พอ)</strong> ประหยัดพื้นที่ได้ดีที่สุด แต่ต้องค้นหาทั้งหน่วยความจำและอาจเกิดเศษเล็กมากๆ ที่ใช้ทำอะไรไม่ได้</p>
+                            </div>
+
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <h3 class="font-bold text-slate-800 dark:text-slate-200 text-lg mb-2"><i class="fas fa-expand-arrows-alt text-red-500 mr-2"></i>Worst-Fit</h3>
+                                <p class="text-sm">ค้นหาบล็อกที่ว่างทั้งหมด และเลือกบล็อกที่ <strong>ใหญ่ที่สุด</strong> เพื่อให้เศษที่เหลือมีขนาดใหญ่พอที่จะใช้กับโปรแกรมอื่นได้ แต่เสียพื้นที่ว่างขนาดใหญ่ไป</p>
+                            </div>
+
+                            <h3 class="font-bold text-slate-800 dark:text-slate-200 text-lg mt-4 border-t border-slate-200 dark:border-slate-700 pt-4">ปัญหา Fragmentation</h3>
+                            <ul class="list-disc pl-5 space-y-2 text-sm">
+                                <li><strong>Internal Fragmentation:</strong> การสูญเสียพื้นที่ภายในบล็อกที่จัดสรรให้ (เช่น จัดสรรแบบเพจ แล้วโปรแกรมใช้ไม่เต็มเพจ)</li>
+                                <li><strong>External Fragmentation:</strong> การสูญเสียพื้นที่ภายนอกบล็อก (มีพื้นที่ว่างรวมเพียงพอ แต่กระจัดกระจาย ไม่ต่อเนื่องกัน)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Section -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                        <h2 class="text-2xl font-bold flex items-center gap-2 mb-6"><i class="fas fa-memory text-purple-500"></i> Memory Allocator Visualizer</h2>
+                        
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Controls & Log -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Process Size (KB)</label>
+                                    <input type="number" id="processSize" class="w-full px-4 py-2 bg-slate-50 dark:bg-[#131314] border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. 212" value="212">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Algorithm</label>
+                                    <select id="algorithm" class="w-full px-4 py-2 bg-slate-50 dark:bg-[#131314] border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+                                        <option value="first">First-Fit</option>
+                                        <option value="best">Best-Fit</option>
+                                        <option value="worst">Worst-Fit</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button onclick="allocate()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-medium transition-colors">Allocate</button>
+                                    <button onclick="resetMemory()" class="px-4 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded-lg transition-colors"><i class="fas fa-undo"></i></button>
+                                </div>
+
+                                <div class="mt-4 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden h-40 flex flex-col bg-slate-50 dark:bg-[#131314]">
+                                    <div class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 px-3 py-1 text-xs font-semibold border-b border-slate-200 dark:border-slate-700">Allocation Log</div>
+                                    <div id="logArea" class="p-3 text-sm font-mono overflow-y-auto flex-1 space-y-1">
+                                        <div class="text-slate-500">Ready...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RAM Visual -->
+                            <div class="flex flex-col items-center">
+                                <div class="text-sm font-semibold mb-2">RAM (Memory Layout)</div>
+                                <div id="ramVisual" class="mem-container w-48 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800">
+                                    <!-- Memory blocks rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mt-6">
+                    <h2 class="text-2xl font-bold flex items-center gap-2 mb-4"><i class="fas fa-question-circle text-orange-500"></i> ทดสอบความเข้าใจ</h2>
+                    
+                    <div class="bg-slate-50 dark:bg-[#131314] p-6 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-lg mb-4"><strong>สถานการณ์:</strong> มีบล็อกว่างในหน่วยความจำเรียงตามลำดับคือ: 100K, 500K, 200K, 300K, 600K <br>ถ้าต้องการจัดสรรหน่วยความจำให้โปรแกรมขนาด <strong>212K</strong> อัลกอริทึม First-Fit จะเลือกบล็อกใด?</p>
+                        
+                        <div class="space-y-3" id="quizOptions">
+                            <label class="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                <input type="radio" name="q1" value="100" class="w-4 h-4 text-emerald-500 bg-slate-100 dark:bg-[#1e1f20] border-slate-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600">
+                                <span>บล็อก 100K</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                <input type="radio" name="q1" value="500" class="w-4 h-4 text-emerald-500 bg-slate-100 dark:bg-[#1e1f20] border-slate-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600">
+                                <span>บล็อก 500K</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                <input type="radio" name="q1" value="300" class="w-4 h-4 text-emerald-500 bg-slate-100 dark:bg-[#1e1f20] border-slate-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600">
+                                <span>บล็อก 300K</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition-colors">
+                                <input type="radio" name="q1" value="600" class="w-4 h-4 text-emerald-500 bg-slate-100 dark:bg-[#1e1f20] border-slate-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600">
+                                <span>บล็อก 600K</span>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-4 flex items-center gap-4">
+                            <button onclick="checkQuiz()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">ตรวจคำตอบ</button>
+                            <span id="quizFeedback" class="font-medium hidden"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // Memory Block Initial State
+        const INITIAL_MEMORY = [
+            { id: 1, type: 'os', size: 200, label: 'OS' },
+            { id: 2, type: 'free', size: 100, label: 'Free' },
+            { id: 3, type: 'used', size: 150, label: 'Allocated' },
+            { id: 4, type: 'free', size: 500, label: 'Free' },
+            { id: 5, type: 'used', size: 50, label: 'Allocated' },
+            { id: 6, type: 'free', size: 200, label: 'Free' },
+            { id: 7, type: 'free', size: 300, label: 'Free' },
+            { id: 8, type: 'used', size: 100, label: 'Allocated' },
+            { id: 9, type: 'free', size: 600, label: 'Free' }
+        ];
+
+        let memoryState = [];
+        let blockIdCounter = 10;
+        let isAllocating = false;
+
+        function initMemory() {
+            memoryState = JSON.parse(JSON.stringify(INITIAL_MEMORY));
+            renderMemory();
+            document.getElementById('logArea').innerHTML = '<div class="text-slate-500">Ready...</div>';
+        }
+
+        function resetMemory() {
+            if (isAllocating) return;
+            initMemory();
+            addLog("Memory reset to initial state.", "text-slate-500");
+        }
+
+        function renderMemory() {
+            const ramVisual = document.getElementById('ramVisual');
+            ramVisual.innerHTML = '';
+            
+            const totalSize = memoryState.reduce((sum, b) => sum + b.size, 0);
+
+            memoryState.forEach(block => {
+                const blockEl = document.createElement('div');
+                blockEl.id = `block-${block.id}`;
+                
+                let classes = 'mem-block border-2 rounded p-1 text-center text-xs font-medium flex items-center justify-center overflow-hidden';
+                
+                if (block.type === 'os') classes += ' os-block';
+                else if (block.type === 'free') classes += ' free-block';
+                else if (block.type === 'used' || block.type === 'new-process') classes += ' used-block';
+
+                if (block.type === 'new-process') {
+                    classes = classes.replace('used-block', 'allocated-process');
+                }
+
+                blockEl.className = classes;
+                
+                const minHeight = 24;
+                const calculatedHeight = Math.max(minHeight, (block.size / totalSize) * 600);
+                blockEl.style.height = `${calculatedHeight}px`;
+
+                blockEl.innerHTML = `${block.label}<br>${block.size}K`;
+                ramVisual.appendChild(blockEl);
+            });
+        }
+
+        function addLog(msg, colorClass = "text-slate-800 dark:text-slate-200") {
+            const logArea = document.getElementById('logArea');
+            const div = document.createElement('div');
+            div.className = colorClass;
+            div.innerText = `> ${msg}`;
+            logArea.appendChild(div);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function allocate() {
+            if (isAllocating) return;
+            
+            const sizeInput = parseInt(document.getElementById('processSize').value);
+            if (isNaN(sizeInput) || sizeInput <= 0) {
+                addLog("Invalid process size.", "text-red-500");
+                return;
+            }
+
+            const algo = document.getElementById('algorithm').value;
+            isAllocating = true;
+            
+            addLog(`Searching for ${sizeInput}K using ${algo}-fit...`, "text-blue-500");
+
+            let targetIndex = -1;
+            let targetBlock = null;
+
+            for (let i = 0; i < memoryState.length; i++) {
+                const block = memoryState[i];
+                if (block.type === 'free') {
+                    const blockEl = document.getElementById(`block-${block.id}`);
+                    blockEl.classList.add('scanning');
+                    await sleep(300);
+                    blockEl.classList.remove('scanning');
+
+                    if (algo === 'first') {
+                        if (block.size >= sizeInput) {
+                            targetIndex = i;
+                            targetBlock = block;
+                            break;
+                        }
+                    } else if (algo === 'best') {
+                        if (block.size >= sizeInput) {
+                            if (targetIndex === -1 || block.size < targetBlock.size) {
+                                targetIndex = i;
+                                targetBlock = block;
+                            }
+                        }
+                    } else if (algo === 'worst') {
+                        if (block.size >= sizeInput) {
+                            if (targetIndex === -1 || block.size > targetBlock.size) {
+                                targetIndex = i;
+                                targetBlock = block;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (targetIndex !== -1) {
+                const blockEl = document.getElementById(`block-${targetBlock.id}`);
+                blockEl.style.backgroundColor = '#4ade80';
+                blockEl.style.borderColor = '#22c55e';
+                await sleep(500);
+
+                const freeRemainder = targetBlock.size - sizeInput;
+                
+                const newProcessBlock = { id: blockIdCounter++, type: 'new-process', size: sizeInput, label: 'Process' };
+                
+                if (freeRemainder > 0) {
+                    const newFreeBlock = { id: blockIdCounter++, type: 'free', size: freeRemainder, label: 'Free' };
+                    memoryState.splice(targetIndex, 1, newProcessBlock, newFreeBlock);
+                    addLog(`Allocated in ${targetBlock.size}K block. Leaving ${freeRemainder}K free.`, "text-emerald-500");
+                } else {
+                    memoryState.splice(targetIndex, 1, newProcessBlock);
+                    addLog(`Allocated perfectly in ${targetBlock.size}K block.`, "text-emerald-500");
+                }
+
+                renderMemory();
+            } else {
+                addLog(`Allocation failed! No free block large enough for ${sizeInput}K.`, "text-red-500");
+            }
+
+            isAllocating = false;
+        }
+
+        function checkQuiz() {
+            const selected = document.querySelector('input[name="q1"]:checked');
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden', 'text-emerald-500', 'text-red-500');
+            
+            if (!selected) {
+                feedback.textContent = 'กรุณาเลือกคำตอบ';
+                feedback.classList.add('text-red-500');
+                return;
+            }
+
+            if (selected.value === '500') {
+                feedback.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ถูกต้อง! First-Fit จะเลือกบล็อกแรกที่ใหญ่พอ ซึ่งบล็อกแรกที่ใหญ่กว่า 212K คือบล็อก 500K';
+                feedback.classList.add('text-emerald-500');
+            } else {
+                feedback.innerHTML = '<i class="fas fa-times-circle mr-1"></i> ยังไม่ถูกต้อง First-Fit จะเลือก "บล็อกแรก" ที่ค้นเจอและมีขนาดพอดี ลองดูใหม่ว่าบล็อกไหนมาก่อน';
+                feedback.classList.add('text-red-500');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initMemory);
+    </script>
+</body>
+</html>

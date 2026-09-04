@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 6: ตรรกะบิต (Bitwise) - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: {} } }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .bit-box {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .bit-0 {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+        }
+        .dark .bit-0 {
+            background-color: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+        .bit-1 {
+            background-color: #3b82f6;
+            color: white;
+            border: 1px solid #2563eb;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        .dark .bit-1 {
+            background-color: #2563eb;
+            color: white;
+            border: 1px solid #1d4ed8;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+        }
+        .bit-result-0 {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px dashed #cbd5e1;
+            cursor: default;
+        }
+        .dark .bit-result-0 {
+            background-color: #1e293b;
+            color: #94a3b8;
+            border: 1px dashed #334155;
+            cursor: default;
+        }
+        .bit-result-1 {
+            background-color: #10b981;
+            color: white;
+            border: 1px solid #059669;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            cursor: default;
+        }
+        .dark .bit-result-1 {
+            background-color: #059669;
+            color: white;
+            border: 1px solid #047857;
+            box-shadow: 0 0 15px rgba(5, 150, 105, 0.4);
+            cursor: default;
+        }
+        
+        .operator-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .operator-active {
+            background-color: #8b5cf6;
+            color: white;
+            border-color: #7c3aed;
+        }
+        .operator-inactive {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+        .dark .operator-inactive {
+            background-color: #334155;
+            color: #cbd5e1;
+        }
+        .shift-animation {
+            animation: slide 0.3s ease-in-out;
+        }
+        @keyframes slide {
+            0% { transform: translateX(0); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased selection:bg-emerald-200 selection:text-emerald-900 flex">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <main class=" flex-1 overflow-y-auto transition-all duration-300 min-h-screen">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between">
+            <button onclick="toggleSidebar()" class="text-slate-600 dark:text-slate-400 dark:text-slate-300"><i class="fas fa-bars text-xl"></i></button>
+            <span class="font-bold">COM-SCI Labs</span>
+        </header>
+
+        <div class="p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6 pb-12">
+                
+                <!-- Page Header -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                    <h1 class="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">Lab 6: ตรรกะบิต (Bitwise Operations)</h1>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">
+                        เรียนรู้การดำเนินการระดับบิต ซึ่งเป็นการจัดการข้อมูลในระดับพื้นฐานที่สุดของคอมพิวเตอร์ ทำความเข้าใจเกี่ยวกับ AND, OR, XOR, NOT และการเลื่อนบิต (Bit Shift)
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <!-- Theory Section -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm space-y-6 xl:col-span-2">
+                        <h2 class="text-2xl font-semibold border-b border-slate-200 dark:border-slate-700 pb-2"><i class="fas fa-book text-blue-500 mr-2"></i>ทฤษฎีตัวดำเนินการบิต (Bitwise Operators)</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">AND (&amp;)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">เปรียบเทียบบิตต่อบิต ผลลัพธ์จะเป็น 1 ก็ต่อเมื่อบิตทั้งสองเป็น 1</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">1 &amp; 1 = 1<br>1 &amp; 0 = 0</code>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-green-600 dark:text-green-400">OR (|)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">เปรียบเทียบบิตต่อบิต ผลลัพธ์จะเป็น 1 ถ้ามีอย่างน้อยหนึ่งบิตที่เป็น 1</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">1 | 0 = 1<br>0 | 0 = 0</code>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-purple-600 dark:text-purple-400">XOR (^)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">Exclusive OR ผลลัพธ์จะเป็น 1 เมื่อบิตต่างกัน ถ้าเหมือนกันจะเป็น 0</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">1 ^ 0 = 1<br>1 ^ 1 = 0</code>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-red-600 dark:text-red-400">NOT (~)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">สลับบิต จาก 1 เป็น 0 และจาก 0 เป็น 1 (ทำทีละตัวแปร)</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">~1 = 0<br>~0 = 1</code>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-orange-600 dark:text-orange-400">Shift Left (&lt;&lt;)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">เลื่อนบิตไปทางซ้าย เติม 0 ด้านขวา (เหมือนการคูณด้วย 2)</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">0101 &lt;&lt; 1<br> = 1010</code>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h3 class="font-bold text-lg mb-2 text-yellow-600 dark:text-yellow-400">Shift Right (&gt;&gt;)</h3>
+                                <p class="text-slate-600 dark:text-slate-400 mb-2">เลื่อนบิตไปทางขวา (เหมือนการหารด้วย 2) เติม 0 ด้านซ้าย</p>
+                                <code class="block bg-white dark:bg-[#1e1f20] dark:bg-black p-2 rounded text-center">1010 &gt;&gt; 1<br> = 0101</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculator Feature -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm flex flex-col items-center">
+                        <h2 class="text-xl font-bold mb-6 w-full"><i class="fas fa-calculator text-indigo-500 mr-2"></i>เครื่องคำนวณ Bitwise (Interactive)</h2>
+                        
+                        <div class="space-y-6 w-full max-w-md">
+                            <!-- Byte A -->
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">Byte A:</span>
+                                    <span id="valA" class="text-slate-500 font-mono text-sm">0</span>
+                                </div>
+                                <div class="flex gap-1 justify-center" id="byteA">
+                                    <!-- Bits rendered by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Operator Selection -->
+                            <div class="flex justify-center gap-4">
+                                <button onclick="setOp('AND')" id="op-AND" class="operator-btn operator-active">AND (&amp;)</button>
+                                <button onclick="setOp('OR')" id="op-OR" class="operator-btn operator-inactive">OR (|)</button>
+                                <button onclick="setOp('XOR')" id="op-XOR" class="operator-btn operator-inactive">XOR (^)</button>
+                            </div>
+
+                            <!-- Byte B -->
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">Byte B:</span>
+                                    <span id="valB" class="text-slate-500 font-mono text-sm">0</span>
+                                </div>
+                                <div class="flex gap-1 justify-center" id="byteB">
+                                    <!-- Bits rendered by JS -->
+                                </div>
+                            </div>
+
+                            <hr class="border-slate-200 dark:border-slate-700">
+
+                            <!-- Result Byte -->
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">Result:</span>
+                                    <span id="valRes" class="font-bold font-mono text-emerald-600 dark:text-emerald-400">0</span>
+                                </div>
+                                <div class="flex gap-1 justify-center" id="byteRes">
+                                    <!-- Bits rendered by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizer & Quiz wrapper -->
+                    <div class="space-y-6">
+                        <!-- Shift Visualizer -->
+                        <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm flex flex-col items-center">
+                            <h2 class="text-xl font-bold mb-6 w-full"><i class="fas fa-arrows-left-right text-orange-500 mr-2"></i>Bit Shift Visualizer</h2>
+                            
+                            <div class="w-full max-w-md">
+                                <div class="flex justify-between mb-4">
+                                    <span class="font-medium">Value (8-bit):</span>
+                                    <span id="shiftVal" class="text-slate-500 font-mono text-lg font-bold">1</span>
+                                </div>
+                                
+                                <div class="flex gap-1 justify-center mb-8" id="byteShift">
+                                    <!-- Bits rendered by JS -->
+                                </div>
+
+                                <div class="flex justify-center gap-4">
+                                    <button onclick="shiftLeft()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                        <i class="fas fa-angles-left"></i> Shift Left (&lt;&lt;)
+                                    </button>
+                                    <button onclick="shiftValue = 15; updateShiftUI();" class="py-3 px-6 bg-slate-500 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors">Reset</button>
+                            <button onclick="shiftRight()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2">
+                                        Shift Right (&gt;&gt;) <i class="fas fa-angles-right"></i>
+                                    </button>
+                                </div>
+                                <div class="text-center mt-4 text-sm text-slate-500 dark:text-slate-400" id="shiftDesc">
+                                    1 &lt;&lt; 0 = 1
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Section -->
+                        <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold"><i class="fas fa-gamepad text-pink-500 mr-2"></i>ทดสอบความเข้าใจ (Quiz)</h2>
+                                <span class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 px-3 py-1 rounded-full text-sm font-semibold">Score: <span id="quizScore" class="text-pink-600 dark:text-pink-400">0</span></span>
+                            </div>
+                            
+                            <div id="quizContainer" class="space-y-4">
+                                <div class="p-4 bg-slate-50 dark:bg-[#131314] rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+                                    <div class="text-lg mb-2">คำนวณผลลัพธ์ของ:</div>
+                                    <div id="quizQuestion" class="text-2xl font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400">1010 AND 1100</div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">ผลลัพธ์ (Binary 4-bit):</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="quizInput" maxlength="4" placeholder="เช่น 1000" class="flex-1 bg-white dark:bg-[#1e1f20] dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 font-mono text-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                        <button onclick="checkQuiz()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">ตรวจคำตอบ</button>
+                                    </div>
+                                    <div id="quizFeedback" class="mt-2 text-sm font-medium h-5"></div>
+                                </div>
+                            </div>
+                            <button onclick="generateQuiz()" class="mt-4 w-full py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-600 dark:text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors">
+                                ข้าม / เปลี่ยนคำถาม
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // --- Interactive Bitwise Calculator ---
+        let byteA = [0,0,0,0,0,0,0,0];
+        let byteB = [0,0,0,0,0,0,0,0];
+        let currentOp = 'AND';
+        
+        function renderCalculator() {
+            const containerA = document.getElementById('byteA');
+            const containerB = document.getElementById('byteB');
+            const containerRes = document.getElementById('byteRes');
+            
+            containerA.innerHTML = '';
+            containerB.innerHTML = '';
+            containerRes.innerHTML = '';
+            
+            let valA = 0;
+            let valB = 0;
+            let resArr = [];
+            
+            for(let i=0; i<8; i++) {
+                // Render A
+                const bitA = document.createElement('div');
+                bitA.className = `bit-box bit-${byteA[i]}`;
+                bitA.innerText = byteA[i];
+                bitA.onclick = () => { byteA[i] = 1 - byteA[i]; renderCalculator(); };
+                containerA.appendChild(bitA);
+                valA += byteA[i] * Math.pow(2, 7-i);
+                
+                // Render B
+                const bitB = document.createElement('div');
+                bitB.className = `bit-box bit-${byteB[i]}`;
+                bitB.innerText = byteB[i];
+                bitB.onclick = () => { byteB[i] = 1 - byteB[i]; renderCalculator(); };
+                containerB.appendChild(bitB);
+                valB += byteB[i] * Math.pow(2, 7-i);
+                
+                // Calculate Result Bit
+                let r = 0;
+                if(currentOp === 'AND') r = byteA[i] & byteB[i];
+                else if(currentOp === 'OR') r = byteA[i] | byteB[i];
+                else if(currentOp === 'XOR') r = byteA[i] ^ byteB[i];
+                resArr.push(r);
+                
+                // Render Result
+                const bitRes = document.createElement('div');
+                bitRes.className = `bit-box bit-result-${r}`;
+                bitRes.innerText = r;
+                containerRes.appendChild(bitRes);
+            }
+            
+            document.getElementById('valA').innerText = valA;
+            document.getElementById('valB').innerText = valB;
+            
+            // Calculate total result value
+            let totalRes = 0;
+            if(currentOp === 'AND') totalRes = valA & valB;
+            else if(currentOp === 'OR') totalRes = valA | valB;
+            else if(currentOp === 'XOR') totalRes = valA ^ valB;
+            
+            document.getElementById('valRes').innerText = totalRes;
+        }
+
+        function setOp(op) {
+            currentOp = op;
+            ['AND', 'OR', 'XOR'].forEach(o => {
+                const btn = document.getElementById(`op-${o}`);
+                if(o === op) {
+                    btn.className = "operator-btn operator-active";
+                } else {
+                    btn.className = "operator-btn operator-inactive";
+                }
+            });
+            renderCalculator();
+        }
+
+        // --- Bit Shift Visualizer ---
+        let shiftValue = 1;
+
+        function renderShift() {
+            const container = document.getElementById('byteShift');
+            container.innerHTML = '';
+            
+            // Ensure 8-bit unsigned
+            shiftValue = shiftValue & 0xFF;
+            
+            const binaryStr = shiftValue.toString(2).padStart(8, '0');
+            
+            for(let i=0; i<8; i++) {
+                const bit = document.createElement('div');
+                const bitVal = binaryStr[i];
+                bit.className = `bit-box bit-${bitVal} shift-animation`;
+                bit.style.animationDelay = `${i * 0.05}s`;
+                bit.innerText = bitVal;
+                container.appendChild(bit);
+            }
+            document.getElementById('shiftVal').innerText = shiftValue;
+        }
+
+        function shiftLeft() {
+            shiftValue = (shiftValue << 1) & 0xFF;
+            document.getElementById('shiftDesc').innerText = `Value << 1 (Multiplied by 2)`;
+            renderShift();
+        }
+
+        function shiftRight() {
+            shiftValue = (shiftValue >> 1) & 0xFF;
+            document.getElementById('shiftDesc').innerText = `Value >> 1 (Divided by 2)`;
+            renderShift();
+        }
+
+        // --- Quiz ---
+        let qNum1, qNum2, qOp, qAns;
+        let score = 0;
+
+        function generateQuiz() {
+            // Generate 4-bit numbers (0-15)
+            qNum1 = Math.floor(Math.random() * 16);
+            qNum2 = Math.floor(Math.random() * 16);
+            
+            const ops = ['AND', 'OR', 'XOR'];
+            qOp = ops[Math.floor(Math.random() * ops.length)];
+            
+            if(qOp === 'AND') qAns = qNum1 & qNum2;
+            else if(qOp === 'OR') qAns = qNum1 | qNum2;
+            else if(qOp === 'XOR') qAns = qNum1 ^ qNum2;
+
+            const bin1 = qNum1.toString(2).padStart(4, '0');
+            const bin2 = qNum2.toString(2).padStart(4, '0');
+            
+            document.getElementById('quizQuestion').innerText = `${bin1} ${qOp} ${bin2}`;
+            document.getElementById('quizInput').value = '';
+            document.getElementById('quizFeedback').innerText = '';
+        }
+
+        function checkQuiz() {
+            const input = document.getElementById('quizInput').value;
+            const feedback = document.getElementById('quizFeedback');
+            
+            // Validate input is 4 chars of 0s and 1s
+            if(!/^[01]{1,4}$/.test(input)) {
+                feedback.innerText = "กรุณากรอกเฉพาะเลข 0 หรือ 1 (สูงสุด 4 บิต)";
+                feedback.className = "mt-2 text-sm font-medium h-5 text-red-500";
+                return;
+            }
+
+            const inputNum = parseInt(input, 2);
+            if(inputNum === qAns) {
+                feedback.innerText = "✅ ถูกต้อง!";
+                feedback.className = "mt-2 text-sm font-medium h-5 text-emerald-500";
+                score++;
+                document.getElementById('quizScore').innerText = score;
+                setTimeout(generateQuiz, 1500);
+            } else {
+                feedback.innerText = `❌ ผิดครับ ลองใหม่!`;
+                feedback.className = "mt-2 text-sm font-medium h-5 text-red-500";
+            }
+        }
+
+        // Init
+        window.onload = () => {
+            renderCalculator();
+            renderShift();
+            generateQuiz();
+            
+            // Allow enter key in quiz input
+            document.getElementById('quizInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkQuiz();
+                }
+            });
+        };
+    </script>
+</body>
+</html>

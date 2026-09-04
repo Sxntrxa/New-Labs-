@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 4: IEEE 754 (Single Precision) - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            50: '#f4f7fb',
+                            100: '#e8f0fe',
+                            500: '#1a73e8',
+                            600: '#1557b0',
+                            900: '#131314',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ieee-bit {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-family: monospace;
+            border: 1px solid transparent;
+        }
+        
+        .bit-sign {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+        .dark .bit-sign {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+            border-color: rgba(220, 38, 38, 0.4);
+        }
+        
+        .bit-exp {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-color: #86efac;
+        }
+        .dark .bit-exp {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: #86efac;
+            border-color: rgba(22, 163, 74, 0.4);
+        }
+        
+        .bit-mantissa {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            border-color: #a5b4fc;
+        }
+        .dark .bit-mantissa {
+            background-color: rgba(79, 70, 229, 0.2);
+            color: #a5b4fc;
+            border-color: rgba(79, 70, 229, 0.4);
+        }
+        
+        .ieee-bit:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .text-sign { color: #dc2626; }
+        .dark .text-sign { color: #fca5a5; }
+        .text-exp { color: #16a34a; }
+        .dark .text-exp { color: #86efac; }
+        .text-mantissa { color: #4f46e5; }
+        .dark .text-mantissa { color: #a5b4fc; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] bg-slate-50 dark:bg-[#131314] text-slate-800 dark:text-slate-200 dark:text-white transition-colors duration-200">
+    <div id="app-container" class="flex h-screen overflow-hidden">
+        <!-- Sidebar will be injected here -->
+        
+        <main class="flex-1 flex flex-col min-h-screen overflow-y-auto">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow">
+
+            <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Lab 4: IEEE 754 (Single Precision 32-bit)</h1>
+                    <p class="mt-2 text-lg text-slate-600 dark:text-slate-400">การแทนค่าจำนวนจริงแบบจุดลอยตัว (Floating Point Number Representation)</p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    
+                    <!-- Theory Section -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 p-6 flex flex-col">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">ทฤษฎี IEEE 754 (32-bit)</h2>
+                        <div class="prose dark:prose-invert max-w-none flex-1">
+                            <p class="mb-4">มาตรฐาน IEEE 754 แบบ Single Precision ใช้ 32 บิตในการจัดเก็บตัวเลขทศนิยม โดยแบ่งออกเป็น 3 ส่วนหลัก:</p>
+                            
+                            <ul class="space-y-4 list-none pl-0">
+                                <li class="flex items-start">
+                                    <span class="inline-block w-4 h-4 mt-1 mr-3 rounded-full bg-red-500"></span>
+                                    <div>
+                                        <strong class="text-sign">Sign Bit (1 บิต)</strong>: บิตเครื่องหมาย
+                                        <br><code>0</code> = ค่าบวก, <code>1</code> = ค่าลบ
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="inline-block w-4 h-4 mt-1 mr-3 rounded-full bg-green-500"></span>
+                                    <div>
+                                        <strong class="text-exp">Exponent (8 บิต)</strong>: เลขชี้กำลังแบบ Biased (บวกด้วย 127)
+                                        <br>คำนวณจาก: <code>True Exponent + 127</code>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="inline-block w-4 h-4 mt-1 mr-3 rounded-full bg-indigo-500"></span>
+                                    <div>
+                                        <strong class="text-mantissa">Mantissa / Fraction (23 บิต)</strong>: ค่าทศนิยม (นัยสำคัญ)
+                                        <br>เก็บเฉพาะส่วนทศนิยมหลังจากการทำ Normalized (เลขหน้าจุดทศนิยมเป็น 1 เสมอจึงไม่ต้องเก็บ)
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            <div class="mt-6 p-4 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded-lg">
+                                <p class="font-mono text-sm text-center">Value = (-1)<sup>Sign</sup> &times; (1.Mantissa) &times; 2<sup>(Exponent - 127)</sup></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculator Section -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 p-6">
+                        <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">คำนวณ Decimal เป็น IEEE 754</h2>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">ป้อนตัวเลขทศนิยม (Decimal Number)</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="decimal-input" step="any" placeholder="เช่น -13.625" class="flex-1 px-4 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-gemini-500 focus:outline-none text-slate-900 dark:text-white">
+                                <button id="btn-calc" class="px-4 py-2 bg-gemini-600 hover:bg-gemini-500 text-white rounded-lg transition-colors shadow-sm">คำนวณ</button>
+                            </div>
+                        </div>
+                        
+                        <div id="calc-steps" class="hidden space-y-4 mt-6 text-sm">
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                                <strong class="text-sign">1. Sign Bit:</strong> <span id="step-sign"></span>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                                <strong>2. แปลงเป็นฐาน 2 และ Normalize:</strong><br>
+                                <span id="step-binary" class="font-mono mt-1 block text-slate-600 dark:text-slate-400"></span>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                                <strong class="text-exp">3. Biased Exponent:</strong><br>
+                                <span id="step-exp" class="block mt-1"></span>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                                <strong class="text-mantissa">4. Mantissa:</strong><br>
+                                <span id="step-man" class="font-mono mt-1 block break-all"></span>
+                            </div>
+                            
+                            <div class="p-4 bg-slate-800 text-white rounded-lg font-mono text-center break-all shadow-inner">
+                                <span id="res-sign" class="text-red-400"></span><span id="res-exp" class="text-green-400"></span><span id="res-man" class="text-indigo-400"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Visualizer -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 p-6 mb-8 overflow-hidden">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center justify-between">
+                        <span>Interactive 32-bit Visualizer</span>
+                        <button id="btn-reset-bits" class="text-sm px-3 py-1 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-700 rounded text-slate-700 dark:text-slate-300 transition-colors">Reset</button>
+                    </h2>
+                    
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">คลิกที่กล่องเพื่อสลับค่าบิตระหว่าง 0 และ 1</p>
+                    
+                    <div class="flex flex-wrap gap-1 mb-6 justify-center" id="bit-container">
+                        <!-- Bits will be generated by JS -->
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-center bg-slate-50 dark:bg-[#131314] p-4 rounded-xl border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <div class="text-center md:text-left mb-4 md:mb-0">
+                            <span class="text-sm text-slate-500 dark:text-slate-400 block">ค่าทศนิยมที่คำนวณได้ (Decimal Value)</span>
+                            <span id="visualizer-value" class="text-2xl font-mono font-bold">0.0</span>
+                        </div>
+                        
+                        <div class="flex gap-4 font-mono text-sm">
+                            <div class="text-center">
+                                <span class="text-sign block mb-1">Sign</span>
+                                <span id="vis-s-val">0</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="text-exp block mb-1">Exponent</span>
+                                <span id="vis-e-val">0</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="text-mantissa block mb-1">Mantissa (Hex)</span>
+                                <span id="vis-m-val">000000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Practice Quiz Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 p-6">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <h2 class="text-xl font-semibold">แบบฝึกหัดทบทวน (Practice Quiz)</h2>
+                        <div class="text-sm font-medium bg-gemini-100 dark:bg-gemini-900/30 text-gemini-600 dark:text-gemini-400 px-3 py-1 rounded-full">
+                            คะแนน: <span id="quiz-score">0</span>
+                        </div>
+                    </div>
+                    
+                    <div id="quiz-container">
+                        <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 p-4 rounded-xl mb-4 border border-slate-200 dark:border-slate-700">
+                            <p class="text-lg mb-2">จงหา <strong id="quiz-question-type" class="text-gemini-600 dark:text-gemini-400">...</strong> ของตัวเลขต่อไปนี้:</p>
+                            <div class="text-3xl font-mono text-center my-6 py-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm" id="quiz-number">0.0</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">คำตอบ (รูปแบบไบนารี):</label>
+                            <input type="text" id="quiz-answer" class="w-full px-4 py-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-gemini-500 focus:outline-none font-mono text-lg text-slate-900 dark:text-white" placeholder="กรอกเฉพาะบิต เช่น 10000001">
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button id="btn-check-quiz" class="flex-1 px-4 py-3 bg-gemini-600 hover:bg-gemini-500 text-white rounded-lg transition-colors font-medium shadow-sm">ตรวจคำตอบ</button>
+                            <button id="btn-next-quiz" class="px-4 py-3 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 dark:text-white rounded-lg transition-colors font-medium">ข้อต่อไป</button>
+                        </div>
+                        
+                        <div id="quiz-feedback" class="mt-4 p-3 rounded-lg hidden font-medium text-center"></div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+</main>
+    </div>
+
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // === Utilities for IEEE 754 ===
+            
+            // Decimal to Float32 ArrayBuffer to bits
+            function floatToBits(f) {
+                const buf = new ArrayBuffer(4);
+                (new Float32Array(buf))[0] = f;
+                const intView = new Uint32Array(buf);
+                return intView[0].toString(2).padStart(32, '0');
+            }
+            
+            // Bits to Float32
+            function bitsToFloat(bitStr) {
+                const intVal = parseInt(bitStr, 2);
+                const buf = new ArrayBuffer(4);
+                (new Uint32Array(buf))[0] = intVal;
+                return (new Float32Array(buf))[0];
+            }
+
+            // === 1. Interactive 32-bit Visualizer ===
+            const bitContainer = document.getElementById('bit-container');
+            const bits = new Array(32).fill('0');
+            
+            function renderBits() {
+                bitContainer.innerHTML = '';
+                bits.forEach((b, i) => {
+                    const el = document.createElement('div');
+                    el.className = 'ieee-bit';
+                    el.textContent = b;
+                    
+                    if (i === 0) {
+                        el.classList.add('bit-sign');
+                    } else if (i >= 1 && i <= 8) {
+                        el.classList.add('bit-exp');
+                    } else {
+                        el.classList.add('bit-mantissa');
+                    }
+                    
+                    el.addEventListener('click', () => {
+                        bits[i] = bits[i] === '0' ? '1' : '0';
+                        el.textContent = bits[i];
+                        updateVisualizer();
+                    });
+                    
+                    bitContainer.appendChild(el);
+                    
+                    // Add space after sign and exp for clarity
+                    if (i === 0 || i === 8) {
+                        const space = document.createElement('div');
+                        space.className = 'w-1 sm:w-2';
+                        bitContainer.appendChild(space);
+                    }
+                });
+            }
+            
+            function updateVisualizer() {
+                const bitStr = bits.join('');
+                const val = bitsToFloat(bitStr);
+                
+                const signVal = bits[0];
+                const expBits = bitStr.substring(1, 9);
+                const expVal = parseInt(expBits, 2);
+                const manBits = bitStr.substring(9);
+                const manHex = parseInt(manBits, 2).toString(16).toUpperCase().padStart(6, '0');
+                
+                document.getElementById('visualizer-value').textContent = Number.isNaN(val) ? 'NaN' : 
+                                                                         !isFinite(val) ? (signVal === '1' ? '-Infinity' : 'Infinity') : 
+                                                                         val.toPrecision(7); // approximate to reasonable display
+                
+                document.getElementById('vis-s-val').textContent = signVal;
+                document.getElementById('vis-e-val').textContent = `${expVal} (True: ${expVal - 127})`;
+                document.getElementById('vis-m-val').textContent = `0x${manHex}`;
+            }
+            
+            document.getElementById('btn-reset-bits').addEventListener('click', () => {
+                for(let i=0; i<32; i++) bits[i] = '0';
+                renderBits();
+                updateVisualizer();
+            });
+            
+            renderBits();
+            updateVisualizer();
+
+
+            // === 2. Decimal to IEEE Calculator ===
+            document.getElementById('btn-calc').addEventListener('click', () => {
+                const input = parseFloat(document.getElementById('decimal-input').value);
+                if (isNaN(input)) return;
+                
+                const stepsDiv = document.getElementById('calc-steps');
+                stepsDiv.classList.remove('hidden');
+                
+                if (input === 0) {
+                    document.getElementById('step-sign').innerHTML = "เป็น 0 ดังนั้น Sign = <code class='text-red-500'>0</code>";
+                    document.getElementById('step-binary').innerHTML = "0.0";
+                    document.getElementById('step-exp').innerHTML = "Exponent = <code class='text-green-500'>00000000</code>";
+                    document.getElementById('step-man').innerHTML = "Mantissa = <code class='text-indigo-500'>00000000000000000000000</code>";
+                    document.getElementById('res-sign').textContent = "0";
+                    document.getElementById('res-exp').textContent = "00000000";
+                    document.getElementById('res-man').textContent = "00000000000000000000000";
+                    return;
+                }
+                
+                const bitStr = floatToBits(input);
+                const sign = bitStr[0];
+                const exp = bitStr.substring(1, 9);
+                const man = bitStr.substring(9);
+                
+                const absInput = Math.abs(input);
+                
+                document.getElementById('step-sign').innerHTML = `ค่าเป็น ${input < 0 ? 'ลบ' : 'บวก'} ดังนั้น Sign = <code class='font-bold'>${sign}</code>`;
+                
+                // Construct a simulated binary format for explanation
+                const trueExp = parseInt(exp, 2) - 127;
+                document.getElementById('step-binary').innerHTML = `1.${man.substring(0, 5)}... &times; 2<sup>${trueExp}</sup> (Normalized)`;
+                
+                document.getElementById('step-exp').innerHTML = `True Exponent = ${trueExp} <br> Biased Exponent = ${trueExp} + 127 = ${parseInt(exp, 2)} <br> แปลงเป็นฐานสอง: <code class='font-bold'>${exp}</code>`;
+                
+                document.getElementById('step-man').innerHTML = `ตัด 1 หน้าจุดทศนิยมทิ้ง เติม 0 ให้ครบ 23 บิต: <br> <code class='font-bold'>${man}</code>`;
+                
+                document.getElementById('res-sign').textContent = sign;
+                document.getElementById('res-exp').textContent = exp;
+                document.getElementById('res-man').textContent = man;
+            });
+
+
+            // === 3. Practice Quiz ===
+            let currentQuizAnswer = '';
+            let score = 0;
+            const quizTypes = [
+                { id: 'sign', label: 'Sign Bit (1 บิต)', getAns: (bits) => bits[0] },
+                { id: 'exp', label: 'Biased Exponent (8 บิต)', getAns: (bits) => bits.substring(1, 9) }
+            ];
+            
+            function generateQuiz() {
+                // Generate random float between -100 and 100
+                const num = (Math.random() * 200 - 100);
+                // Keep it relatively simple with 1-2 decimal places
+                const cleanNum = parseFloat(num.toFixed(2));
+                
+                // Exclude 0 to avoid trivial edge cases in quiz
+                if(cleanNum === 0) {
+                    generateQuiz();
+                    return;
+                }
+                
+                const bitStr = floatToBits(cleanNum);
+                const qType = quizTypes[Math.floor(Math.random() * quizTypes.length)];
+                
+                document.getElementById('quiz-number').textContent = cleanNum;
+                document.getElementById('quiz-question-type').textContent = qType.label;
+                
+                currentQuizAnswer = qType.getAns(bitStr);
+                
+                document.getElementById('quiz-answer').value = '';
+                document.getElementById('quiz-feedback').className = 'mt-4 p-3 rounded-lg hidden font-medium text-center';
+            }
+            
+            document.getElementById('btn-check-quiz').addEventListener('click', () => {
+                const ans = document.getElementById('quiz-answer').value.trim();
+                const feedback = document.getElementById('quiz-feedback');
+                
+                if (ans === currentQuizAnswer) {
+                    feedback.textContent = "ถูกต้อง! 🎉";
+                    feedback.className = "mt-4 p-3 rounded-lg font-medium text-center bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 block";
+                    score++;
+                    document.getElementById('quiz-score').textContent = score;
+                } else {
+                    feedback.textContent = `ผิดครับ คำตอบที่ถูกต้องคือ: ${currentQuizAnswer}`;
+                    feedback.className = "mt-4 p-3 rounded-lg font-medium text-center bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 block";
+                }
+            });
+            
+            document.getElementById('btn-next-quiz').addEventListener('click', generateQuiz);
+            
+            // Initialize first quiz
+            generateQuiz();
+        });
+    </script>
+</body>
+</html>

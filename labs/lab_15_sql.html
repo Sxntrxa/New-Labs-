@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 15: SQL Basics - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            blue: '#4285f4',
+                            red: '#ea4335',
+                            yellow: '#fbbc05',
+                            green: '#34a853',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 transition-colors duration-300">
+    <!-- Sidebar inclusion -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <!-- Main Content -->
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <!-- Header -->
+            <div class="border-b border-slate-200 dark:border-slate-700 pb-6">
+                <h1 class="text-3xl font-bold mb-2">Lab 15: SQL Basics</h1>
+                <p class="text-slate-600 dark:text-slate-400">เรียนรู้พื้นฐานการจัดการฐานข้อมูลด้วยภาษา SQL (SELECT, FROM, WHERE, ORDER BY)</p>
+            </div>
+
+            <!-- Theory Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 class="text-xl font-bold mb-4 text-gemini-blue"><i class="fas fa-book mr-2"></i>ทฤษฎี (Theory)</h2>
+                    <div class="space-y-4 text-sm">
+                        <p><strong>SQL (Structured Query Language)</strong> คือภาษาที่ใช้ในการจัดการและเข้าถึงข้อมูลในฐานข้อมูลเชิงสัมพันธ์ (Relational Database) คำสั่งพื้นฐานที่สำคัญมีดังนี้:</p>
+                        
+                        <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-gemini-green mb-1">SELECT & FROM</h3>
+                            <p>ใช้เพื่อเลือกข้อมูลจากตาราง (Table)</p>
+                            <code class="block mt-2 text-xs bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 p-2 rounded">SELECT column1, column2 FROM table_name;</code>
+                            <code class="block mt-1 text-xs bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 p-2 rounded">SELECT * FROM table_name; /* เลือกทุกคอลัมน์ */</code>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-gemini-red mb-1">WHERE</h3>
+                            <p>ใช้เพื่อกรองข้อมูลตามเงื่อนไขที่กำหนด</p>
+                            <code class="block mt-2 text-xs bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 p-2 rounded">SELECT * FROM students WHERE score >= 80;</code>
+                            <p class="mt-1 text-xs text-slate-500">ตัวดำเนินการ: =, &lt;&gt;, &gt;, &lt;, &gt;=, &lt;=, AND, OR</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-gemini-yellow mb-1">ORDER BY</h3>
+                            <p>ใช้เรียงลำดับผลลัพธ์ (ASC = น้อยไปมาก, DESC = มากไปน้อย)</p>
+                            <code class="block mt-2 text-xs bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 p-2 rounded">SELECT * FROM students ORDER BY score DESC;</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulator Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 text-gemini-blue"><i class="fas fa-terminal mr-2"></i>Virtual SQL Terminal</h2>
+                    <p class="text-sm mb-4">ตาราง <strong>students</strong> มีคอลัมน์: <code>id</code>, <code>name</code>, <code>grade</code>, <code>score</code></p>
+                    
+                    <div class="flex-grow flex flex-col space-y-4">
+                        <div class="flex flex-col">
+                            <label for="sqlInput" class="text-xs font-semibold text-slate-500 mb-1">ป้อนคำสั่ง SQL:</label>
+                            <textarea id="sqlInput" rows="2" class="w-full bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm font-mono focus:ring-2 focus:ring-gemini-blue focus:border-transparent outline-none transition-all resize-none" placeholder="SELECT * FROM students WHERE score > 80;"></textarea>
+                        </div>
+                        
+                        <button onclick="runSQL()" class="self-end bg-gemini-blue hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            <i class="fas fa-play mr-2"></i>Run Query
+                        </button>
+
+                        <div class="flex-grow flex flex-col">
+                            <h3 class="text-sm font-semibold mb-2">ผลลัพธ์ (Results):</h3>
+                            
+                        <div class="mt-4 flex gap-2 flex-wrap">
+                            <span class="text-xs font-bold text-slate-500 uppercase flex items-center">ตัวอย่าง:</span>
+                            <button onclick="setQuery('SELECT * FROM students')" class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-xs rounded hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">ดึงทั้งหมด</button>
+                            <button onclick="setQuery('SELECT name, grade FROM students WHERE score >= 80 ORDER BY score DESC')" class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-xs rounded hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">เกรดดีเรียงตามคะแนน</button>
+                            <button onclick="setQuery('SELECT * FROM students WHERE grade = \'A\' OR grade = \'B\'')" class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-xs rounded hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">เกรด A หรือ B</button>
+                        </div>
+<div id="sqlError" class="hidden text-sm text-red-500 mb-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded"></div>
+                            <div class="overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-lg flex-grow">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-50 dark:bg-[#131314] dark:bg-slate-800 dark:text-slate-400">
+                                        <tr id="tableHeader">
+                                            <!-- Headers generated by JS -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                                        <!-- Rows generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h2 class="text-xl font-bold mb-4 text-gemini-blue"><i class="fas fa-tasks mr-2"></i>แบบทดสอบ (Quiz)</h2>
+                <div class="space-y-6" id="quiz-container">
+                    <!-- Quiz questions generated by JS -->
+                </div>
+                <button onclick="checkQuiz()" class="mt-6 bg-gemini-green hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    ตรวจคำตอบ
+                </button>
+                <div id="quiz-result" class="mt-4 font-bold text-lg hidden"></div>
+            </div>
+
+        </div>
+        </div>
+</main>
+
+    <!-- Core & Custom Scripts -->
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // --- Simulator Logic ---
+        const students = [
+            { id: 1, name: 'Somchai', grade: 'A', score: 95, major: 'CS' },
+            { id: 2, name: 'Somsri', grade: 'B', score: 82, major: 'IT' },
+            { id: 3, name: 'Mana', grade: 'C', score: 75, major: 'CS' },
+            { id: 4, name: 'Manee', grade: 'A', score: 98, major: 'IT' },
+            { id: 5, name: 'Piti', grade: 'D', score: 60, major: 'CS' },
+            { id: 6, name: 'Chujai', grade: 'B', score: 85, major: 'DS' },
+            { id: 7, name: 'Sompong', grade: 'F', score: 45, major: 'IT' },
+            { id: 8, name: 'Wichai', grade: 'A', score: 91, major: 'DS' }
+        ];
+
+        function renderTable(data, columns) {
+            const thead = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-center text-slate-500">No results found</td></tr>';
+                if(columns && columns[0] !== '*') {
+                    columns.forEach(col => {
+                        thead.innerHTML += `<th class="px-4 py-3">${col}</th>`;
+                    });
+                } else {
+                    ['id', 'name', 'grade', 'score', 'major'].forEach(col => {
+                        thead.innerHTML += `<th class="px-4 py-3">${col}</th>`;
+                    });
+                }
+                return;
+            }
+
+            let displayCols = Object.keys(data[0]);
+            if (columns && columns.length > 0 && columns[0] !== '*') {
+                displayCols = columns;
+            }
+
+            displayCols.forEach(col => {
+                thead.innerHTML += `<th class="px-4 py-3">${col}</th>`;
+            });
+
+            data.forEach(row => {
+                let tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50';
+                displayCols.forEach(col => {
+                    tr.innerHTML += `<td class="px-4 py-3">${row[col] !== undefined ? row[col] : 'NULL'}</td>`;
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        renderTable(students, ['*']);
+
+        
+        function setQuery(query) {
+            document.getElementById('sqlInput').value = query;
+            runSQL();
+        }
+
+        function runSQL() {
+            const input = document.getElementById('sqlInput').value.trim();
+            const errorDiv = document.getElementById('sqlError');
+            errorDiv.classList.add('hidden');
+            
+            if (!input) return;
+
+            try {
+                const selectRegex = /SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+?))?(?:\s+ORDER\s+BY\s+(.+?)(?:\s+(ASC|DESC))?)?(?:\s*;)?$/i;
+                const match = input.match(selectRegex);
+
+                if (!match) {
+                    throw new Error("Syntax Error: ไม่สามารถแปลคำสั่ง SQL ได้ ลองตรวจสอบรูปแบบคำสั่ง (SELECT ... FROM ...)");
+                }
+
+                const selectCols = match[1].split(',').map(s => s.trim());
+                const tableName = match[2];
+                const whereClause = match[3];
+                const orderByCol = match[4] ? match[4].trim() : null;
+                const orderDir = match[5] ? match[5].toUpperCase() : 'ASC';
+
+                if (tableName.toLowerCase() !== 'students') {
+                    throw new Error(`Table '${tableName}' not found. Available table: 'students'`);
+                }
+
+                let resultData = [...students];
+
+                if (whereClause) {
+                    try {
+                        let wChunks = whereClause.split(/(['"].*?['"])/g);
+                        const columns = Object.keys(resultData[0]);
+                        let w = wChunks.map((chunk, i) => {
+                            if (i % 2 === 1) return chunk; // Inside string literal
+                            let mod = chunk;
+                            mod = mod.replace(/\bAND\b/gi, '&&')
+                                     .replace(/\bOR\b/gi, '||')
+                                     .replace(/([^><!])=([^=])/g, '$1==$2')
+                                     .replace(/<>/g, '!==');
+                            columns.forEach(col => {
+                                mod = mod.replace(new RegExp('\\b' + col + '\\b', 'gi'), 'row.' + col);
+                            });
+                            return mod;
+                        }).join('');
+                        
+                        const evaluator = new Function('row', 'return ' + w + ';');
+                        resultData = resultData.filter(row => evaluator(row));
+                    } catch(e) {
+                         throw new Error("Syntax Error in WHERE clause: ไม่สามารถประมวลผลเงื่อนไขได้ ตรวจสอบว่าพิมพ์ชื่อคอลัมน์และเครื่องหมายถูกต้อง เช่น score >= 80 AND grade = 'A'");
+                    }
+                }
+
+                if (orderByCol) {
+                    resultData.sort((a, b) => {
+                        let valA = a[orderByCol];
+                        let valB = b[orderByCol];
+                        
+                        if (valA === undefined) valA = '';
+                        if (valB === undefined) valB = '';
+
+                        if (valA < valB) return orderDir === 'ASC' ? -1 : 1;
+                        if (valA > valB) return orderDir === 'ASC' ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (selectCols[0] !== '*') {
+                    resultData = resultData.map(row => {
+                        let newRow = {};
+                        selectCols.forEach(col => {
+                            if(row.hasOwnProperty(col)) {
+                                newRow[col] = row[col];
+                            }
+                        });
+                        return newRow;
+                    });
+                }
+
+                renderTable(resultData, selectCols);
+
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        const quizData = [
+            {
+                question: "1. คำสั่งใดใช้สำหรับดึงข้อมูลทั้งหมดจากตาราง employees?",
+                options: [
+                    "GET * FROM employees;",
+                    "SELECT all FROM employees;",
+                    "SELECT * FROM employees;",
+                    "FETCH * FROM employees;"
+                ],
+                answer: 2
+            },
+            {
+                question: "2. หากต้องการกรองข้อมูลเฉพาะคนที่ได้คะแนน (score) มากกว่า 50 ต้องใช้ Keyword ใด?",
+                options: [
+                    "FILTER",
+                    "WHERE",
+                    "ORDER BY",
+                    "HAVING"
+                ],
+                answer: 1
+            },
+            {
+                question: "3. คำสั่ง ORDER BY score DESC มีความหมายว่าอย่างไร?",
+                options: [
+                    "เรียงคะแนนจากน้อยไปมาก",
+                    "เรียงคะแนนจากมากไปน้อย",
+                    "แสดงเฉพาะคะแนนที่มากกว่าค่าเฉลี่ย",
+                    "สุ่มแสดงคะแนน"
+                ],
+                answer: 1
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            quizData.forEach((q, index) => {
+                let html = `
+                    <div class="mb-4">
+                        <p class="font-medium mb-2">${q.question}</p>
+                        <div class="space-y-2">
+                `;
+                q.options.forEach((opt, i) => {
+                    html += `
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 transition-colors">
+                            <input type="radio" name="q${index}" value="${i}" class="text-gemini-blue focus:ring-gemini-blue">
+                            <span>${opt}</span>
+                        </label>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            quizData.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && parseInt(selected.value) === q.answer) {
+                    score++;
+                }
+            });
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.innerText = `คุณได้คะแนน ${score} / ${quizData.length}`;
+            resultDiv.className = `mt-4 font-bold text-lg block ${score === quizData.length ? 'text-green-500' : 'text-red-500'}`;
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>

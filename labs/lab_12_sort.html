@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 12: การเรียงลำดับข้อมูล (Sorting Algorithms) - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Kanit', 'sans-serif'] },
+                    colors: {
+                        gemini: {
+                            50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8',
+                            400: '#829ab1', 500: '#627d98', 600: '#486581', 700: '#334e68',
+                            800: '#243b53', 900: '#102a43',
+                            blue: '#1a73e8', dark: '#131314', card: '#1e1e20'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bar-label {
+            writing-mode: horizontal-tb;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        .dark .bar-label {
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-[#131314] antialiased min-h-screen font-sans">
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto space-y-6">
+
+        
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-rounded text-blue-600 dark:text-blue-400 text-4xl">sort</span>
+                    Lab 12: การเรียงลำดับข้อมูล
+                </h1>
+                <p class="text-slate-600 dark:text-slate-400 mt-2 text-lg">ทำความเข้าใจการเรียงลำดับข้อมูลด้วย Bubble, Selection และ Insertion Sort</p>
+            </div>
+            
+            
+        </header>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            
+            <!-- Left Column: Theory -->
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-3xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-symbols-rounded text-indigo-500">menu_book</span>
+                        ทฤษฎีการเรียงลำดับ (Sorting)
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Bubble Sort -->
+                        <div class="p-5 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <h3 class="text-xl font-medium text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span> Bubble Sort
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm mb-3">
+                                เปรียบเทียบข้อมูลที่อยู่ติดกันและสลับที่หากข้อมูลไม่อยู่ในลำดับที่ถูกต้อง ทำซ้ำไปเรื่อยๆ จนกว่าจะไม่มีการสลับที่เกิดขึ้น ข้อมูลที่มีค่ามากที่สุดจะ "ลอย" (Bubble) ไปอยู่ท้ายสุดในแต่ละรอบ
+                            </p>
+                            <ul class="text-sm text-slate-500 dark:text-slate-400 list-disc pl-5">
+                                <li>เวลาเฉลี่ย (Average Case): <span class="text-slate-800 dark:text-slate-200 dark:text-slate-300 font-mono">O(n²)</span></li>
+                                <li>เหมาะสำหรับ: ข้อมูลจำนวนน้อย หรือข้อมูลที่เกือบเรียงลำดับอยู่แล้ว</li>
+                            </ul>
+                        </div>
+
+                        <!-- Selection Sort -->
+                        <div class="p-5 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <h3 class="text-xl font-medium text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Selection Sort
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm mb-3">
+                                ค้นหาค่าที่น้อยที่สุด (หรือมากที่สุด) จากข้อมูลที่ยังไม่ได้เรียงลำดับ แล้วนำมาสลับกับข้อมูลในตำแหน่งที่ควรอยู่ ทำซ้ำไปเรื่อยๆ จนครบทุกตัว
+                            </p>
+                            <ul class="text-sm text-slate-500 dark:text-slate-400 list-disc pl-5">
+                                <li>เวลาเฉลี่ย (Average Case): <span class="text-slate-800 dark:text-slate-200 dark:text-slate-300 font-mono">O(n²)</span></li>
+                                <li>เหมาะสำหรับ: ข้อมูลที่มีขนาดเล็ก และต้องการจำกัดจำนวนครั้งในการสลับที่ (Swaps)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Insertion Sort -->
+                        <div class="p-5 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <h3 class="text-xl font-medium text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-purple-500"></span> Insertion Sort
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm mb-3">
+                                จำลองเหมือนการเรียงไพ่ในมือ โดยหยิบข้อมูลที่ยังไม่ได้เรียง มาแทรก (Insert) ในตำแหน่งที่ถูกต้องของกลุ่มข้อมูลที่เรียงลำดับไว้แล้ว
+                            </p>
+                            <ul class="text-sm text-slate-500 dark:text-slate-400 list-disc pl-5">
+                                <li>เวลาเฉลี่ย (Average Case): <span class="text-slate-800 dark:text-slate-200 dark:text-slate-300 font-mono">O(n²)</span></li>
+                                <li>เหมาะสำหรับ: ข้อมูลที่มีขนาดเล็ก หรือข้อมูลที่เข้ามาทีละตัว (Online Sorting)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Section -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-3xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-symbols-rounded text-orange-500">quiz</span>
+                        ทดสอบความเข้าใจ
+                    </h2>
+                    
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Q1 -->
+                        <div class="quiz-item">
+                            <p class="font-medium text-slate-800 dark:text-slate-200 mb-3">1. อัลกอริทึมใดมีแนวคิดคล้ายกับการ "เรียงไพ่ในมือ"?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q1" value="bubble" class="text-blue-600 w-4 h-4">
+                                    <span>Bubble Sort</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q1" value="selection" class="text-blue-600 w-4 h-4">
+                                    <span>Selection Sort</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q1" value="insertion" class="text-blue-600 w-4 h-4">
+                                    <span>Insertion Sort</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="quiz-item">
+                            <p class="font-medium text-slate-800 dark:text-slate-200 mb-3">2. หากมีข้อมูล 5 ตัวเรียงจากมากไปน้อย (5, 4, 3, 2, 1) การใช้ Bubble Sort (เรียงน้อยไปมาก) ในรอบ (Pass) แรกจะได้ผลลัพธ์เป็นอย่างไร?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q2" value="wrong1" class="text-blue-600 w-4 h-4">
+                                    <span>1, 2, 3, 4, 5</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q2" value="correct" class="text-blue-600 w-4 h-4">
+                                    <span>4, 3, 2, 1, 5</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl cursor-pointer hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 transition">
+                                    <input type="radio" name="q2" value="wrong2" class="text-blue-600 w-4 h-4">
+                                    <span>1, 5, 4, 3, 2</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button onclick="checkQuiz()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">
+                            ตรวจคำตอบ
+                        </button>
+                        <div id="quiz-result" class="hidden p-4 rounded-xl text-center font-medium"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Simulator -->
+            <div class="space-y-6 xl:sticky xl:top-8 self-start">
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-3xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-symbols-rounded text-blue-500">equalizer</span>
+                        เครื่องจำลองการเรียงลำดับ (Sorting Simulator)
+                    </h2>
+
+                    <!-- Controls -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">อัลกอริทึม</label>
+                            <select id="algo-select" class="w-full bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="bubble">Bubble Sort</option>
+                                <option value="selection">Selection Sort</option>
+                                <option value="insertion">Insertion Sort</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex justify-between">
+                                ความเร็วการเคลื่อนไหว <span id="speed-label">เร็วปานกลาง</span>
+                            </label>
+                            <input type="range" id="speed-slider" min="10" max="1000" value="400" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer mt-3">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mb-8">
+                        <button id="btn-generate" onclick="generateArray()" class="flex-1 min-w-[140px] py-3 px-4 bg-slate-100 dark:bg-[#1e1f20] hover:bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 dark:text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                            <span class="material-symbols-rounded">shuffle</span> สุ่มข้อมูลใหม่
+                        </button>
+                        <button id="btn-sort" onclick="startSort()" class="flex-1 min-w-[140px] py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                            <span class="material-symbols-rounded">play_arrow</span> เริ่มเรียงลำดับ
+                        </button>
+                    </div>
+
+                    <!-- Visualization Canvas -->
+                    <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 dark:border-slate-800 relative">
+                        <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-red-400 rounded-sm"></div> กำลังเปรียบเทียบ</span>
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-blue-500 rounded-sm"></div> ตัวแปรหลัก/น้อยสุด</span>
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-emerald-500 rounded-sm"></div> เรียงเสร็จแล้ว</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Array Bars -->
+                        <div id="bars-container" class="flex items-end justify-center gap-1 sm:gap-2 h-64 mt-4 w-full border-b-2 border-slate-300 dark:border-slate-600 dark:border-slate-700 pb-1">
+                            <!-- Bars will be generated here by JS -->
+                        </div>
+                    </div>
+                    
+                    <div id="status-text" class="mt-4 text-center text-slate-600 dark:text-slate-400 font-medium h-6">
+                        พร้อมใช้งาน: กดปุ่มสุ่มข้อมูลเพื่อเริ่มต้น
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+            </div>
+    </div>
+</main>
+
+    <!-- Scripts -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        
+
+        // --- Sorting Simulator Logic ---
+        
+        let array = [];
+        const container = document.getElementById('bars-container');
+        const statusText = document.getElementById('status-text');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedLabel = document.getElementById('speed-label');
+        const btnGenerate = document.getElementById('btn-generate');
+        const btnSort = document.getElementById('btn-sort');
+        const algoSelect = document.getElementById('algo-select');
+        
+        let isSorting = false;
+        let abortController = null;
+
+        // Default colors
+        const COLOR_DEFAULT = "bg-slate-300 dark:bg-slate-600";
+        const COLOR_COMPARE = "bg-red-400";
+        const COLOR_SELECTED = "bg-blue-500";
+        const COLOR_SORTED = "bg-emerald-500";
+        
+        // Update speed label
+        speedSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            if(val < 200) speedLabel.textContent = "ช้ามาก";
+            else if(val < 500) speedLabel.textContent = "ปานกลาง";
+            else if(val < 800) speedLabel.textContent = "เร็ว";
+            else speedLabel.textContent = "เร็วมาก";
+        });
+
+        function getDelay() {
+            // Invert the slider value so higher value = less delay
+            return 1010 - parseInt(speedSlider.value);
+        }
+
+        function sleep(ms, signal) {
+            return new Promise((resolve, reject) => {
+                const timeout = setTimeout(resolve, ms);
+                if (signal) {
+                    signal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new Error('aborted'));
+                    });
+                }
+            });
+        }
+
+        function generateArray() {
+            if (isSorting) {
+                if(abortController) abortController.abort();
+                isSorting = false;
+                btnSort.disabled = false;
+                btnSort.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+
+            container.innerHTML = '';
+            array = [];
+            // Random size between 10 and 15
+            const size = Math.floor(Math.random() * 6) + 10;
+            
+            for (let i = 0; i < size; i++) {
+                // Random value between 10 and 100
+                const val = Math.floor(Math.random() * 90) + 10;
+                array.push(val);
+                
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'flex flex-col justify-end items-center h-full w-full max-w-[40px]';
+                
+                const bar = document.createElement('div');
+                bar.className = `w-full ${COLOR_DEFAULT} rounded-t-md transition-all duration-150 ease-in-out relative`;
+                bar.style.height = `${val}%`;
+                bar.id = `bar-${i}`;
+                
+                const label = document.createElement('span');
+                label.className = 'bar-label mt-1';
+                label.textContent = val;
+                label.id = `label-${i}`;
+                
+                barWrapper.appendChild(bar);
+                barWrapper.appendChild(label);
+                container.appendChild(barWrapper);
+            }
+            statusText.textContent = `สร้างข้อมูลใหม่จำนวน ${size} ตัว`;
+        }
+
+        function setBarColor(index, colorClass) {
+            const bar = document.getElementById(`bar-${index}`);
+            if(bar) {
+                bar.className = `w-full ${colorClass} rounded-t-md transition-all duration-150 ease-in-out relative`;
+            }
+        }
+        
+        function setBarHeightAndLabel(index, val) {
+            const bar = document.getElementById(`bar-${index}`);
+            const label = document.getElementById(`label-${index}`);
+            if(bar && label) {
+                bar.style.height = `${val}%`;
+                label.textContent = val;
+            }
+        }
+
+        async function swap(i, j) {
+            let temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            
+            setBarHeightAndLabel(i, array[i]);
+            setBarHeightAndLabel(j, array[j]);
+        }
+
+        async function startSort() {
+            if (isSorting) return;
+            
+            const algo = algoSelect.value;
+            isSorting = true;
+            btnSort.disabled = true;
+            btnSort.classList.add('opacity-50', 'cursor-not-allowed');
+            btnGenerate.disabled = true;
+            btnGenerate.classList.add('opacity-50', 'cursor-not-allowed');
+            algoSelect.disabled = true;
+            
+            abortController = new AbortController();
+            const signal = abortController.signal;
+
+            try {
+                if (algo === 'bubble') {
+                    await bubbleSort(signal);
+                } else if (algo === 'selection') {
+                    await selectionSort(signal);
+                } else if (algo === 'insertion') {
+                    await insertionSort(signal);
+                }
+                statusText.textContent = "เรียงลำดับเสร็จสิ้น!";
+                // Make all green
+                for(let i = 0; i < array.length; i++){
+                    setBarColor(i, COLOR_SORTED);
+                }
+            } catch (e) {
+                if (e.message !== 'aborted') {
+                    console.error(e);
+                }
+            } finally {
+                isSorting = false;
+                btnSort.disabled = false;
+                btnSort.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnGenerate.disabled = false;
+                btnGenerate.classList.remove('opacity-50', 'cursor-not-allowed');
+                algoSelect.disabled = false;
+            }
+        }
+
+        // --- ALGORITHMS ---
+
+        async function bubbleSort(signal) {
+            let n = array.length;
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    statusText.textContent = `เปรียบเทียบ ${array[j]} และ ${array[j+1]}`;
+                    
+                    setBarColor(j, COLOR_COMPARE);
+                    setBarColor(j+1, COLOR_COMPARE);
+                    
+                    await sleep(getDelay(), signal);
+                    
+                    if (array[j] > array[j+1]) {
+                        statusText.textContent = `สลับ ${array[j]} กับ ${array[j+1]}`;
+                        await swap(j, j+1);
+                        await sleep(getDelay(), signal);
+                    }
+                    
+                    setBarColor(j, COLOR_DEFAULT);
+                    setBarColor(j+1, COLOR_DEFAULT);
+                }
+                setBarColor(n - i - 1, COLOR_SORTED); // Last element in pass is sorted
+            }
+            setBarColor(0, COLOR_SORTED); // First element
+        }
+
+        async function selectionSort(signal) {
+            let n = array.length;
+            for (let i = 0; i < n - 1; i++) {
+                let min_idx = i;
+                setBarColor(min_idx, COLOR_SELECTED);
+                statusText.textContent = `กำหนดค่าน้อยที่สุดปัจจุบันที่ตำแหน่ง ${i} (${array[i]})`;
+                await sleep(getDelay(), signal);
+
+                for (let j = i + 1; j < n; j++) {
+                    setBarColor(j, COLOR_COMPARE);
+                    statusText.textContent = `เปรียบเทียบ ${array[j]} กับค่าน้อยสุดปัจจุบัน (${array[min_idx]})`;
+                    await sleep(getDelay(), signal);
+
+                    if (array[j] < array[min_idx]) {
+                        if (min_idx !== i) {
+                            setBarColor(min_idx, COLOR_DEFAULT);
+                        }
+                        min_idx = j;
+                        setBarColor(min_idx, COLOR_SELECTED);
+                        statusText.textContent = `พบค่าน้อยกว่า: ${array[min_idx]}`;
+                        await sleep(getDelay(), signal);
+                    } else {
+                        setBarColor(j, COLOR_DEFAULT);
+                    }
+                }
+                
+                if(min_idx !== i) {
+                    setBarColor(i, COLOR_COMPARE);
+                    statusText.textContent = `สลับ ${array[i]} กับค่าน้อยสุด ${array[min_idx]}`;
+                    await sleep(getDelay(), signal);
+                    await swap(i, min_idx);
+                    setBarColor(min_idx, COLOR_DEFAULT);
+                }
+                
+                setBarColor(i, COLOR_SORTED);
+            }
+            setBarColor(n - 1, COLOR_SORTED);
+        }
+
+        async function insertionSort(signal) {
+            let n = array.length;
+            setBarColor(0, COLOR_SORTED);
+            for (let i = 1; i < n; i++) {
+                let key = array[i];
+                let j = i - 1;
+                
+                setBarColor(i, COLOR_SELECTED);
+                statusText.textContent = `เลือกตัวแปรหลัก: ${key}`;
+                await sleep(getDelay(), signal);
+
+                while (j >= 0 && array[j] > key) {
+                    setBarColor(j, COLOR_COMPARE);
+                    statusText.textContent = `ตรวจสอบ ${array[j]} > ${key} จึงเลื่อนไปทางขวา`;
+                    await sleep(getDelay(), signal);
+                    
+                    array[j + 1] = array[j];
+                    setBarHeightAndLabel(j + 1, array[j+1]);
+                    
+                    setBarColor(j, COLOR_SORTED);
+                    setBarColor(j+1, COLOR_COMPARE);
+                    await sleep(getDelay(), signal);
+                    
+                    setBarColor(j+1, COLOR_SORTED);
+                    j = j - 1;
+                }
+                
+                array[j + 1] = key;
+                setBarHeightAndLabel(j + 1, key);
+                setBarColor(j + 1, COLOR_SORTED);
+                statusText.textContent = `แทรก ${key} ที่ตำแหน่ง ${j + 1}`;
+                await sleep(getDelay(), signal);
+                
+                // Ensure all elements before i are colored sorted
+                for(let k=0; k<=i; k++) {
+                    setBarColor(k, COLOR_SORTED);
+                }
+            }
+        }
+
+        // --- Quiz Logic ---
+        function checkQuiz() {
+            let score = 0;
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'dark:bg-green-900', 'dark:text-green-100', 'dark:bg-red-900', 'dark:text-red-100');
+            
+            if (!q1 || !q2) {
+                resultDiv.textContent = "กรุณาตอบคำถามให้ครบทุกข้อ";
+                resultDiv.classList.add('bg-yellow-100', 'text-yellow-800', 'dark:bg-yellow-900', 'dark:text-yellow-100');
+                return;
+            }
+
+            if (q1.value === 'insertion') score++;
+            if (q2.value === 'correct') score++;
+
+            if (score === 2) {
+                resultDiv.textContent = "🎉 ยอดเยี่ยม! คุณตอบถูกทั้งหมด";
+                resultDiv.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-100');
+            } else {
+                resultDiv.textContent = `คุณตอบถูก ${score}/2 ข้อ ลองใหม่อีกครั้งนะ`;
+                resultDiv.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-100');
+            }
+        }
+
+        // Initial generation
+        generateArray();
+    </script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3: เศษส่วนในระบบเลขฐาน - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#131314',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-[#131314] bg-slate-50 dark:bg-[#131314] text-slate-800 dark:text-slate-200 dark:text-white transition-colors duration-200">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>
+        if (typeof renderSidebar === 'function') {
+            renderSidebar(window.location.pathname);
+        }
+    </script>
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+
+        <div class="p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 pb-12">
+                <!-- Header -->
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Lab 3: เศษส่วนในระบบเลขฐาน</h1>
+                    <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">เรียนรู้วิธีการแปลงเลขทศนิยมเป็นเลขฐานสอง</p>
+                </header>
+                
+                <!-- 1. THEORY (2-column layout on large screens) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Left: Conversion process -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">การแปลงเลขทศนิยมเป็นเลขฐานสอง</h2>
+                        <p class="mb-4 text-slate-700 dark:text-slate-300">
+                            การแปลงส่วนที่เป็นทศนิยม (เศษส่วน) ให้ใช้วิธี <strong>คูณด้วย 2</strong> แล้วเก็บค่าจำนวนเต็มที่ได้ (0 หรือ 1) ไว้เป็นคำตอบ จากนั้นนำส่วนที่เป็นทศนิยมไปคูณ 2 ต่อไปเรื่อยๆ
+                        </p>
+                        <ol class="list-decimal pl-5 space-y-2 text-slate-700 dark:text-slate-300">
+                            <li>นำค่าทศนิยมตั้งต้นคูณด้วย 2</li>
+                            <li>ถ้าผลลัพธ์ ≥ 1 ให้เก็บค่า <strong>1</strong> และหัก 1 ออกจากทศนิยม</li>
+                            <li>ถ้าผลลัพธ์ < 1 ให้เก็บค่า <strong>0</strong></li>
+                            <li>ทำซ้ำกับทศนิยมที่เหลือ จนกว่าทศนิยมจะเป็น 0 หรือได้ความละเอียดที่ต้องการ</li>
+                        </ol>
+                    </div>
+
+                    <!-- Right: Fractional weights -->
+                    <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-green-600 dark:text-green-400">ค่าน้ำหนักของเลขทศนิยม (น้ำหนักของฐานสอง)</h2>
+                        <p class="mb-4 text-slate-700 dark:text-slate-300">
+                            ตัวเลขทศนิยมแต่ละตำแหน่งในระบบฐานสอง จะมีค่าน้ำหนักลดลงทีละครั้งจากการหารด้วย 2
+                        </p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-700 dark:text-slate-300">
+                                <thead class="text-xs uppercase bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="px-4 py-3">ตำแหน่ง (จากจุด)</th>
+                                        <th class="px-4 py-3">กำลังของ 2</th>
+                                        <th class="px-4 py-3">ค่าเศษส่วน</th>
+                                        <th class="px-4 py-3">ค่าทศนิยมฐานสิบ</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="px-4 py-3">1</td>
+                                        <td class="px-4 py-3">2<sup>-1</sup></td>
+                                        <td class="px-4 py-3">1/2</td>
+                                        <td class="px-4 py-3 font-mono">0.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3">2</td>
+                                        <td class="px-4 py-3">2<sup>-2</sup></td>
+                                        <td class="px-4 py-3">1/4</td>
+                                        <td class="px-4 py-3 font-mono">0.25</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3">3</td>
+                                        <td class="px-4 py-3">2<sup>-3</sup></td>
+                                        <td class="px-4 py-3">1/8</td>
+                                        <td class="px-4 py-3 font-mono">0.125</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3">4</td>
+                                        <td class="px-4 py-3">2<sup>-4</sup></td>
+                                        <td class="px-4 py-3">1/16</td>
+                                        <td class="px-4 py-3 font-mono">0.0625</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. VISUAL FRACTION TANK / BAR -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4 text-purple-600 dark:text-purple-400">แสดงผลทศนิยมด้วยแถบภาพ (Fraction Bar)</h2>
+                    <p class="mb-6 text-slate-700 dark:text-slate-300">ป้อนค่าทศนิยม (0.0 ถึง 0.999) เพื่อดูส่วนประกอบค่าน้ำหนักฐานสอง</p>
+                    
+                    <div class="flex flex-wrap items-center gap-4 mb-8">
+                        <input type="number" id="visual-input" min="0" max="0.999" step="0.001" value="0.625" class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-300 dark:border-slate-600 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5">
+                        <button onclick="updateVisualBar()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors shadow-sm">สร้างแถบภาพ</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-sm text-slate-600 dark:text-slate-400 font-mono">
+                            <span>0.0</span>
+                            <span id="visual-value">0.625</span>
+                            <span>1.0</span>
+                        </div>
+                        <div class="h-8 bg-slate-200 dark:bg-slate-700 dark:bg-slate-800 rounded-full overflow-hidden flex" id="visual-bar-container">
+                            <!-- Bars will be generated here -->
+                        </div>
+                        <div id="visual-breakdown" class="flex flex-wrap gap-2 text-sm font-mono mt-4">
+                            <!-- Breakdown tags here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. INTERACTIVE CONVERTER WITH STEPS -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4 text-indigo-600 dark:text-indigo-400">เครื่องมือแปลงทศนิยมเป็นฐานสองพร้อมขั้นตอน</h2>
+                    
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <label for="calc-input" class="text-slate-700 dark:text-slate-300">ค่าทศนิยมฐานสิบ (เช่น 0.625):</label>
+                        <input type="number" id="calc-input" min="0" max="0.999" step="0.001" value="0.625" class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 border border-slate-300 dark:border-slate-600 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 p-2.5">
+                        <button onclick="calculateSteps()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm">คำนวณ</button>
+                    </div>
+
+                    <div id="calc-steps-container" class="hidden">
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-left text-slate-700 dark:text-slate-300 border-collapse">
+                                <thead class="text-xs uppercase bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="px-4 py-3">ขั้นตอน</th>
+                                        <th class="px-4 py-3">การคำนวณ</th>
+                                        <th class="px-4 py-3">ผลลัพธ์</th>
+                                        <th class="px-4 py-3">ส่วนเต็ม (เก็บไว้)</th>
+                                        <th class="px-4 py-3">ส่วนทศนิยมที่เหลือ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="calc-steps-body" class="divide-y divide-slate-200 dark:divide-slate-700">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 p-4 rounded-xl text-center">
+                            <p class="text-lg text-slate-700 dark:text-slate-300">ผลลัพธ์ในฐานสอง: <strong id="calc-result" class="text-xl text-indigo-600 dark:text-indigo-400 font-mono tracking-wider"></strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. PRACTICE CHALLENGE (QUIZ) -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e20] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-orange-600 dark:text-orange-400">แบบฝึกหัดทบทวน (Practice Challenge)</h2>
+                        <div class="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-4 py-1.5 rounded-full font-medium text-sm">
+                            คะแนน: <span id="quiz-score">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-8 text-center border border-slate-200 dark:border-slate-700 mb-6">
+                        <p class="text-slate-600 dark:text-slate-400 mb-2">จงแปลงค่าต่อไปนี้เป็นเลขฐานสอง</p>
+                        <div class="text-4xl font-bold font-mono text-slate-800 dark:text-slate-200 dark:text-white mb-6" id="quiz-question">0.0</div>
+                        
+                        <div class="max-w-xs mx-auto space-y-4">
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 font-mono text-lg">0.</span>
+                                <input type="text" id="quiz-answer" placeholder="101" class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full pl-8 p-3 font-mono text-lg text-center shadow-sm">
+                            </div>
+                            <button onclick="checkQuizAnswer()" class="w-full px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors shadow-sm">ตรวจคำตอบ</button>
+                        </div>
+                        
+                        <div id="quiz-feedback" class="mt-4 text-sm font-medium h-6 hidden"></div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button onclick="generateQuiz()" class="text-orange-600 dark:text-orange-400 hover:underline text-sm transition-colors">เปลี่ยนคำถาม</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+</main>
+    <script src="../assets/js/core.js"></script>
+
+    <script>
+        // VISUAL FRACTION TANK LOGIC
+        const weights = [0.5, 0.25, 0.125, 0.0625, 0.03125];
+        const colors = ['bg-blue-500', 'bg-purple-500', 'bg-green-500', 'bg-yellow-500', 'bg-pink-500'];
+        
+        function updateVisualBar() {
+            let valStr = document.getElementById('visual-input').value;
+            let val = parseFloat(valStr);
+            if (isNaN(val) || val < 0 || val >= 1) val = 0;
+            
+            document.getElementById('visual-value').textContent = valStr;
+            
+            let container = document.getElementById('visual-bar-container');
+            let breakdown = document.getElementById('visual-breakdown');
+            container.innerHTML = '';
+            breakdown.innerHTML = '';
+            
+            let currentVal = val;
+
+            for (let i = 0; i < weights.length; i++) {
+                if (currentVal >= weights[i] - 0.0001) {
+                    currentVal -= weights[i];
+                    
+                    let widthPercent = (weights[i] * 100).toFixed(2);
+                    let bar = document.createElement('div');
+                    bar.className = `h-full ${colors[i]} flex items-center justify-center text-xs text-white font-bold transition-all duration-500 overflow-hidden whitespace-nowrap`;
+                    bar.style.width = '0%';
+                    
+                    container.appendChild(bar);
+                    
+                    setTimeout(() => {
+                        bar.style.width = widthPercent + '%';
+                        if(weights[i] >= 0.125) {
+                            bar.innerText = `1/${Math.pow(2, i+1)}`;
+                        }
+                    }, 50);
+
+                    let tag = document.createElement('span');
+                    tag.className = `px-2 py-1 rounded-md text-white text-xs ${colors[i]}`;
+                    tag.innerText = `2^-${i+1} (${weights[i]})`;
+                    breakdown.appendChild(tag);
+                }
+            }
+
+            if (val < 0.999 && (1 - val) > 0.001) {
+                let remainderWidth = ((1 - val) * 100).toFixed(2);
+                let emptyBar = document.createElement('div');
+                emptyBar.className = `h-full bg-slate-200 dark:bg-slate-800 transition-all duration-500`;
+                emptyBar.style.width = remainderWidth + '%';
+                container.appendChild(emptyBar);
+            }
+            
+            if (breakdown.innerHTML === '') {
+                breakdown.innerHTML = '<span class="text-slate-500">ไม่มีส่วนประกอบ</span>';
+            }
+        }
+
+        // CALCULATION STEPS LOGIC
+        function calculateSteps() {
+            let inputStr = document.getElementById('calc-input').value;
+            let val = parseFloat(inputStr);
+            if (isNaN(val) || val < 0 || val >= 1) return;
+            
+            let tbody = document.getElementById('calc-steps-body');
+            tbody.innerHTML = '';
+            document.getElementById('calc-steps-container').classList.remove('hidden');
+            
+            let current = val;
+            let resultBinary = "0.";
+            let stepLimit = 8;
+            let step = 1;
+
+            while (current > 0 && step <= stepLimit) {
+                let multiplied = current * 2;
+                let intPart = Math.floor(multiplied);
+                let remPart = multiplied - intPart;
+
+                remPart = parseFloat(remPart.toFixed(6));
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-3">${step}</td>
+                    <td class="px-4 py-3 font-mono">${current} × 2</td>
+                    <td class="px-4 py-3 font-mono">${multiplied.toFixed(5).replace(/\.?0+$/, '') || '0'}</td>
+                    <td class="px-4 py-3 text-indigo-600 dark:text-indigo-400 font-bold font-mono">${intPart}</td>
+                    <td class="px-4 py-3 font-mono">${remPart}</td>
+                `;
+                tbody.appendChild(tr);
+
+                resultBinary += intPart.toString();
+                current = remPart;
+                step++;
+            }
+
+            if (current > 0) {
+                resultBinary += "...";
+            }
+
+            document.getElementById('calc-result').textContent = resultBinary;
+        }
+
+        // QUIZ LOGIC
+        const quizValues = [0.5, 0.25, 0.75, 0.125, 0.375, 0.625, 0.875];
+        let currentQuizAnswer = "";
+        let score = 0;
+
+        function decimalToBinaryFraction(dec) {
+            let bin = "";
+            let current = dec;
+            for(let i=0; i<4; i++) {
+                if(current === 0) break;
+                current *= 2;
+                let bit = Math.floor(current);
+                bin += bit;
+                current -= bit;
+            }
+            return bin;
+        }
+
+        function generateQuiz() {
+            let randVal = quizValues[Math.floor(Math.random() * quizValues.length)];
+            document.getElementById('quiz-question').textContent = randVal;
+            currentQuizAnswer = decimalToBinaryFraction(randVal);
+            
+            document.getElementById('quiz-answer').value = '';
+            let feedback = document.getElementById('quiz-feedback');
+            feedback.classList.add('hidden');
+            feedback.classList.remove('text-green-600', 'text-red-600', 'dark:text-green-400', 'dark:text-red-400');
+        }
+
+        function checkQuizAnswer() {
+            let input = document.getElementById('quiz-answer').value.trim();
+            // allow answers with or without "0." prefix
+            if (input.startsWith("0.")) {
+                input = input.substring(2);
+            }
+            
+            let feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            if (input === currentQuizAnswer) {
+                feedback.textContent = "✓ ถูกต้อง! เยี่ยมมาก";
+                feedback.classList.add("text-green-600", "dark:text-green-400");
+                feedback.classList.remove("text-red-600", "dark:text-red-400");
+                score += 10;
+                document.getElementById('quiz-score').textContent = score;
+                setTimeout(generateQuiz, 1500);
+            } else {
+                feedback.textContent = "✗ ยังไม่ถูก ลองพยายามใหม่นะ";
+                feedback.classList.add("text-red-600", "dark:text-red-400");
+                feedback.classList.remove("text-green-600", "dark:text-green-400");
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateVisualBar();
+            generateQuiz();
+        });
+    </script>
+</body>
+</html>

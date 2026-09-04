@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16 Network Topology - COM-SCI Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { sans: ['Inter', 'Sarabun', 'sans-serif'] } } }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Sarabun', sans-serif; }
+        .glass-panel { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+        
+        .card {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .dark .card {
+            background-color: #1e1e20;
+            border-color: #334155;
+        }
+
+        .input-field {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+
+        .dark .input-field {
+            background-color: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased">
+    <script src="../assets/js/sidebar.js"></script>
+    <script>
+        if (typeof renderSidebar === 'function') {
+            renderSidebar(window.location.pathname);
+        }
+    </script>
+    <main class=" min-h-screen flex flex-col transition-all duration-300">
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+            <button onclick="if(typeof toggleSidebar === 'function') toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span class="font-bold">COM-SCI Labs</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+        </header>
+        <div class="flex-grow p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold mb-2">Lab 16: Network Topology Simulator</h1>
+                    <p class="text-slate-600 dark:text-slate-400">เรียนรู้เกี่ยวกับรูปแบบการเชื่อมต่อเครือข่ายคอมพิวเตอร์ (Network Topology) แบบต่างๆ พร้อมการจำลองการส่งข้อมูล</p>
+                </div>
+
+                <!-- Theory Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="card">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                            Bus Topology
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">อุปกรณ์ทุกตัวเชื่อมต่อเข้ากับสายสื่อสารหลัก (Backbone) เพียงเส้นเดียว</p>
+                        <ul class="text-sm list-disc list-inside space-y-1">
+                            <li class="text-green-600 dark:text-green-400">ข้อดี: ประหยัดสาย, ติดตั้งง่าย</li>
+                            <li class="text-red-600 dark:text-red-400">ข้อเสีย: สายหลักพังเครือข่ายล่ม, ส่งข้อมูลพร้อมกันอาจชนกัน</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Star Topology
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">อุปกรณ์ทุกตัวเชื่อมต่อกับอุปกรณ์ศูนย์กลาง (Hub/Switch)</p>
+                        <ul class="text-sm list-disc list-inside space-y-1">
+                            <li class="text-green-600 dark:text-green-400">ข้อดี: จัดการง่าย, จุดหนึ่งเสียไม่กระทบจุดอื่น</li>
+                            <li class="text-red-600 dark:text-red-400">ข้อเสีย: อุปกรณ์ศูนย์กลางพังเครือข่ายล่ม, ใช้สายเยอะ</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Ring Topology
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">เชื่อมต่ออุปกรณ์เป็นวงแหวน การส่งข้อมูลเป็นทิศทางเดียว</p>
+                        <ul class="text-sm list-disc list-inside space-y-1">
+                            <li class="text-green-600 dark:text-green-400">ข้อดี: ไม่มีปัญหาข้อมูลชนกัน</li>
+                            <li class="text-red-600 dark:text-red-400">ข้อเสีย: จุดใดจุดหนึ่งเสียเครือข่ายล่ม, เพิ่มอุปกรณ์ยาก</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            Mesh Topology
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">ทุกอุปกรณ์เชื่อมต่อกันโดยตรงอย่างสมบูรณ์</p>
+                        <ul class="text-sm list-disc list-inside space-y-1">
+                            <li class="text-green-600 dark:text-green-400">ข้อดี: เสถียรที่สุด, เส้นทางสำรองเยอะ</li>
+                            <li class="text-red-600 dark:text-red-400">ข้อเสีย: ค่าใช้จ่ายสูงมาก, ติดตั้งและจัดการยากสุด</li>
+                        </ul>
+                    </div>
+
+                    <div class="card md:col-span-2 lg:col-span-1">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            Tree Topology
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">ผสมผสานระหว่าง Star และ Bus เป็นลำดับชั้น</p>
+                        <ul class="text-sm list-disc list-inside space-y-1">
+                            <li class="text-green-600 dark:text-green-400">ข้อดี: ขยายเครือข่ายง่าย, แบ่งกลุ่มจัดการได้ดี</li>
+                            <li class="text-red-600 dark:text-red-400">ข้อเสีย: สายหลักพังล่มทั้งระบบ, สายไฟพะรุงพะรัง</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Interactive Visualizer -->
+                <div class="card">
+                    <h2 class="text-2xl font-bold mb-4">Topology Visualizer</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">เลือก Topology</label>
+                                <select id="topologySelect" class="input-field" onchange="updateSim()">
+                                    <option value="bus">Bus Topology</option>
+                                    <option value="star" selected>Star Topology</option>
+                                    <option value="ring">Ring Topology</option>
+                                    <option value="mesh">Mesh Topology</option>
+                                    <option value="tree">Tree Topology</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">จำนวน Nodes (3-8): <span id="nodeCountVal">5</span></label>
+                                <input type="range" id="nodeCount" min="3" max="8" value="5" class="w-full accent-blue-500" oninput="updateSim()">
+                            </div>
+
+                            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800 p-4 rounded-lg">
+                                <p class="text-sm font-semibold mb-2">ข้อมูลเครือข่าย</p>
+                                <p class="text-sm">จำนวนสายที่ใช้: <span id="cableCount" class="font-mono text-blue-500 font-bold">4</span> เส้น</p>
+                                <p id="meshFormula" class="text-xs text-slate-500 dark:text-slate-400 mt-1 hidden">สูตร Mesh: n(n-1)/2</p>
+                            </div>
+
+                            <button onclick="startSimulation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                                จำลองการส่งข้อมูล (Simulate)
+                            </button>
+                        </div>
+
+                        <div class="md:col-span-2 flex justify-center bg-slate-50 dark:bg-[#131314] dark:bg-[#0f172a] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                            <canvas id="topoCanvas" width="600" height="400" class="max-w-full h-auto"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="card overflow-x-auto">
+                    <h2 class="text-xl font-bold mb-4">ตารางเปรียบเทียบ Topology</h2>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800">
+                                <th class="p-3 border-b border-slate-200 dark:border-slate-700">Topology</th>
+                                <th class="p-3 border-b border-slate-200 dark:border-slate-700">ความน่าเชื่อถือ</th>
+                                <th class="p-3 border-b border-slate-200 dark:border-slate-700">การติดตั้ง</th>
+                                <th class="p-3 border-b border-slate-200 dark:border-slate-700">เหมาะสำหรับ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-slate-200 dark:divide-slate-700">
+                            <tr>
+                                <td class="p-3 font-medium">Bus</td>
+                                <td class="p-3">ต่ำ (สายหลักขาดคือล่ม)</td>
+                                <td class="p-3">ง่ายและถูก</td>
+                                <td class="p-3">เครือข่ายขนาดเล็กมาก</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Star</td>
+                                <td class="p-3">ปานกลาง-สูง</td>
+                                <td class="p-3">ปานกลาง</td>
+                                <td class="p-3">เครือข่ายในอาคารทั่วไป (LAN)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Ring</td>
+                                <td class="p-3">ต่ำ</td>
+                                <td class="p-3">ปานกลาง</td>
+                                <td class="p-3">เครือข่ายเฉพาะทาง</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Mesh</td>
+                                <td class="p-3">สูงมาก (ไม่ล่มง่ายๆ)</td>
+                                <td class="p-3">ยากและแพงมาก</td>
+                                <td class="p-3">เครือข่ายหลักของประเทศ (WAN/Internet)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Tree</td>
+                                <td class="p-3">ปานกลาง</td>
+                                <td class="p-3">ปานกลาง-ยาก</td>
+                                <td class="p-3">องค์กรขนาดใหญ่ที่มีหลายแผนก</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Challenge Quiz -->
+                <div class="card">
+                    <h2 class="text-xl font-bold mb-4">ท้าทายความรู้ (Challenge)</h2>
+                    <div id="quizContainer" class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-800 p-6 rounded-lg">
+                        <p id="quizQuestion" class="text-lg font-medium mb-4 text-center">กำลังโหลดคำถาม...</p>
+                        <div id="quizOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Options will be generated here -->
+                        </div>
+                        <p id="quizResult" class="mt-4 text-center font-bold h-6"></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // --- Canvas Visualization ---
+        const canvas = document.getElementById('topoCanvas');
+        const ctx = canvas.getContext('2d');
+        const isDark = document.documentElement.classList.contains('dark');
+        
+        let nodes = [];
+        let connections = [];
+        let packets = [];
+        let animationId;
+        let centralSwitch = null;
+
+        const colors = {
+            node: isDark ? '#3b82f6' : '#2563eb',
+            hub: isDark ? '#a855f7' : '#9333ea',
+            line: isDark ? '#475569' : '#cbd5e1',
+            packet: isDark ? '#10b981' : '#059669',
+            text: isDark ? '#f8fafc' : '#0f172a'
+        };
+
+        function generateTopology(type, num) {
+            nodes = [];
+            connections = [];
+            centralSwitch = null;
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 120;
+
+            if (type === 'bus') {
+                const startX = 100;
+                const endX = width - 100;
+                const spacing = (endX - startX) / (num - 1);
+                
+                // Backbone ends
+                nodes.push({x: startX - 20, y: cy, type: 'terminator', label: 'T'});
+                nodes.push({x: endX + 20, y: cy, type: 'terminator', label: 'T'});
+                connections.push([0, 1]); // Backbone
+
+                for (let i = 0; i < num; i++) {
+                    const nx = startX + (i * spacing);
+                    const ny = (i % 2 === 0) ? cy - 60 : cy + 60;
+                    nodes.push({x: nx, y: ny, type: 'pc', label: `PC${i+1}`});
+                    // Virtual node on backbone
+                    nodes.push({x: nx, y: cy, type: 'tap', hidden: true});
+                    const pcIdx = nodes.length - 2;
+                    const tapIdx = nodes.length - 1;
+                    connections.push([pcIdx, tapIdx]);
+                }
+            } 
+            else if (type === 'star') {
+                centralSwitch = {x: cx, y: cy, type: 'hub', label: 'SW'};
+                nodes.push(centralSwitch);
+                for (let i = 0; i < num; i++) {
+                    const angle = (Math.PI * 2 * i) / num - Math.PI/2;
+                    const nx = cx + Math.cos(angle) * radius;
+                    const ny = cy + Math.sin(angle) * radius;
+                    nodes.push({x: nx, y: ny, type: 'pc', label: `PC${i+1}`});
+                    connections.push([0, i+1]);
+                }
+            }
+            else if (type === 'ring') {
+                for (let i = 0; i < num; i++) {
+                    const angle = (Math.PI * 2 * i) / num - Math.PI/2;
+                    const nx = cx + Math.cos(angle) * radius;
+                    const ny = cy + Math.sin(angle) * radius;
+                    nodes.push({x: nx, y: ny, type: 'pc', label: `PC${i+1}`});
+                }
+                for (let i = 0; i < num; i++) {
+                    connections.push([i, (i + 1) % num]);
+                }
+            }
+            else if (type === 'mesh') {
+                for (let i = 0; i < num; i++) {
+                    const angle = (Math.PI * 2 * i) / num - Math.PI/2;
+                    const nx = cx + Math.cos(angle) * radius;
+                    const ny = cy + Math.sin(angle) * radius;
+                    nodes.push({x: nx, y: ny, type: 'pc', label: `PC${i+1}`});
+                }
+                for (let i = 0; i < num; i++) {
+                    for (let j = i + 1; j < num; j++) {
+                        connections.push([i, j]);
+                    }
+                }
+            }
+            else if (type === 'tree') {
+                // Simplified Tree: Root -> 2 branches -> leaves
+                nodes.push({x: cx, y: cy - 100, type: 'hub', label: 'SW1'});
+                nodes.push({x: cx - 120, y: cy, type: 'hub', label: 'SW2'});
+                nodes.push({x: cx + 120, y: cy, type: 'hub', label: 'SW3'});
+                connections.push([0, 1], [0, 2]);
+
+                const childPerBranch = Math.ceil(num / 2);
+                let pcCount = 1;
+                for(let k=1; k<=2; k++) {
+                    let parentX = nodes[k].x;
+                    let numChildren = k===1 ? childPerBranch : (num - childPerBranch);
+                    let startX = parentX - (numChildren-1)*35;
+                    
+                    for(let i=0; i<numChildren; i++) {
+                        nodes.push({x: startX + i*70, y: cy + 100, type: 'pc', label: `PC${pcCount++}`});
+                        connections.push([k, nodes.length-1]);
+                    }
+                }
+            }
+        }
+
+        function drawNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw lines
+            ctx.strokeStyle = colors.line;
+            ctx.lineWidth = 2;
+            connections.forEach(([i, j]) => {
+                if(nodes[i] && nodes[j]) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.stroke();
+                }
+            });
+
+            // Draw packets
+            packets.forEach(p => {
+                const n1 = nodes[p.from];
+                const n2 = nodes[p.to];
+                if(!n1 || !n2) return;
+                
+                const x = n1.x + (n2.x - n1.x) * p.progress;
+                const y = n1.y + (n2.y - n1.y) * p.progress;
+                
+                ctx.fillStyle = colors.packet;
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pulse effect
+                ctx.strokeStyle = colors.packet;
+                ctx.globalAlpha = 1 - p.progress;
+                ctx.beginPath();
+                ctx.arc(x, y, 6 + (p.progress * 15), 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+            });
+
+            // Draw nodes
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '12px sans-serif';
+            
+            nodes.forEach(node => {
+                if(node.hidden) return;
+                
+                ctx.fillStyle = node.type === 'hub' ? colors.hub : 
+                               (node.type === 'terminator' ? '#64748b' : colors.node);
+                
+                let radius = node.type === 'hub' ? 20 : 16;
+                
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(node.label || '', node.x, node.y);
+            });
+        }
+
+        function animate() {
+            let activePackets = false;
+            
+            packets.forEach(p => {
+                p.progress += p.speed;
+                if (p.progress >= 1) {
+                    p.progress = 1;
+                    p.done = true;
+                } else {
+                    activePackets = true;
+                }
+            });
+
+            packets = packets.filter(p => !p.done);
+            drawNetwork();
+
+            if (activePackets) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        function startSimulation() {
+            cancelAnimationFrame(animationId);
+            packets = [];
+            
+            const type = document.getElementById('topologySelect').value;
+            const pcs = nodes.map((n, i) => ({...n, idx: i})).filter(n => n.type === 'pc');
+            if(pcs.length < 2) return;
+
+            // Pick random sender and receiver
+            const sender = pcs[Math.floor(Math.random() * pcs.length)];
+            let receiver = pcs[Math.floor(Math.random() * pcs.length)];
+            while(receiver.idx === sender.idx) {
+                receiver = pcs[Math.floor(Math.random() * pcs.length)];
+            }
+
+            if(type === 'star') {
+                packets.push({ from: sender.idx, to: 0, progress: 0, speed: 0.02 });
+                setTimeout(() => {
+                    packets.push({ from: 0, to: receiver.idx, progress: 0, speed: 0.02 });
+                    animate();
+                }, 1000);
+            } 
+            else if(type === 'mesh') {
+                packets.push({ from: sender.idx, to: receiver.idx, progress: 0, speed: 0.02 });
+            }
+            else if(type === 'ring') {
+                // Send around the ring
+                let current = sender.idx;
+                let delay = 0;
+                while(current !== receiver.idx) {
+                    let next = (current + 1) % nodes.length;
+                    let fromIdx = current;
+                    setTimeout(() => {
+                        packets.push({ from: fromIdx, to: next, progress: 0, speed: 0.04 });
+                        if(packets.length === 1) animate();
+                    }, delay);
+                    current = next;
+                    delay += 500;
+                }
+            }
+            else if(type === 'bus') {
+                // Simplified bus animation: PC -> tap -> backbone
+                let senderTap = nodes.findIndex(n => n.hidden && n.x === sender.x);
+                let receiverTap = nodes.findIndex(n => n.hidden && n.x === receiver.x);
+                
+                packets.push({ from: sender.idx, to: senderTap, progress: 0, speed: 0.05 });
+                setTimeout(() => {
+                    packets.push({ from: senderTap, to: receiverTap, progress: 0, speed: 0.02 });
+                    animate();
+                }, 500);
+                setTimeout(() => {
+                    packets.push({ from: receiverTap, to: receiver.idx, progress: 0, speed: 0.05 });
+                    animate();
+                }, 1500);
+            }
+            else if(type === 'tree') {
+                // Find parents
+                let sParent = connections.find(c => c[1] === sender.idx)[0];
+                let rParent = connections.find(c => c[1] === receiver.idx)[0];
+                
+                packets.push({ from: sender.idx, to: sParent, progress: 0, speed: 0.03 });
+                setTimeout(() => {
+                    if(sParent !== rParent) {
+                        // Go to root then to other parent
+                        packets.push({ from: sParent, to: 0, progress: 0, speed: 0.03 });
+                        setTimeout(() => {
+                            packets.push({ from: 0, to: rParent, progress: 0, speed: 0.03 });
+                            animate();
+                        }, 700);
+                        setTimeout(() => {
+                            packets.push({ from: rParent, to: receiver.idx, progress: 0, speed: 0.03 });
+                            animate();
+                        }, 1400);
+                    } else {
+                        // Same parent switch
+                        packets.push({ from: sParent, to: receiver.idx, progress: 0, speed: 0.03 });
+                        animate();
+                    }
+                }, 700);
+            }
+
+            if(type !== 'ring' && type !== 'bus' && type !== 'tree' && type !== 'star') animate();
+            else if(type === 'star') animate();
+        }
+
+        function updateSim() {
+            const type = document.getElementById('topologySelect').value;
+            const num = parseInt(document.getElementById('nodeCount').value);
+            document.getElementById('nodeCountVal').textContent = num;
+            
+            generateTopology(type, num);
+            drawNetwork();
+
+            // Calculate cables
+            let cables = 0;
+            const meshFormula = document.getElementById('meshFormula');
+            meshFormula.classList.add('hidden');
+
+            if(type === 'bus') cables = num + 1; // Backbone + drops
+            else if(type === 'star') cables = num;
+            else if(type === 'ring') cables = num;
+            else if(type === 'mesh') {
+                cables = (num * (num - 1)) / 2;
+                meshFormula.classList.remove('hidden');
+            }
+            else if(type === 'tree') cables = num + 2; // PCs + sw-to-sw
+
+            document.getElementById('cableCount').textContent = cables;
+        }
+
+        // --- Quiz System ---
+        const quizQuestions = [
+            {
+                q: "Topology รูปแบบใดที่หากสายสื่อสารหลักขาด เครือข่ายจะใช้งานไม่ได้ทั้งหมด?",
+                opts: ["Star", "Bus", "Ring", "Mesh"],
+                a: 1
+            },
+            {
+                q: "Topology ใดที่มีความน่าเชื่อถือสูงที่สุด และสายสำรองเยอะที่สุด?",
+                opts: ["Tree", "Star", "Mesh", "Bus"],
+                a: 2
+            },
+            {
+                q: "อุปกรณ์เครือข่ายส่วนใหญ่ในสำนักงาน (LAN) ปัจจุบันนิยมใช้ Topology แบบใด?",
+                opts: ["Star", "Ring", "Mesh", "Bus"],
+                a: 0
+            },
+            {
+                q: "สูตร n(n-1)/2 ใช้คำนวณจำนวนสายของ Topology ใด?",
+                opts: ["Mesh", "Tree", "Star", "Ring"],
+                a: 0
+            }
+        ];
+
+        let currentQuiz = 0;
+
+        function loadQuiz() {
+            currentQuiz = Math.floor(Math.random() * quizQuestions.length);
+            const q = quizQuestions[currentQuiz];
+            
+            document.getElementById('quizQuestion').textContent = q.q;
+            document.getElementById('quizResult').textContent = '';
+            
+            const optsContainer = document.getElementById('quizOptions');
+            optsContainer.innerHTML = '';
+            
+            q.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full py-2 px-4 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors font-medium';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(idx);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(idx) {
+            const res = document.getElementById('quizResult');
+            const btns = document.getElementById('quizOptions').children;
+            
+            for(let btn of btns) btn.disabled = true;
+
+            if(idx === quizQuestions[currentQuiz].a) {
+                res.textContent = "ถูกต้อง! 🎉";
+                res.className = "mt-4 text-center font-bold h-6 text-green-500";
+                btns[idx].classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500');
+            } else {
+                res.textContent = "ยังไม่ถูก ลองใหม่นะ";
+                res.className = "mt-4 text-center font-bold h-6 text-red-500";
+                btns[idx].classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500');
+                btns[quizQuestions[currentQuiz].a].classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500');
+            }
+
+            setTimeout(loadQuiz, 3000);
+        }
+
+        // Initialize
+        updateSim();
+        loadQuiz();
+
+        // Handle window resize/theme change
+        const observer = new MutationObserver(() => {
+            colors.node = document.documentElement.classList.contains('dark') ? '#3b82f6' : '#2563eb';
+            colors.hub = document.documentElement.classList.contains('dark') ? '#a855f7' : '#9333ea';
+            colors.line = document.documentElement.classList.contains('dark') ? '#475569' : '#cbd5e1';
+            colors.text = document.documentElement.classList.contains('dark') ? '#f8fafc' : '#0f172a';
+            drawNetwork();
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    </script>
+</body>
+</html>

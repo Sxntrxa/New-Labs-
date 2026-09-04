@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="th" class="bg-white dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <title>Theme Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="text-slate-800 dark:text-slate-200">
+    <script src="./assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+    <main class="lg:ml-72 p-8">
+        <h1 class="text-2xl font-bold">Theme Test Page</h1>
+        <p>If dark mode works, this page should have dark background when toggled.</p>
+        <p>Current theme: <span id="theme-status"></span></p>
+        <script>
+            document.getElementById('theme-status').textContent = 
+                document.documentElement.classList.contains('dark') ? 'DARK' : 'LIGHT';
+        </script>
+    </main>
+    <script src="./assets/js/core.js"></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 10: Stack & Queue - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        let isAnimating = false;
+        let stackCounter = 1;
+        let queueCounter = 1;
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            blue: '#1a73e8',
+                            dark: '#131314',
+                            border: '#e0e0e0',
+                            darkBorder: '#444746'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .stack-item {
+            transition: all 0.3s ease;
+            animation: dropIn 0.3s ease-out forwards;
+        }
+        @keyframes dropIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .stack-item.pop {
+            animation: popOut 0.3s ease-in forwards;
+        }
+        @keyframes popOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-50px); opacity: 0; }
+        }
+
+        .queue-item {
+            transition: all 0.3s ease;
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .queue-item.dequeue {
+            animation: slideOutLeft 0.3s ease-in forwards;
+        }
+        @keyframes slideOutLeft {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-50px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 dark:text-slate-200 dark:text-white bg-white dark:bg-[#1e1f20] dark:bg-[#131314] min-h-screen">
+    <!-- Sidebar will be injected here -->
+    <div id="sidebar-container"></div>
+
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+        <div class="max-w-7xl mx-auto space-y-8">
+            <!-- Header -->
+            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+                <h1 class="text-3xl font-bold mb-4">Lab 10: Stack & Queue</h1>
+                <p class="text-slate-600 dark:text-slate-400 dark:text-slate-300 text-lg">
+                    เรียนรู้โครงสร้างข้อมูลแบบ Stack (LIFO) และ Queue (FIFO) ผ่านการจำลองการทำงาน
+                </p>
+            </div>
+
+            <!-- Theory Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Stack Theory -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Stack (สแต็ก)</h2>
+                    </div>
+                    <div class="space-y-4 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                        <p>Stack เป็นโครงสร้างข้อมูลแบบ <strong>LIFO (Last-In, First-Out)</strong> ข้อมูลที่เข้าทีหลังสุด จะถูกนำออกไปเป็นอันดับแรก</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Push:</strong> เพิ่มข้อมูลลงใน Stack (วางทับด้านบน)</li>
+                            <li><strong>Pop:</strong> นำข้อมูลออกจาก Stack (นำออกจากด้านบน)</li>
+                            <li><strong>Peek/Top:</strong> ดูข้อมูลใบบนสุดโดยไม่ดึงออก</li>
+                        </ul>
+                        <p class="text-sm bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 p-3 rounded-lg mt-2">
+                            💡 ตัวอย่าง: การซ้อนจาน, ปุ่ม Undo ในโปรแกรม, การเรียกฟังก์ชัน (Call Stack)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Queue Theory -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Queue (คิว)</h2>
+                    </div>
+                    <div class="space-y-4 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+                        <p>Queue เป็นโครงสร้างข้อมูลแบบ <strong>FIFO (First-In, First-Out)</strong> ข้อมูลที่เข้ามาก่อน จะถูกนำออกไปเป็นอันดับแรก</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Enqueue:</strong> เพิ่มข้อมูลลงใน Queue (ต่อท้ายคิว)</li>
+                            <li><strong>Dequeue:</strong> นำข้อมูลออกจาก Queue (เรียกจากหัวคิว)</li>
+                            <li><strong>Front/Rear:</strong> ดูข้อมูลหัวคิวและท้ายคิว</li>
+                        </ul>
+                        <p class="text-sm bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 p-3 rounded-lg mt-2">
+                            💡 ตัวอย่าง: การเข้าคิวซื้อของ, คิวเครื่องปริ้น, การประมวลผลตามลำดับก่อนหลัง
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulators -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Stack Simulator -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Stack Simulator (LIFO)
+                    </h3>
+                    
+                    <div class="flex gap-2 mb-6">
+                        
+                        <button onclick="pushToStack()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                            Push
+                        </button>
+                        <button onclick="popFromStack()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                            Pop
+                        </button>
+                    </div>
+
+                    <div class="flex-1 flex flex-col items-center justify-end min-h-[300px] bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-4 border-x-4 border-b-4 border-slate-300 dark:border-slate-600">
+                        <!-- Stack Items Container -->
+                        <div id="stack-container" class="flex flex-col-reverse w-full max-w-[200px] gap-1">
+                            <!-- Items will be injected here -->
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-center text-slate-500 dark:text-slate-400" id="stack-status">Stack ว่างเปล่า</div>
+                </div>
+
+                <!-- Queue Simulator -->
+                <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        Queue Simulator (FIFO)
+                    </h3>
+                    
+                    <div class="flex gap-2 mb-6">
+                        
+                        <button onclick="enqueue()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                            Enqueue
+                        </button>
+                        <button onclick="dequeue()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                            Dequeue
+                        </button>
+                    </div>
+
+                    <div class="flex-1 flex items-center overflow-hidden min-h-[300px] bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-4 border-y-4 border-slate-300 dark:border-slate-600">
+                        <!-- Queue Items Container -->
+                        <div class="w-full flex justify-between items-center px-2 mb-2 absolute inset-x-0 mt-[-60px] text-xs font-bold text-slate-400">
+                            <span>Front (หัวคิว)</span>
+                            <span>Rear (ท้ายคิว)</span>
+                        </div>
+                        <div id="queue-container" class="flex flex-row w-full gap-2 relative">
+                            <!-- Items will be injected here -->
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-center text-slate-500 dark:text-slate-400" id="queue-status">Queue ว่างเปล่า</div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                <h3 class="text-xl font-bold mb-4">ทดสอบความเข้าใจ</h3>
+                
+                <div id="quiz-container" class="space-y-4">
+                    <p id="question-text" class="text-lg font-medium text-slate-800 dark:text-slate-200"></p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="options-container">
+                        <!-- Options will be injected here -->
+                    </div>
+                    <div id="quiz-feedback" class="mt-4 p-3 rounded-lg hidden font-medium text-center"></div>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="loadNextQuestion()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 dark:text-white rounded-lg transition-colors text-sm">
+                            ข้อต่อไป
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+</main>
+
+    <!-- Scripts -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        // Stack Logic
+        const stack = [];
+        const stackContainer = document.getElementById('stack-container');
+        const stackStatus = document.getElementById('stack-status');
+
+        function updateStackUI() {
+            stackContainer.innerHTML = '';
+            stack.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'stack-item bg-blue-500 text-white rounded-md py-3 px-4 text-center font-semibold shadow-md w-full';
+                div.textContent = item;
+                // Highlight top item
+                if (index === stack.length - 1) {
+                    div.classList.remove('bg-blue-500');
+                    div.classList.add('bg-blue-600', 'ring-2', 'ring-white', 'dark:ring-slate-800');
+                }
+                stackContainer.appendChild(div);
+            });
+            stackStatus.textContent = stack.length > 0 ? `จำนวนข้อมูล: ${stack.length} | Top: ${stack[stack.length - 1]}` : 'Stack ว่างเปล่า';
+        }
+
+        function pushToStack() {
+            if (isAnimating) return;
+            if (stack.length >= 8) {
+                alert("Stack เต็ม (Overflow) - เก็บได้สูงสุด 8 ค่า");
+                return;
+            }
+            const val = stackCounter++;
+            isAnimating = true;
+            stack.push(val);
+            updateStackUI();
+            setTimeout(() => { isAnimating = false; }, 300);
+        }
+        
+        function popFromStack() {
+            if (isAnimating) return;
+            if (stack.length === 0) {
+                alert("Stack ว่างเปล่า (Underflow)");
+                return;
+            }
+            
+            // Add pop animation to the top item
+            const topElement = stackContainer.lastElementChild;
+            if (topElement) {
+                topElement.classList.add('pop');
+                isAnimating = true;
+            setTimeout(() => {
+                    stack.pop();
+                    updateStackUI();
+                    isAnimating = false;
+                }, 300);
+            } else {
+                stack.pop();
+                updateStackUI();
+                isAnimating = false;
+            }
+        }
+
+        // Queue Logic
+        const queue = [];
+        const queueContainer = document.getElementById('queue-container');
+        const queueStatus = document.getElementById('queue-status');
+
+        function updateQueueUI() {
+            queueContainer.innerHTML = '';
+            queue.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'queue-item bg-green-500 text-white rounded-md py-3 px-4 text-center font-semibold shadow-md min-w-[60px] flex-shrink-0';
+                div.textContent = item;
+                // Highlight front and rear
+                if (index === 0) {
+                    div.classList.remove('bg-green-500');
+                    div.classList.add('bg-green-600', 'ring-2', 'ring-white', 'dark:ring-slate-800');
+                }
+                if (index === queue.length - 1 && queue.length > 1) {
+                    div.classList.remove('bg-green-500');
+                    div.classList.add('bg-emerald-500');
+                }
+                queueContainer.appendChild(div);
+            });
+            
+            let status = 'Queue ว่างเปล่า';
+            if (queue.length > 0) {
+                status = `จำนวนข้อมูล: ${queue.length} | Front: ${queue[0]} | Rear: ${queue[queue.length - 1]}`;
+            }
+            queueStatus.textContent = status;
+        }
+
+        function enqueue() {
+            if (isAnimating) return;
+            if (queue.length >= 8) {
+                alert("Queue เต็ม - จำนวนคิวสูงสุดคือ 8 คิว");
+                return;
+            }
+            const val = queueCounter++;
+            isAnimating = true;
+            queue.push(val);
+            updateQueueUI();
+            setTimeout(() => { isAnimating = false; }, 300);
+        }
+
+        function dequeue() {
+            if (isAnimating) return;
+            if (queue.length === 0) {
+                alert("Queue ว่างเปล่า");
+                return;
+            }
+            
+            const frontElement = queueContainer.firstElementChild;
+            if (frontElement) {
+                frontElement.classList.add('dequeue');
+                isAnimating = true;
+            setTimeout(() => {
+                    queue.shift();
+                    updateQueueUI();
+                    isAnimating = false;
+                }, 300);
+            } else {
+                queue.shift();
+                updateQueueUI();
+                isAnimating = false;
+            }
+        }
+
+        // Add Enter key support
+        
+        
+
+        // Quiz Logic
+        const quizQuestions = [
+            {
+                q: "โครงสร้างข้อมูลแบบใดทำงานตามหลักการ LIFO?",
+                options: ["Stack", "Queue", "Array", "Linked List"],
+                answer: 0
+            },
+            {
+                q: "โครงสร้างข้อมูลแบบใดทำงานตามหลักการ FIFO?",
+                options: ["Stack", "Queue", "Tree", "Graph"],
+                answer: 1
+            },
+            {
+                q: "การเพิ่มข้อมูลลงใน Stack เรียกว่าอะไร?",
+                options: ["Enqueue", "Push", "Pop", "Dequeue"],
+                answer: 1
+            },
+            {
+                q: "การนำข้อมูลออกจาก Queue เรียกว่าอะไร?",
+                options: ["Push", "Pop", "Enqueue", "Dequeue"],
+                answer: 3
+            },
+            {
+                q: "หากนำข้อมูล 'A', 'B', 'C' เข้า Stack ตามลำดับ เมื่อ Pop ข้อมูลออก 1 ครั้ง จะได้ข้อมูลใด?",
+                options: ["A", "B", "C", "ว่างเปล่า"],
+                answer: 2
+            },
+            {
+                q: "หากนำข้อมูล 'X', 'Y', 'Z' เข้า Queue ตามลำดับ เมื่อ Dequeue ข้อมูลออก 1 ครั้ง จะได้ข้อมูลใด?",
+                options: ["X", "Y", "Z", "ว่างเปล่า"],
+                answer: 0
+            }
+        ];
+
+        let currentQuestion = null;
+
+        function loadNextQuestion() {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.add('hidden');
+            
+            // Random question
+            currentQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            document.getElementById('question-text').textContent = currentQuestion.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors focus:outline-none';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const isCorrect = selectedIndex === currentQuestion.answer;
+            const feedback = document.getElementById('quiz-feedback');
+            
+            // Disable all buttons
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                btnElement.classList.replace('bg-slate-50', 'bg-green-100');
+                btnElement.classList.replace('dark:bg-slate-800', 'dark:bg-green-900/40');
+                btnElement.classList.replace('border-slate-200', 'border-green-500');
+                btnElement.classList.replace('dark:border-slate-700', 'dark:border-green-500');
+                
+                feedback.textContent = '✅ ถูกต้อง!';
+                feedback.className = 'mt-4 p-3 rounded-lg font-medium text-center bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 block';
+            } else {
+                btnElement.classList.replace('bg-slate-50', 'bg-red-100');
+                btnElement.classList.replace('dark:bg-slate-800', 'dark:bg-red-900/40');
+                btnElement.classList.replace('border-slate-200', 'border-red-500');
+                btnElement.classList.replace('dark:border-slate-700', 'dark:border-red-500');
+                
+                // Highlight correct answer
+                buttons[currentQuestion.answer].classList.replace('bg-slate-50', 'bg-green-100');
+                buttons[currentQuestion.answer].classList.replace('dark:bg-slate-800', 'dark:bg-green-900/40');
+                
+                feedback.textContent = '❌ ผิดครับ คำตอบที่ถูกคือ: ' + currentQuestion.options[currentQuestion.answer];
+                feedback.className = 'mt-4 p-3 rounded-lg font-medium text-center bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 block';
+            }
+        }
+
+        // Init quiz on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadNextQuestion();
+            updateStackUI();
+            updateQueueUI();
+        });
+    </script>
+</body>
+</html>

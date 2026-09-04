@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลัก - COM-SCI Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'Sarabun', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Sarabun', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+        
+        /* Override original glass-panel styles */
+        .glass-panel { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] text-slate-800 dark:text-slate-200 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Sidebar injected via JS -->
+    <script src="./assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <!-- Main Content Area -->
+    <main class=" min-h-screen flex flex-col transition-all duration-300">
+        
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 bg-white dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+            <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 dark:text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-slate-800 dark:text-slate-200 dark:text-white flex items-center justify-center font-bold text-sm">U</div>
+        </header>
+
+        <!-- Content -->
+        <div class="flex-grow p-4 sm:p-6 lg:p-8">
+            
+<div class="max-w-3xl mx-auto mt-10 sm:mt-20 text-center space-y-6">
+    <div class="w-20 h-20 mx-auto bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl shadow-lg flex items-center justify-center">
+        <span class="text-4xl text-slate-800 dark:text-slate-200 dark:text-white">✨</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-500 dark:to-slate-400 tracking-tight">
+        COM-SCI Labs
+    </h1>
+    <p class="text-lg dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
+        ระบบจำลองการทำงานและสถาปัตยกรรมคอมพิวเตอร์ที่ถูกออกแบบใหม่ทั้งหมด ในรูปแบบมินิมอล ใช้งานง่าย เลือกห้องปฏิบัติการจากเมนูด้านซ้ายเพื่อเริ่มต้นได้เลย
+    </p>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-12 text-left">
+
+        <a href="labs/lab_01_mayan-roman.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🏛️</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">เลขมายา & โรมัน</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ทดลองแปลงตัวเลขระบบโบราณ</p>
+        </a>
+    
+        <a href="labs/lab_02_base-convert.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🔄</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ตัวแปลงเลขฐาน</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ฐาน 2, 8, 10, 16 แบบ Real-time</p>
+        </a>
+    
+        <a href="labs/lab_03_fraction.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">➗</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">เลขเศษส่วน (Fraction)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">แปลงทศนิยมเป็นฐานสอง</p>
+        </a>
+    
+        <a href="labs/lab_04_ieee.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🎯</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ทศนิยม (IEEE 754)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">มาตรฐาน 32-bit (Single Precision)</p>
+        </a>
+    
+        <a href="labs/lab_05_twos.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">➖</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Two's Complement</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ระบบตัวเลขติดลบ</p>
+        </a>
+    
+        <a href="labs/lab_06_bitwise.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🛠️</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ตรรกะบิต (Bitwise)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">AND, OR, XOR, NOT, Masking</p>
+        </a>
+    
+        <a href="labs/lab_07_logic-circuits.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">💡</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">วงจรตรรกะ (Logic Gates)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">จำลองการทำงานเกตพื้นฐาน</p>
+        </a>
+    
+        <a href="labs/lab_08_cpu-cycle.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">⚙️</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">วงรอบคำสั่ง CPU</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Fetch, Decode, Execute, Store</p>
+        </a>
+    
+        <a href="labs/lab_09_os-mem.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">💾</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">หน่วยความจำ OS</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Virtual Memory & Page Fault</p>
+        </a>
+    
+        <a href="labs/lab_10_stackqueue.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">📚</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Stack & Queue</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">โครงสร้างข้อมูล LIFO & FIFO</p>
+        </a>
+    
+        <a href="labs/lab_11_tree.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🌳</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ต้นไม้ค้นหา (BST)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Binary Search Tree</p>
+        </a>
+    
+        <a href="labs/lab_12_sort.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">📊</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">อัลกอริทึมจัดเรียง</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Bubble, Insertion, Merge Sort</p>
+        </a>
+    
+        <a href="labs/lab_13_flowchart.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🔀</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ผังงาน (Flowchart)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">จำลองการประมวลผลลูป</p>
+        </a>
+    
+        <a href="labs/lab_14_hashing.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🔑</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">แฮชชิ่ง (Hashing)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">การจัดสรร Index และชนกัน</p>
+        </a>
+    
+        <a href="labs/lab_15_sql.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+            <div class="text-3xl mb-3">🗄️</div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">ฐานข้อมูล (SQL)</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">จำลอง RDBMS และคำสั่ง Join</p>
+        </a>
+                <a href="labs/lab_16_network-topology.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">🌐</div>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Network Topology</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">โครงร่างเครือข่าย</p>
+                </a>
+                <a href="labs/lab_17_ip-address.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">🔢</div>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">IP Address & DNS</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">คำนวณซับเน็ต & จำลอง DNS</p>
+                </a>
+                <a href="labs/lab_18_osi-layers.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">📡</div>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">OSI 7 Layers</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">โมเดลการส่งข้อมูล</p>
+                </a>
+                <a href="labs/lab_19_cloud-bandwidth.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">☁️</div>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Cloud & Bandwidth</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">คำนวณเวลาส่งข้อมูล</p>
+                </a>
+<a href="labs/lab_20_mini-flow.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">⚙️</div>
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Mini Flowgorithm Simulator</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">จำลองการทำงานของ Flowgorithm</p>
+                </a>
+<a href="labs/exam_pseudocode.html" class="p-5 rounded-3xl bg-[#f0f4f9] dark:bg-[#1e1f20] hover:bg-[#e9eef6] dark:hover:bg-[#2a2b2c] transition-colors cursor-pointer group border border-transparent hover:border-slate-200 dark:border-slate-700 dark:hover:border-slate-700">
+                    <div class="text-3xl mb-3">📝</div>
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors text-base">Exam Pseudocode System</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ระบบฝึกเขียนและตรวจ Pseudocode</p>
+                </a>
+
+    
+    </div></div>
+</div>
+
+        </div>
+
+    </main>
+
+    <script src="./assets/js/core.js"></script>
+</body>
+</html>

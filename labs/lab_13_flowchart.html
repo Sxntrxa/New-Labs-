@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 13: Flowcharts - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            blue: '#4285f4',
+                            red: '#ea4335',
+                            yellow: '#fbbc05',
+                            green: '#34a853',
+                            bg: '#131314',
+                            surface: '#1e1e1e',
+                            border: '#333333'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+        
+        .flowchart-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px 20px;
+            margin: 10px auto;
+            min-width: 150px;
+            border: 2px solid;
+            background-color: white;
+            color: black;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .flowchart-node {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        .node-terminal { border-radius: 50px; border-color: #ea4335; }
+        .node-process { border-radius: 0; border-color: #4285f4; }
+        .node-io { transform: skew(-15deg); border-color: #34a853; }
+        .node-io > div { transform: skew(15deg); } /* un-skew text */
+        .node-decision { transform: rotate(45deg); width: 100px; height: 100px; padding: 0; border-color: #fbbc05; }
+        .node-decision > div { transform: rotate(-45deg); } /* un-rotate text */
+        
+        .flowchart-node.active-node {
+            box-shadow: 0 0 0 4px #fbbc05;
+            background-color: #fef08a !important;
+            color: black !important;
+        }
+
+        .dark .flowchart-node.active-node {
+            background-color: #854d0e !important;
+            color: white !important;
+        }
+
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 10px solid #94a3b8;
+            margin: 0 auto;
+        }
+        .arrow-line-down {
+            width: 2px;
+            height: 20px;
+            background-color: #94a3b8;
+            margin: 0 auto;
+        }
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="text-slate-800 dark:text-slate-200 dark:text-gray-200 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] min-h-screen">
+    
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <main class="min-h-screen flex flex-col transition-all duration-300">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+
+
+        <div class="max-w-7xl mx-auto space-y-6">
+            
+            <!-- Header -->
+            <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-6 lg:p-8 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                        <i class="fas fa-project-diagram text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-bold">Lab 13: ผังงาน (Flowcharts)</h1>
+                        <p class="text-slate-600 dark:text-slate-400 mt-1">การออกแบบและทำความเข้าใจตรรกะโปรแกรมด้วยแผนภาพ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Theory Section -->
+                <div class="space-y-6">
+                    <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-book text-blue-500"></i>
+                            สัญลักษณ์พื้นฐานของ Flowchart
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                <div class="w-16 h-8 rounded-full border-2 border-[#ea4335] flex items-center justify-center text-xs">Terminal</div>
+                                <div>
+                                    <h3 class="font-semibold text-sm">Terminal (เริ่มต้น/สิ้นสุด)</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">จุดเริ่มต้นและจุดสิ้นสุดของโปรแกรม</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                <div class="w-16 h-8 border-2 border-[#4285f4] flex items-center justify-center text-xs">Process</div>
+                                <div>
+                                    <h3 class="font-semibold text-sm">Process (การประมวลผล)</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">การคำนวณหรือการกำหนดค่าตัวแปร</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                <div class="w-16 h-8 border-2 border-[#34a853] flex items-center justify-center text-xs" style="transform: skew(-15deg);"><span style="transform: skew(15deg);">I/O</span></div>
+                                <div>
+                                    <h3 class="font-semibold text-sm">Input/Output (รับ/แสดงผล)</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">การรับข้อมูลเข้าหรือแสดงผลลัพธ์ออก</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                <div class="w-10 h-10 border-2 border-[#fbbc05] flex items-center justify-center text-[10px]" style="transform: rotate(45deg);"><span style="transform: rotate(-45deg);">Decision</span></div>
+                                <div>
+                                    <h3 class="font-semibold text-sm">Decision (การตัดสินใจ)</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบเงื่อนไขเพื่อแยกทิศทางการทำงาน (True/False)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quiz Section -->
+                    <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-question-circle text-purple-500"></i>
+                            Quiz: ทดสอบความเข้าใจ
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-xl border border-slate-200 dark:border-slate-700">
+                                <p class="font-medium text-sm mb-3">1. สัญลักษณ์ใดใช้สำหรับตรวจสอบเงื่อนไขแบบ If-Else?</p>
+                                <div class="space-y-2 text-sm">
+                                    <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 rounded">
+                                        <input type="radio" name="q1" class="text-purple-500"> สี่เหลี่ยมผืนผ้า (Process)
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 rounded">
+                                        <input type="radio" name="q1" class="text-purple-500" value="correct"> สี่เหลี่ยมข้าวหลามตัด (Decision)
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-slate-50 dark:bg-[#131314] dark:hover:bg-slate-800 rounded">
+                                        <input type="radio" name="q1" class="text-purple-500"> วงรี (Terminal)
+                                    </label>
+                                </div>
+                            </div>
+                            <button onclick="checkQuiz()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                                ตรวจคำตอบ
+                            </button>
+                            <div id="quizResult" class="hidden text-sm font-medium mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulator Section -->
+                <div class="bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 dark:border-slate-800 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold flex items-center gap-2">
+                            <i class="fas fa-play-circle text-green-500"></i>
+                            Flowchart Execution Simulator
+                        </h2>
+                        <div class="space-x-2">
+                            <button onclick="stepSim()" id="stepBtn" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors">
+                                Step <i class="fas fa-step-forward ml-1"></i>
+                            </button>
+                            <button onclick="resetSim()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 dark:text-white rounded-lg text-sm transition-colors">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">โปรแกรมตรวจสอบเลขคู่หรือเลขคี่ (Even or Odd)</p>
+                    
+                    <!-- Execution Log -->
+                    <div class="mb-6 p-3 bg-[#1e1e1e] text-green-400 font-mono text-sm rounded-lg min-h-[60px] h-20 overflow-y-auto" id="simLog">
+                        [System] Simulation ready. Click Step to begin.
+                    </div>
+
+                    <!-- Flowchart Container -->
+                    <div class="flex-grow flex flex-col items-center justify-center p-4 bg-white dark:bg-[#1e1f20] dark:bg-[#131314] rounded-xl border border-slate-200 dark:border-slate-700 relative overflow-hidden">
+                        
+                        <div id="node-start" class="flowchart-node node-terminal">
+                            Start
+                        </div>
+                        
+                        <div class="arrow-container" id="arrow-1">
+                            <div class="arrow-line-down"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+
+                        <div id="node-input" class="flowchart-node node-io">
+                            <div>Input N</div>
+                        </div>
+                        
+                        <div class="arrow-container" id="arrow-2">
+                            <div class="arrow-line-down"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+
+                        <div id="node-process" class="flowchart-node node-process">
+                            R = N % 2
+                        </div>
+
+                        <div class="arrow-container" id="arrow-3">
+                            <div class="arrow-line-down"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+
+                        <div id="node-decision" class="flowchart-node node-decision">
+                            <div>Is R == 0?</div>
+                        </div>
+
+                        <!-- Branches -->
+                        <div class="flex w-full justify-center mt-2 relative h-[120px]" id="branches">
+                            <!-- Left Line (Yes) -->
+                            <div class="absolute w-[2px] h-[30px] bg-slate-400" style="left: 30%; top: 0;"></div>
+                            <div class="absolute h-[2px] w-[20%] bg-slate-400" style="left: 30%; top: 0;"></div>
+                            <div class="absolute text-xs text-green-500 font-bold" style="left: 35%; top: -15px;">Yes</div>
+                            <div class="arrow-down absolute" style="left: 30%; top: 30px; transform: translateX(-2.5px);"></div>
+
+                            <!-- Right Line (No) -->
+                            <div class="absolute w-[2px] h-[30px] bg-slate-400" style="right: 30%; top: 0;"></div>
+                            <div class="absolute h-[2px] w-[20%] bg-slate-400" style="right: 30%; top: 0;"></div>
+                            <div class="absolute text-xs text-red-500 font-bold" style="right: 35%; top: -15px;">No</div>
+                            <div class="arrow-down absolute" style="right: 30%; top: 30px; transform: translateX(2.5px);"></div>
+
+                            <div class="absolute" style="left: 15%; top: 40px;">
+                                <div id="node-even" class="flowchart-node node-io m-0 text-sm min-w-[100px]">
+                                    <div>Output "Even"</div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute" style="right: 15%; top: 40px;">
+                                <div id="node-odd" class="flowchart-node node-io m-0 text-sm min-w-[100px]">
+                                    <div>Output "Odd"</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom connect lines to End -->
+                            <div class="absolute w-[2px] h-[30px] bg-slate-400" style="left: 30%; top: 90px;"></div>
+                            <div class="absolute h-[2px] w-[20%] bg-slate-400" style="left: 30%; top: 120px;"></div>
+                            
+                            <div class="absolute w-[2px] h-[30px] bg-slate-400" style="right: 30%; top: 90px;"></div>
+                            <div class="absolute h-[2px] w-[20%] bg-slate-400" style="right: 30%; top: 120px;"></div>
+                            
+                            <div class="absolute w-[2px] h-[10px] bg-slate-400" style="left: 50%; top: 120px;"></div>
+                            <div class="arrow-down absolute" style="left: 50%; top: 130px; transform: translateX(-2.5px);"></div>
+                        </div>
+
+                        <div id="node-end" class="flowchart-node node-terminal mt-6">
+                            End
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+</main>
+
+    <script src="../assets/js/core.js"></script>
+    <script>
+        const nodes = [
+            'node-start',
+            'node-input',
+            'node-process',
+            'node-decision',
+            'branches', // placeholder for choice
+            'node-end'
+        ];
+        
+        let currentState = -1;
+        let userN = 0;
+        let isEven = false;
+
+        function logMsg(msg) {
+            const log = document.getElementById('simLog');
+            log.innerHTML += `<br>> ${msg}`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearActiveNodes() {
+            document.querySelectorAll('.flowchart-node').forEach(el => {
+                el.classList.remove('active-node');
+            });
+        }
+
+        function stepSim() {
+            currentState++;
+            clearActiveNodes();
+            const btn = document.getElementById('stepBtn');
+            
+            if (currentState === 0) {
+                document.getElementById('node-start').classList.add('active-node');
+                logMsg('Starting program...');
+            } 
+            else if (currentState === 1) {
+                document.getElementById('node-input').classList.add('active-node');
+                let input = prompt("Enter an integer N:");
+                userN = parseInt(input) || 0;
+                logMsg(`Received Input N = ${userN}`);
+            }
+            else if (currentState === 2) {
+                document.getElementById('node-process').classList.add('active-node');
+                let r = userN % 2;
+                isEven = (r === 0);
+                logMsg(`Calculating R = ${userN} % 2. Result R = ${r}`);
+            }
+            else if (currentState === 3) {
+                document.getElementById('node-decision').classList.add('active-node');
+                logMsg(`Evaluating condition: Is R == 0? -> ${isEven ? 'True (Yes)' : 'False (No)'}`);
+            }
+            else if (currentState === 4) {
+                if (isEven) {
+                    document.getElementById('node-even').classList.add('active-node');
+                    logMsg('Path taken: Yes. Outputting "Even"');
+                } else {
+                    document.getElementById('node-odd').classList.add('active-node');
+                    logMsg('Path taken: No. Outputting "Odd"');
+                }
+            }
+            else if (currentState === 5) {
+                document.getElementById('node-end').classList.add('active-node');
+                logMsg('Program terminated.');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function resetSim() {
+            currentState = -1;
+            userN = 0;
+            isEven = false;
+            clearActiveNodes();
+            document.getElementById('simLog').innerHTML = '[System] Simulation reset. Click Step to begin.';
+            const btn = document.getElementById('stepBtn');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function checkQuiz() {
+            const selected = document.querySelector('input[name="q1"]:checked');
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'dark:text-green-400', 'dark:text-red-400');
+            
+            if (!selected) {
+                resultDiv.textContent = 'กรุณาเลือกคำตอบ';
+                resultDiv.classList.add('text-slate-600', 'dark:text-slate-400');
+                return;
+            }
+
+            if (selected.value === 'correct') {
+                resultDiv.textContent = '✅ ถูกต้อง! สัญลักษณ์ Decision (สี่เหลี่ยมข้าวหลามตัด) ใช้สำหรับการตัดสินใจหรือตรวจสอบเงื่อนไข';
+                resultDiv.classList.add('text-green-600', 'dark:text-green-400');
+            } else {
+                resultDiv.textContent = '❌ ผิดครับ ลองคิดดูอีกครั้ง';
+                resultDiv.classList.add('text-red-600', 'dark:text-red-400');
+            }
+        }
+    </script>
+</body>
+</html>

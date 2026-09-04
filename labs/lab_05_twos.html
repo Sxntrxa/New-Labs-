@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="th" class="dark:bg-[#1e1f20] dark:bg-[#131314]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 5: Two's Complement - COM-SCI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gemini: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#486581',
+                            700: '#334e68',
+                            900: '#102a43',
+                            blue: '#1a73e8',
+                            dark: '#131314',
+                            darkCard: '#1e1e1f',
+                            darkBorder: '#333333'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for the number wheel */
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 2px dashed #94a3b8;
+        }
+        .wheel-item {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            left: 120px; /* (300-60)/2 */
+            top: 130px; /* (300-40)/2 */
+            text-align: center;
+            font-size: 0.875rem;
+            transform-origin: center center;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#131314] bg-slate-50 dark:bg-[#131314] text-slate-800 dark:text-slate-200 dark:text-gray-200 min-h-screen transition-colors duration-200 flex">
+    
+    <!-- Sidebar scripts -->
+    <script src="../assets/js/sidebar.js"></script>
+    <script>renderSidebar(window.location.pathname);</script>
+
+    <script src="../assets/js/core.js"></script>
+
+    <main class="min-h-screen flex-1 flex flex-col transition-all duration-300 overflow-x-hidden">
+    <!-- Global Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-[#1e1f20]/80 dark:bg-[#131314]/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 mb-6">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:bg-[#1e1f20] dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="font-bold text-slate-800 dark:text-slate-200">COM-SCI Labs</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">U</div>
+    </header>
+    <div class="flex-grow p-4 sm:p-6 lg:p-8">
+ <!-- Adjust margin based on sidebar width -->
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Lab 5: Two's Complement</h1>
+                <p class="text-slate-600 dark:text-slate-400 dark:text-gray-400">เรียนรู้การแทนค่าตัวเลขติดลบในระบบคอมพิวเตอร์และการคำนวณทางคณิตศาสตร์ด้วยเลขฐานสอง</p>
+            </header>
+
+            <!-- Theory & Wheel -->
+            <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e1f] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">1. ทฤษฎีและวงล้อตัวเลข (Number Wheel)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="mb-4"><strong>Two's Complement</strong> เป็นวิธีที่คอมพิวเตอร์ใช้ในการแทนค่าตัวเลขทั้งบวกและลบ รวมถึงใช้ในการคำนวณบวกและลบด้วยวงจรเดียวกัน ทำให้วงจรคอมพิวเตอร์ไม่ซับซ้อน</p>
+                        <p class="mb-4">ในระบบ 4-bit, เราสามารถแทนตัวเลขได้ 16 ค่า (0 ถึง 15 แบบไม่มีเครื่องหมาย) แต่ในระบบ Two's Complement จะแทนค่าได้ตั้งแต่ -8 ถึง +7</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>บิตซ้ายสุด (MSB) เป็นบิตเครื่องหมาย: 0 คือบวก, 1 คือลบ</li>
+                            <li>จาก +7 (0111) บวก 1 จะกลายเป็น -8 (1000) ซึ่งเป็นจุด <strong>Overflow</strong></li>
+                        </ul>
+                    </div>
+                    <div class="relative w-full flex justify-center py-4">
+                        <div id="number-wheel" class="wheel-container dark:border-slate-600"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Converter -->
+            <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e1f] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">2. เครื่องมือแปลงเลขฐานสอง (Step-by-Step Converter)</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <label class="font-medium">กรอกตัวเลขฐานสิบ (เช่น -45):</label>
+                        <input type="number" id="conv-input" class="border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 w-32 focus:ring-2 focus:ring-blue-500 focus:outline-none" value="-45" min="-128" max="127">
+                        <button onclick="convertNumber()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-sm">แปลงค่า</button>
+                    </div>
+                    <div id="conv-output" class="hidden mt-6 p-4 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded-lg space-y-4 font-mono text-sm">
+                        <!-- steps injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Arithmetic Simulator -->
+            <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e1f] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">3. เครื่องจำลองการคำนวณบวก/ลบเลขฐานสอง</h2>
+                <div class="space-y-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-medium">ค่า A:</label>
+                            <input type="number" id="calc-a" class="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 w-24" value="25" min="-128" max="127">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-medium">การดำเนินการ:</label>
+                            <select id="calc-op" class="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 w-28">
+                                <option value="add">+</option>
+                                <option value="sub">-</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-medium">ค่า B:</label>
+                            <input type="number" id="calc-b" class="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 w-24" value="15" min="-128" max="127">
+                        </div>
+                        <div class="flex flex-col justify-end mt-5">
+                            <button onclick="calculateBinary()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-sm">คำนวณ</button>
+                        </div>
+                    </div>
+                    <div id="calc-result" class="hidden p-6 bg-slate-100 dark:bg-[#1e1f20] dark:bg-slate-800 rounded-lg flex justify-center text-lg font-mono relative">
+                        <!-- Result injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Challenge -->
+            <section class="bg-white dark:bg-[#1e1f20] dark:bg-[#1e1e1f] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">4. แบบฝึกหัด (Practice Challenge)</h2>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex-1 space-y-4">
+                        <p class="text-lg" id="quiz-question">คำถาม: ...</p>
+                        <div class="flex items-center gap-4">
+                            <input type="text" id="quiz-input" placeholder="พิมพ์คำตอบ 8 บิต (เช่น 10101010)" class="border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 w-full focus:ring-2 focus:ring-green-500 focus:outline-none">
+                            <button onclick="checkAnswer()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">ส่งคำตอบ</button>
+                        </div>
+                        <div id="quiz-feedback" class="h-6 font-medium"></div>
+                        <button onclick="generateQuestion()" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">ข้ามคำถามนี้</button>
+                    </div>
+                    <div class="w-full md:w-48 bg-slate-50 dark:bg-[#131314] dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">คะแนนของคุณ</span>
+                        <span class="text-4xl font-bold text-slate-900 dark:text-white" id="quiz-score">0</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Wheel Visualizer
+        function drawWheel() {
+            const container = document.getElementById('number-wheel');
+            container.innerHTML = '';
+            
+            // 16 points around the circle
+            const radius = 120;
+            const center = { x: 150, y: 150 };
+            
+            for (let i = 0; i < 16; i++) {
+                const angle = (i * Math.PI / 8) - Math.PI / 2;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                
+                let binary = i.toString(2).padStart(4, '0');
+                let dec = i < 8 ? i : i - 16;
+                
+                const el = document.createElement('div');
+                el.className = 'wheel-item flex flex-col font-mono text-xs';
+                el.style.transform = `translate(${x}px, ${y}px)`;
+                
+                const decSpan = document.createElement('span');
+                decSpan.className = dec < 0 ? 'text-red-500 dark:text-red-400 font-bold' : 'text-blue-600 dark:text-blue-400 font-bold';
+                decSpan.textContent = dec;
+                
+                const binSpan = document.createElement('span');
+                binSpan.className = 'text-slate-500 dark:text-slate-400';
+                binSpan.textContent = binary;
+                
+                el.appendChild(decSpan);
+                el.appendChild(binSpan);
+                container.appendChild(el);
+            }
+            
+            // Highlight Overflow boundary
+            const overflowMark = document.createElement('div');
+            overflowMark.className = 'absolute text-red-500 font-bold text-xs bg-white dark:bg-[#1e1e1f] px-1';
+            overflowMark.style.bottom = '10px';
+            overflowMark.style.left = '50%';
+            overflowMark.style.transform = 'translateX(-50%)';
+            overflowMark.innerText = 'Overflow Boundary';
+            container.appendChild(overflowMark);
+        }
+
+        function to8BitBinary(num) {
+            let n = parseInt(num, 10);
+            if (n >= 0) return n.toString(2).padStart(8, '0');
+            else return (256 + n).toString(2).padStart(8, '0');
+        }
+
+        // Converter
+        function convertNumber() {
+            const val = parseInt(document.getElementById('conv-input').value, 10);
+            const out = document.getElementById('conv-output');
+            out.classList.remove('hidden');
+            
+            if (isNaN(val) || val < -128 || val > 127) {
+                out.innerHTML = '<span class="text-red-500">กรุณากรอกตัวเลขระหว่าง -128 ถึง 127 (ขอบเขต 8-bit)</span>';
+                return;
+            }
+            
+            if (val >= 0) {
+                out.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="w-24 text-slate-500">ค่าบวก:</span>
+                        <span>ตัวเลข ${val} มีค่าเป็นบวก สามารถแปลงเป็นเลขฐานสอง 8 บิตได้โดยตรง</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-blue-600 dark:text-blue-400 font-bold text-lg mt-2">
+                        <span class="w-24 text-slate-500 text-sm font-normal">ผลลัพธ์:</span>
+                        <span>${to8BitBinary(val)}</span>
+                    </div>
+                `;
+            } else {
+                const absVal = Math.abs(val);
+                const absBin = absVal.toString(2).padStart(8, '0');
+                const ones = absBin.split('').map(b => b === '0' ? '1' : '0').join('');
+                const twos = to8BitBinary(val);
+                
+                out.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="w-32 text-slate-500">ขั้นที่ 1 (ขนาดสัมบูรณ์):</span>
+                        <span>ขนาดของ ${val} คือ ${absVal} &rarr; <span class="font-bold">${absBin}</span></span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="w-32 text-slate-500">ขั้นที่ 2 (1's Comp):</span>
+                        <span>สลับบิตทั้งหมด (0 เป็น 1, 1 เป็น 0) &rarr; <span class="font-bold">${ones}</span></span>
+                    </div>
+                    <div class="flex items-center gap-4 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <span class="w-32 text-slate-500">ขั้นที่ 3 (2's Comp):</span>
+                        <span>บวกด้วย 1 &rarr; <span class="font-bold">${ones}</span> + 1</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-blue-600 dark:text-blue-400 font-bold text-lg pt-2">
+                        <span class="w-32 text-slate-500 text-sm font-normal">ผลลัพธ์ (${val}):</span>
+                        <span>${twos}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Arithmetic
+        function calculateBinary() {
+            let a = parseInt(document.getElementById('calc-a').value, 10) || 0;
+            let b = parseInt(document.getElementById('calc-b').value, 10) || 0;
+            const op = document.getElementById('calc-op').value;
+            
+            if(a < -128 || a > 127 || b < -128 || b > 127) {
+                document.getElementById('calc-result').innerHTML = '<span class="text-red-500">ค่าต้องอยู่ระหว่าง -128 ถึง 127</span>';
+                document.getElementById('calc-result').classList.remove('hidden');
+                return;
+            }
+
+            let actualB = op === 'sub' ? -b : b;
+            const expected = a + actualB;
+            const overflow = expected < -128 || expected > 127;
+            
+            const binA = to8BitBinary(a);
+            const binB = to8BitBinary(actualB);
+            
+            let carryStr = '';
+            let carry = 0;
+            let resStr = '';
+            for(let i=7; i>=0; i--) {
+                const bitA = parseInt(binA[i]);
+                const bitB = parseInt(binB[i]);
+                const sum = bitA + bitB + carry;
+                resStr = (sum % 2) + resStr;
+                carry = sum > 1 ? 1 : 0;
+                if(i > 0) carryStr = carry + carryStr;
+            }
+            carryStr = carry + carryStr; // MSB carry out
+            
+            let html = `
+                <div class="inline-block text-right">
+                    <div class="text-sm text-red-500 dark:text-red-400 mb-1 tracking-[0.6em] pr-2">${carryStr.substring(1)}<span class="opacity-0">0</span></div>
+                    <div class="tracking-[0.6em]">${binA} &nbsp; <span class="text-sm tracking-normal text-slate-500">(${a})</span></div>
+                    <div class="tracking-[0.6em] border-b-2 border-slate-800 dark:border-white pb-2 mb-2"><span class="absolute -ml-6 text-slate-500">+</span> ${binB} &nbsp; <span class="text-sm tracking-normal text-slate-500">(${op==='sub'?'-':'+'}${Math.abs(actualB)})</span></div>
+                    <div class="tracking-[0.6em] text-blue-600 dark:text-blue-400 font-bold">${resStr} &nbsp; <span class="text-sm tracking-normal text-slate-500">(${expected})</span></div>
+                    ${overflow ? '<div class="mt-4 text-red-500 font-bold text-base text-center">⚠️ เกิดการล้นข้อมูล (Overflow)!</div>' : ''}
+                </div>
+
+            `;
+            
+            document.getElementById('calc-result').innerHTML = html;
+            document.getElementById('calc-result').classList.remove('hidden');
+        }
+
+        // Quiz
+        let currentQuiz = {};
+        let score = 0;
+
+        function generateQuestion() {
+            const types = ['convert_neg', 'add'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            
+            document.getElementById('quiz-input').value = '';
+            document.getElementById('quiz-feedback').innerHTML = '';
+            
+            if (type === 'convert_neg') {
+                const num = -Math.floor(Math.random() * 127 + 1); // -1 to -127
+                currentQuiz = {
+                    type: 'convert',
+                    answer: to8BitBinary(num),
+                    question: `เลข 8-bit Two's Complement ของ <strong>${num}</strong> คืออะไร?`
+                };
+            } else {
+                const a = Math.floor(Math.random() * 60) - 30;
+                const b = Math.floor(Math.random() * 60) - 30;
+                const isSub = Math.random() > 0.5;
+                const bOp = isSub ? -b : b;
+                currentQuiz = {
+                    type: 'add',
+                    answer: to8BitBinary(a + bOp),
+                    question: `ผลลัพธ์ของ <strong>${to8BitBinary(a)} ${isSub ? '-' : '+'} ${to8BitBinary(b)}</strong> คืออะไร?`
+                };
+            }
+            document.getElementById('quiz-question').innerHTML = `คำถาม: ${currentQuiz.question}`;
+            
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('quiz-input').value.trim();
+            const feedback = document.getElementById('quiz-feedback');
+            
+            if (!input) return;
+            
+            // Remove any spaces from user input
+            const sanitizedInput = input.replace(/\s+/g, '');
+
+            if (sanitizedInput === currentQuiz.answer) {
+                feedback.innerHTML = '<span class="text-green-600 dark:text-green-400 font-bold">✓ ถูกต้อง! ยอดเยี่ยมมาก</span>';
+                score += 10;
+                document.getElementById('quiz-score').innerText = score;
+                setTimeout(generateQuestion, 1500);
+            } else {
+                feedback.innerHTML = `<span class="text-red-600 dark:text-red-400">✗ ผิดครับ คำตอบที่ถูกต้องคือ <strong>${currentQuiz.answer}</strong></span>`;
+                score = Math.max(0, score - 5);
+                document.getElementById('quiz-score').innerText = score;
+            }
+        }
+        
+        // Handle enter key in quiz input
+        document.getElementById('quiz-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            drawWheel();
+            generateQuestion();
+        });
+    </script>
+</main>
+</body>
+</html>

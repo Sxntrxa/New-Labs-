@@ -765,8 +765,11 @@ async function executeProgram() {
                         let name = match[1], dim1Expr = match[2], dim2Expr = match[3], valueExpr = match[4];
                         
                         let realName = Object.keys(memory).find(k => k.toLowerCase() === name.toLowerCase() && k !== '__for');
-                        if (!realName) throw new Error(`ไม่พบตัวแปรชื่อ '${name}' (ต้อง Declare ก่อน)`);
-                        name = realName;
+                        if (!realName) {
+                            memory[name] = { type: 'Integer', value: 0 };
+                        } else {
+                            name = realName;
+                        }
                         
                         let resultVal = evaluateExpression(valueExpr, memory);
                         let castedVal = castValue(resultVal, memory[name].type);
@@ -812,8 +815,11 @@ async function executeProgram() {
                         let name = match[1], startExpr = match[2], endExpr = match[3], stepExpr = match[4] || "1";
                         
                         let realName = Object.keys(memory).find(k => k.toLowerCase() === name.toLowerCase() && k !== '__for');
-                        if (!realName) throw new Error(`ไม่พบตัวแปรชื่อ '${name}' (ต้อง Declare ก่อน)`);
-                        name = realName;
+                        if (!realName) {
+                            memory[name] = { type: 'Integer', value: 0 };
+                        } else {
+                            name = realName;
+                        }
                         
                         if (!memory.__for[pc]) {
                             memory[name].value = castValue(evaluateExpression(startExpr, memory), memory[name].type);

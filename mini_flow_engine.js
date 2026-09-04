@@ -216,6 +216,12 @@
                     else if (cmd.startsWith('for ')) {
                         let match = line.match(/^For\s+([a-zA-Z0-9_]+)\s*=\s*(.*?)\s+To\s+(.*?)(?:\s+Step\s+(.*))?$/i);
                         let name = match[1], startExpr = match[2], endExpr = match[3], stepExpr = match[4] || "1";
+                        let realName = Object.keys(memory).find(k => k.toLowerCase() === name.toLowerCase() && k !== '__for');
+                        if (!realName) {
+                            memory[name] = { type: 'Integer', value: 0 };
+                        } else {
+                            name = realName;
+                        }
                         if (!memory.__for[pc]) {
                             memory[name].value = castValue(evaluateExpression(startExpr, memory), memory[name].type);
                             memory.__for[pc] = { end: evaluateExpression(endExpr, memory), step: evaluateExpression(stepExpr, memory), varName: name };

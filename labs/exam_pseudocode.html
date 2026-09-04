@@ -458,7 +458,7 @@ Assign arr[0] = 5</pre>
                 }
             });
 
-            codeEl.addEventListener('keydown', (e) => {
+            codeEl.addEventListener('keyup', (e) => {
                 if (e.key === 'Tab') {
                     e.preventDefault();
                     const start = codeEl.selectionStart;
@@ -532,7 +532,7 @@ End`;
                     let val = inputEl.value;
                     bar.classList.add('opacity-50', 'pointer-events-none');
                     inputEl.disabled = true;
-                    inputEl.removeEventListener('keydown', keyHandler);
+                    inputEl.removeEventListener('keyup', keyHandler);
                     btn.removeEventListener('click', submit);
                     print(val, "input");
                     resolve(val);
@@ -542,7 +542,7 @@ End`;
                     if (e.key === 'Enter') submit();
                 }
                 
-                inputEl.addEventListener('keydown', keyHandler);
+                inputEl.addEventListener('keyup', keyHandler);
                 btn.addEventListener('click', submit);
             });
         }

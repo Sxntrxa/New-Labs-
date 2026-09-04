@@ -18,7 +18,7 @@
                 const inputEl = document.getElementById(id);
                 inputEl.focus();
                 
-                inputEl.addEventListener('keydown', function(e) {
+                inputEl.addEventListener('keyup', function(e) {
                     if (e.key === 'Enter') {
                         let val = inputEl.value;
                         document.getElementById(`container-${id}`).innerHTML = `<span style="color: #ffaa00;">> ${val}</span>`;
